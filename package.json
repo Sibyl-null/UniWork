@@ -1,0 +1,7 @@
+{
+    "name": "com.sibylwork.sframework",
+    "version": "0.0.1",
+    "displayName": "SFramework",
+    "description": "A Unity GameFramework",
+    "unity": "2019.4"
+}
