@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SFramework.UIFramework.Runtime.Scheduler;
 using SFramework.Utility;
 using UnityEngine;
 
@@ -10,12 +11,16 @@ namespace SFramework.UIFramework.Runtime
         private static UIManager _instance;
         private static UIManagerBaseAgent _agent;
         
-        private readonly Dictionary<UIEnumBaseType, UIInfo> _infos = new Dictionary<UIEnumBaseType, UIInfo>();
-        private readonly Dictionary<UIEnumBaseType, UIBaseCtrl> _instantiatedCtrls = new Dictionary<UIEnumBaseType, UIBaseCtrl>();
-        private readonly Dictionary<int, Transform> _bucketTrans = new Dictionary<int, Transform>();
+        private readonly Dictionary<UIEnumBaseType, UIInfo> _infos = new();
+        private readonly Dictionary<UIEnumBaseType, UIBaseCtrl> _instantiatedCtrls = new();
+        private readonly Dictionary<int, Transform> _bucketTrans = new();
 
-        private readonly Queue<UIEnumBaseType> _uiQueue = new Queue<UIEnumBaseType>();
-        private readonly Stack<UIEnumBaseType> _uiStack = new Stack<UIEnumBaseType>();
+        private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
+        {
+            { UIScheduleMode.Normal, new UINormalScheduler() },
+            { UIScheduleMode.Queue, new UIQueueScheduler() },
+            { UIScheduleMode.Stack, new UIStackScheduler() }
+        };
 
         public static UIManager Instance => _instance;
         public event Action EscapeEvent;
@@ -36,11 +41,11 @@ namespace SFramework.UIFramework.Runtime
         private void Initialize()
         {
             UICamera = GetComponentInChildren<Camera>();
-            _agent.InitUIInfo(AddInfo);
+            _agent.InitUIInfo();
             CreateBuckets();
         }
 
-        private void AddInfo(UIEnumBaseType uiEnumType, UIInfo info)
+        internal void AddInfo(UIEnumBaseType uiEnumType, UIInfo info)
         {
             if (_infos.ContainsKey(uiEnumType))
                 throw new Exception($"{uiEnumType.ToString()}已注册");
@@ -63,9 +68,10 @@ namespace SFramework.UIFramework.Runtime
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (_uiStack.Count > 0)
+                UIStackScheduler stackScheduler = (UIStackScheduler)_schedulers[UIScheduleMode.Stack];
+                if (!stackScheduler.IsEmpty)
                 {
-                    GetUICtrl(_uiStack.Peek()).OnEscape();
+                    stackScheduler.EscapeUI();
                 }
                 else
                     EscapeEvent?.Invoke();
@@ -78,32 +84,35 @@ namespace SFramework.UIFramework.Runtime
 
         public void ShowUI(UIEnumBaseType uiEnumType)
         {
-            if (!_infos.ContainsKey(uiEnumType))
-                throw new Exception(uiEnumType + "对应的UIInfo不存在");
+            UIInfo info = GetUIInfo(uiEnumType);
 
-            UIInfo info = _infos[uiEnumType];
-            switch (info.ScheduleMode)
-            {
-                case UIScheduleMode.Normal:
-                    ShowUIInternal(uiEnumType);
-                    break;
-                case UIScheduleMode.Queue:
-                    if (_uiQueue.Count == 0)
-                        ShowUIInternal(uiEnumType);
-                    _uiQueue.Enqueue(uiEnumType);
-                    break;
-                case UIScheduleMode.Stack:
-                    if (_uiStack.Count > 0)
-                        HideUIInternal(_uiStack.Peek());
-                    _uiStack.Push(uiEnumType);
-                    ShowUIInternal(uiEnumType);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.ShowUI(uiEnumType);
+            else
+                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
         }
         
-        private void ShowUIInternal(UIEnumBaseType uiEnumType)
+        public void HideUI(UIEnumBaseType uiEnumType)
+        {
+            UIInfo info = GetUIInfo(uiEnumType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.HideUI(uiEnumType);
+            else
+                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+        }
+        
+        public void DestroyUI(UIEnumBaseType uiEnumType)
+        {
+            UIInfo info = GetUIInfo(uiEnumType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.DestroyUI(uiEnumType);
+            else
+                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+        }
+        
+        internal void ShowUIInternal(UIEnumBaseType uiEnumType)
         {
             UIBaseCtrl ctrl = GetUICtrl(uiEnumType);
 
@@ -119,31 +128,7 @@ namespace SFramework.UIFramework.Runtime
                 ctrl.OnShow();
         }
 
-        public void HideUI(UIEnumBaseType uiEnumType)
-        {
-            if (!_infos.ContainsKey(uiEnumType))
-                throw new Exception(uiEnumType + "对应的UIInfo不存在");
-
-            UIInfo info = _infos[uiEnumType];
-            switch (info.ScheduleMode)
-            {
-                case UIScheduleMode.Normal:
-                    HideUIInternal(uiEnumType);
-                    break;
-                case UIScheduleMode.Queue:
-                    HideUIInternal(uiEnumType);
-                    TryShowNextQueueUI(uiEnumType);
-                    break;
-                case UIScheduleMode.Stack:
-                    HideUIInternal(uiEnumType);
-                    TryShowNextStackUI(uiEnumType);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void HideUIInternal(UIEnumBaseType uiEnumType)
+        internal void HideUIInternal(UIEnumBaseType uiEnumType)
         {
             UIBaseCtrl ctrl = GetUICtrl(uiEnumType);
             
@@ -157,7 +142,7 @@ namespace SFramework.UIFramework.Runtime
                 ctrl.OnHide();
         }
 
-        public void DestroyUI(UIEnumBaseType uiEnumType)
+        internal void DestroyUIInternal(UIEnumBaseType uiEnumType)
         {
             UIBaseCtrl ctrl = GetUICtrl(uiEnumType);
             
@@ -172,39 +157,22 @@ namespace SFramework.UIFramework.Runtime
             
             ctrl.OnDestroy();
             _instantiatedCtrls.Remove(uiEnumType);
-
-            TryShowNextQueueUI(uiEnumType);
-            TryShowNextStackUI(uiEnumType);
         }
 
-        private void TryShowNextQueueUI(UIEnumBaseType uiEnumType)
-        {
-            UIInfo info = _infos[uiEnumType];
-            if (info.ScheduleMode == UIScheduleMode.Queue && _uiQueue.Count > 0 && _uiQueue.Peek() == uiEnumType)
-            {
-                _uiQueue.Dequeue();
-                if (_uiQueue.Count > 0)
-                    ShowUIInternal(_uiQueue.Peek());
-            }
-        }
-
-        private void TryShowNextStackUI(UIEnumBaseType uiEnumType)
-        {
-            UIInfo info = _infos[uiEnumType];
-            if (info.ScheduleMode == UIScheduleMode.Stack && _uiStack.Count > 0 && _uiStack.Peek() == uiEnumType)
-            {
-                _uiStack.Pop();
-                if (_uiStack.Count > 0)
-                    ShowUIInternal(_uiStack.Peek());
-            }
-        }
-        
         public UIBaseCtrl GetUICtrl(UIEnumBaseType uiEnumType)
         {
             if (!_infos.ContainsKey(uiEnumType))
                 throw new Exception(uiEnumType + "对应的UIInfo不存在");
             
             return _instantiatedCtrls.TryGetValue(uiEnumType, out UIBaseCtrl ctrl) ? ctrl : null;
+        }
+
+        public UIInfo GetUIInfo(UIEnumBaseType uiEnumType)
+        {
+            if (!_infos.ContainsKey(uiEnumType))
+                throw new Exception(uiEnumType + "对应的UIInfo不存在");
+
+            return _infos[uiEnumType];
         }
 
         private GameObject CreateUIObject(UIInfo info)
