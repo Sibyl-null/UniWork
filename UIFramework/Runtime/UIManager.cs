@@ -34,6 +34,8 @@ namespace SFramework.UIFramework.Runtime
             
             _agent = agent;
             GameObject obj = Instantiate(_agent.Load<GameObject>(UIDefine.UIRootPath));
+            DontDestroyOnLoad(obj);
+            
             _instance = obj.GetOrAddComponent<UIManager>();
             _instance.Initialize();
         }
