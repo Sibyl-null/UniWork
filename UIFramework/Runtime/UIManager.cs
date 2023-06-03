@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SFramework.UIFramework.Runtime.Scheduler;
 using SFramework.Utility;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace SFramework.UIFramework.Runtime
 {
@@ -22,10 +23,18 @@ namespace SFramework.UIFramework.Runtime
             { UIScheduleMode.Stack, new UIStackScheduler() }
         };
 
+        private EventSystem _eventSystem;
+
         public static UIManager Instance => _instance;
         public event Action EscapeEvent;
         public Camera UICamera { get; private set; }
         public int OrderLayerIncrement { get; private set; } = 0;
+
+        public bool EnableInput
+        {
+            get => _eventSystem.isActiveAndEnabled;
+            set => _eventSystem.enabled = value;
+        }
 
         public static void Create(UIManagerBaseAgent agent)
         {
@@ -43,6 +52,7 @@ namespace SFramework.UIFramework.Runtime
         private void Initialize()
         {
             UICamera = GetComponentInChildren<Camera>();
+            _eventSystem = GetComponentInChildren<EventSystem>();
             _agent.InitUIInfo();
             CreateBuckets();
         }
@@ -68,7 +78,7 @@ namespace SFramework.UIFramework.Runtime
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) && EnableInput)
             {
                 UIStackScheduler stackScheduler = (UIStackScheduler)_schedulers[UIScheduleMode.Stack];
                 if (!stackScheduler.IsEmpty)
