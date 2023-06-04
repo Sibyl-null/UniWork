@@ -4,6 +4,7 @@ using SFramework.Utility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace SFramework.UIFramework.Editor
 {
@@ -22,6 +23,24 @@ namespace SFramework.UIFramework.Editor
             
             GameObject.DestroyImmediate(uiRootObj);
             AssetDatabase.Refresh();
+        }
+
+        [MenuItem("SFramework/UIFramework/创建UITemplate模板")]
+        public static void CreateUITemplate()
+        {
+            GameObject uiTemplate = new GameObject("UITemplate");
+            uiTemplate.layer = LayerMask.NameToLayer("UI");
+
+            Canvas canvas = uiTemplate.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+
+            CanvasScaler scaler = uiTemplate.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.referenceResolution = new Vector2(UIDefine.Width, UIDefine.Height);
+            scaler.matchWidthOrHeight = UIDefine.Match;
+
+            uiTemplate.AddComponent<GraphicRaycaster>();
         }
 
         private static GameObject CreateUIRootObj()
