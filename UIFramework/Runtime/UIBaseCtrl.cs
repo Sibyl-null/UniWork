@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace SFramework.UIFramework.Runtime
 {
@@ -14,6 +15,8 @@ namespace SFramework.UIFramework.Runtime
             Info = info;
             
             SetUIRenderLayer();
+            SetUIScaler();
+            
             OnCreate();
         }
 
@@ -22,6 +25,14 @@ namespace SFramework.UIFramework.Runtime
             _uiView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
             _uiView.UICanvas.worldCamera = UIManager.Instance.UICamera;
             _uiView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+        }
+
+        private void SetUIScaler()
+        {
+            _uiView.UIScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            _uiView.UIScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            _uiView.UIScaler.referenceResolution = new Vector2(UIDefine.Width, UIDefine.Height);
+            _uiView.UIScaler.matchWidthOrHeight = UIDefine.Match;
         }
 
         /*
