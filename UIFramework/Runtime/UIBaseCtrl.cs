@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SFramework.UIFramework.Runtime.Scheduler;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace SFramework.UIFramework.Runtime
@@ -44,7 +45,7 @@ namespace SFramework.UIFramework.Runtime
         {
         }
 
-        public virtual void OnShow()
+        public virtual void OnShow(UIBaseParameter param = null)
         {
             _uiView.UICanvas.enabled = true;
             _uiView.UIRaycaster.enabled = true;

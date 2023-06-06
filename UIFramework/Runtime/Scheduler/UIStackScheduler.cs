@@ -7,12 +7,17 @@ namespace SFramework.UIFramework.Runtime.Scheduler
         private readonly Stack<UIEnumBaseType> _uiStack = new Stack<UIEnumBaseType>();
         internal bool IsEmpty => _uiStack.Count == 0;
         
-        internal override void ShowUI(UIEnumBaseType uiEnumType)
+        internal override void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
         {
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiEnumType);
+            if (ctrl != null && ctrl.IsShow)
+                return;
+
             if (_uiStack.Count > 0)
                 UIManager.Instance.HideUIInternal(_uiStack.Peek());
+            
             _uiStack.Push(uiEnumType);
-            UIManager.Instance.ShowUIInternal(uiEnumType);
+            UIManager.Instance.ShowUIInternal(uiEnumType, param);
         }
 
         internal override void HideUI(UIEnumBaseType uiEnumType)

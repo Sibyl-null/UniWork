@@ -96,12 +96,12 @@ namespace SFramework.UIFramework.Runtime
         // 对外API
         // --------------------------------
 
-        public void ShowUI(UIEnumBaseType uiEnumType)
+        public void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
         {
             UIInfo info = GetUIInfo(uiEnumType);
 
             if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.ShowUI(uiEnumType);
+                scheduler.ShowUI(uiEnumType, param);
             else
                 DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
         }
@@ -126,20 +126,23 @@ namespace SFramework.UIFramework.Runtime
                 DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
         }
         
-        internal void ShowUIInternal(UIEnumBaseType uiEnumType)
+        internal void ShowUIInternal(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
         {
             UIBaseCtrl ctrl = GetUICtrl(uiEnumType);
 
+            ++OrderLayerIncrement;
+            
             if (ctrl == null)
             {
                 UIInfo info = _infos[uiEnumType];
                 GameObject uiObj = CreateUIObject(info);
                 ctrl = CreateUICtrl(uiObj, info);
+                ctrl.OnShow(param);
+                return;
             }
-            
-            ++OrderLayerIncrement;
+
             if (!ctrl.IsShow)
-                ctrl.OnShow();
+                ctrl.OnShow(param);
         }
 
         internal void HideUIInternal(UIEnumBaseType uiEnumType)
