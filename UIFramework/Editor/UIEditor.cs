@@ -35,10 +35,12 @@ namespace SFramework.UIFramework.Editor
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
 
             CanvasScaler scaler = uiTemplate.AddComponent<CanvasScaler>();
+            UIRuntimeSetting runtimeSetting = UIManager.Instance.RuntimeSetting;
+            
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.referenceResolution = new Vector2(UIDefine.Width, UIDefine.Height);
-            scaler.matchWidthOrHeight = UIDefine.Match;
+            scaler.referenceResolution = new Vector2(runtimeSetting.width, runtimeSetting.height);
+            scaler.matchWidthOrHeight = runtimeSetting.match;
 
             uiTemplate.AddComponent<GraphicRaycaster>();
         }

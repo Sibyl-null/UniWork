@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace SFramework.UIFramework.Runtime
 {
     public abstract class UIManagerBaseAgent
     {
+        public abstract string UIRootLoadPath { get; }
+        public abstract string RuntimeSettingLoadPath { get; }
+        
         protected void AddInfo(UIEnumBaseType uiEnumType, UIInfo info)
         {
             UIManager.Instance.AddInfo(uiEnumType, info);

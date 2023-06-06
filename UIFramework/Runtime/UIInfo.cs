@@ -31,13 +31,4 @@ namespace SFramework.UIFramework.Runtime
         public UIScheduleMode ScheduleMode;
         public string ResPath;
     }
-
-    public class UIDefine
-    {
-        public const string UIRootPath = "UIRoot";
-        
-        public const float Width = 1020;
-        public const float Height = 720;
-        public const float Match = 1;
-    }
 }

@@ -29,10 +29,12 @@ namespace SFramework.UIFramework.Runtime
 
         private void SetUIScaler()
         {
+            UIRuntimeSetting runtimeSetting = UIManager.Instance.RuntimeSetting;
+            
             _uiView.UIScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             _uiView.UIScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            _uiView.UIScaler.referenceResolution = new Vector2(UIDefine.Width, UIDefine.Height);
-            _uiView.UIScaler.matchWidthOrHeight = UIDefine.Match;
+            _uiView.UIScaler.referenceResolution = new Vector2(runtimeSetting.width, runtimeSetting.height);
+            _uiView.UIScaler.matchWidthOrHeight = runtimeSetting.match;
         }
 
         /*

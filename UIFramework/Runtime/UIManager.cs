@@ -29,6 +29,7 @@ namespace SFramework.UIFramework.Runtime
         public event Action EscapeEvent;
         public Camera UICamera { get; private set; }
         public int OrderLayerIncrement { get; private set; } = 0;
+        public UIRuntimeSetting RuntimeSetting { get; private set; }
 
         public bool EnableInput
         {
@@ -42,7 +43,7 @@ namespace SFramework.UIFramework.Runtime
                 throw new Exception("UIManager repeat created");
             
             _agent = agent;
-            GameObject obj = Instantiate(_agent.Load<GameObject>(UIDefine.UIRootPath));
+            GameObject obj = Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
             DontDestroyOnLoad(obj);
             
             _instance = obj.GetOrAddComponent<UIManager>();
@@ -51,6 +52,7 @@ namespace SFramework.UIFramework.Runtime
 
         private void Initialize()
         {
+            RuntimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
             UICamera = GetComponentInChildren<Camera>();
             _eventSystem = GetComponentInChildren<EventSystem>();
             _agent.InitUIInfo();
