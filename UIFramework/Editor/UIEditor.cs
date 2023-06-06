@@ -11,18 +11,26 @@ namespace SFramework.UIFramework.Editor
     public class UIEditor
     {
         public const string UIRootSavePath = "Assets/Resources/UIRoot.prefab";
+        public const string UIRuntimeSettingSavePath = "Assets/Resources/UIRuntimeSetting.asset";
         
         [MenuItem("SFramework/UIFramework/创建UIRoot预设体")]
         public static void CreateUIRootPrefab()
         {
             if (File.Exists(UIRootSavePath))
                 DLog.Warning("UIRoot预设体已存在：" + UIRootSavePath);
+            
+            string foldPath = UIRootSavePath.Substring(0, UIRootSavePath.LastIndexOf('/'));
+            if (!Directory.Exists(foldPath))
+                Directory.CreateDirectory(foldPath);
 
             GameObject uiRootObj = CreateUIRootObj();
             PrefabUtility.SaveAsPrefabAsset(uiRootObj, UIRootSavePath);
             
             GameObject.DestroyImmediate(uiRootObj);
             AssetDatabase.Refresh();
+
+            Selection.activeObject = uiRootObj;
+            EditorGUIUtility.PingObject(uiRootObj);
         }
 
         [MenuItem("SFramework/UIFramework/创建UITemplate模板")]
@@ -43,6 +51,25 @@ namespace SFramework.UIFramework.Editor
             scaler.matchWidthOrHeight = runtimeSetting.match;
 
             uiTemplate.AddComponent<GraphicRaycaster>();
+        }
+
+        [MenuItem("SFramework/UIFramework/创建UIRuntimeSetting")]
+        public static void CreateUIRuntimeSetting()
+        {
+            if (File.Exists(UIRuntimeSettingSavePath))
+                DLog.Warning("UIRuntimeSetting已存在：" + UIRootSavePath);
+            
+            string foldPath = UIRuntimeSettingSavePath.Substring(0, UIRuntimeSettingSavePath.LastIndexOf('/'));
+            if (!Directory.Exists(foldPath))
+                Directory.CreateDirectory(foldPath);
+            
+            UIRuntimeSetting runtimeSetting = ScriptableObject.CreateInstance<UIRuntimeSetting>();
+            AssetDatabase.CreateAsset(runtimeSetting, UIRuntimeSettingSavePath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            Selection.activeObject = runtimeSetting;
+            EditorGUIUtility.PingObject(runtimeSetting);
         }
 
         private static GameObject CreateUIRootObj()
