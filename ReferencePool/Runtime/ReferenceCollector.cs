@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFramework.ReferencePool.Runtime
 {
-    internal class ReferenceCollector
+    public class ReferenceCollector
     {
         private readonly Stack<IReferenceRelease> _releases;
 
