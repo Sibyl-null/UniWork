@@ -1,5 +1,5 @@
 {
-    "name": "SFramework.EditorTool.Editor",
+    "name": "SFramework.Utility.Editor",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [
