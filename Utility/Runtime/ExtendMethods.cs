@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SFramework.Utility
+namespace SFramework.Utility.Runtime
 {
     public static class ExtendMethods
     {

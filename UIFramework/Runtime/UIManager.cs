@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SFramework.UIFramework.Runtime.Scheduler;
-using SFramework.Utility;
+using SFramework.Utility.Runtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
