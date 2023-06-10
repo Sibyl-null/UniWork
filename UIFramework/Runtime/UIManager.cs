@@ -11,12 +11,16 @@ namespace SFramework.UIFramework.Runtime
     {
         private static UIManager _instance;
         private static UIManagerBaseAgent _agent;
-        
-        private readonly Dictionary<UIEnumBaseType, UIInfo> _infos = new();
-        private readonly Dictionary<UIEnumBaseType, UIBaseCtrl> _instantiatedCtrls = new();
-        private readonly Dictionary<int, Transform> _bucketTrans = new();
 
-        private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
+        private readonly Dictionary<UIEnumBaseType, UIInfo> _infos = 
+            new Dictionary<UIEnumBaseType, UIInfo>();
+        private readonly Dictionary<UIEnumBaseType, UIBaseCtrl> _instantiatedCtrls =
+            new Dictionary<UIEnumBaseType, UIBaseCtrl>();
+        private readonly Dictionary<int, Transform> _bucketTrans = 
+            new Dictionary<int, Transform>();
+
+        private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = 
+            new Dictionary<UIScheduleMode, UIBaseScheduler>()
         {
             { UIScheduleMode.Normal, new UINormalScheduler() },
             { UIScheduleMode.Queue, new UIQueueScheduler() },

@@ -6,7 +6,9 @@ namespace SFramework.ReferencePool.Runtime
     public static class ReferencePool
     {
         public static int InitCapacity = 30;
-        private static readonly Dictionary<Type, ReferenceCollector> _collectors = new();
+
+        private static readonly Dictionary<Type, ReferenceCollector> _collectors =
+            new Dictionary<Type, ReferenceCollector>();
 
         public static T Spawn<T>() where T : class, IReferenceRelease, new()
         {
