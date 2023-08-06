@@ -57,7 +57,7 @@ namespace SFramework.UIFramework.Editor
         public static void CreateUIRuntimeSetting()
         {
             if (File.Exists(UIRuntimeSettingSavePath))
-                DLog.Warning("UIRuntimeSetting已存在：" + UIRootSavePath);
+                DLog.Warning("UIRuntimeSetting已存在：" + UIRuntimeSettingSavePath);
             
             string foldPath = UIRuntimeSettingSavePath.Substring(0, UIRuntimeSettingSavePath.LastIndexOf('/'));
             if (!Directory.Exists(foldPath))
