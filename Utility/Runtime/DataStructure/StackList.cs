@@ -57,7 +57,7 @@ namespace SFramework.Utility.Runtime.DataStructure
             _list.Remove(value);
         }
 
-        public bool Container(T value)
+        public bool Contains(T value)
         {
             return _list.Contains(value);
         }
