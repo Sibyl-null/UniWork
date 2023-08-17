@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using SFramework.Utility.Runtime.DataStructure;
 
 namespace SFramework.UIFramework.Runtime.Scheduler
 {
     internal sealed class UIStackScheduler : UIBaseScheduler
     {
-        private readonly Stack<UIEnumBaseType> _uiStack = new Stack<UIEnumBaseType>();
+        private readonly StackList<UIEnumBaseType> _uiStack = new StackList<UIEnumBaseType>();
         internal bool IsEmpty => _uiStack.Count == 0;
         
         internal override void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
         {
+            // 约定（保证）栈顶的元素一定是显示的
             UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiEnumType);
             if (ctrl != null && ctrl.IsShow)
                 return;
@@ -16,6 +17,10 @@ namespace SFramework.UIFramework.Runtime.Scheduler
             if (_uiStack.Count > 0)
                 UIManager.Instance.HideUIInternal(_uiStack.Peek());
             
+            // 若要打开的是非栈顶元素，先从栈中移除，防止重复进栈。
+            if (_uiStack.Contains(uiEnumType))
+                _uiStack.Remove(uiEnumType);
+                
             _uiStack.Push(uiEnumType);
             UIManager.Instance.ShowUIInternal(uiEnumType, param);
         }
@@ -29,7 +34,11 @@ namespace SFramework.UIFramework.Runtime.Scheduler
         internal override void DestroyUI(UIEnumBaseType uiEnumType)
         {
             UIManager.Instance.DestroyUIInternal(uiEnumType);
-            TryShowNextStackUI(uiEnumType);
+            
+            if (_uiStack.Count > 0 && _uiStack.Peek() != uiEnumType)
+                _uiStack.Remove(uiEnumType);
+            else
+                TryShowNextStackUI(uiEnumType);
         }
 
         internal void EscapeUI()
