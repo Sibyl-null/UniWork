@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SFramework.Utility.Runtime.DataStructure
 {
-    public sealed class StackList<T>
+    public sealed class StackList<T> : IEnumerable<T>
     {
         private List<T> _list = new List<T>();
 
@@ -60,6 +61,18 @@ namespace SFramework.Utility.Runtime.DataStructure
         public bool Contains(T value)
         {
             return _list.Contains(value);
+        }
+
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = _list.Count - 1; i >= 0; --i)
+                yield return _list[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
