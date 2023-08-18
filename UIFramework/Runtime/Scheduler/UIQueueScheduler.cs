@@ -6,6 +6,8 @@ namespace SFramework.UIFramework.Runtime.Scheduler
     internal sealed class UIQueueScheduler : UIBaseScheduler
     {
         private readonly Queue<UIEnumBaseType> _uiQueue = new Queue<UIEnumBaseType>();
+
+        internal Queue<UIEnumBaseType> UiQueue => _uiQueue;
         internal bool IsEmpty => _uiQueue.Count == 0;
         
         internal override void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)

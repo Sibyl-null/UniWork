@@ -5,8 +5,10 @@ namespace SFramework.UIFramework.Runtime.Scheduler
     internal sealed class UIStackScheduler : UIBaseScheduler
     {
         private readonly StackList<UIEnumBaseType> _uiStack = new StackList<UIEnumBaseType>();
-        internal bool IsEmpty => _uiStack.Count == 0;
         
+        internal StackList<UIEnumBaseType> UiStack => _uiStack;
+        internal bool IsEmpty => _uiStack.Count == 0;
+
         internal override void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
         {
             // 约定（保证）栈顶的元素一定是显示的
