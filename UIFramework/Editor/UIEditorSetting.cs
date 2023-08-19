@@ -28,17 +28,17 @@ namespace SFramework.UIFramework.Editor
 
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()
         {
-            new AutoBindData("txt_", nameof(Text)),
-            new AutoBindData("txt_", nameof(TextMeshProUGUI)),
-            new AutoBindData("btn_", nameof(Button)),
-            new AutoBindData("img_", nameof(Image)),
-            new AutoBindData("rawImg_", nameof(RawImage)),
-            new AutoBindData("trans_", nameof(RectTransform)),
-            new AutoBindData("go_", nameof(GameObject)),
-            new AutoBindData("sv_", nameof(ScrollRect)),
-            new AutoBindData("input_", nameof(InputField)),
-            new AutoBindData("cg_", nameof(CanvasGroup)),
-            new AutoBindData("dp_", nameof(Dropdown))
+            new AutoBindData("txt", nameof(Text)),
+            new AutoBindData("txt", nameof(TextMeshProUGUI)),
+            new AutoBindData("btn", nameof(Button)),
+            new AutoBindData("img", nameof(Image)),
+            new AutoBindData("rawImg", nameof(RawImage)),
+            new AutoBindData("trans", nameof(RectTransform)),
+            new AutoBindData("go", nameof(GameObject)),
+            new AutoBindData("sv", nameof(ScrollRect)),
+            new AutoBindData("input", nameof(InputField)),
+            new AutoBindData("cg", nameof(CanvasGroup)),
+            new AutoBindData("dp", nameof(Dropdown))
         };
     }
 }
