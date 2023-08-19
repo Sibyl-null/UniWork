@@ -6,6 +6,7 @@ using System.Text;
 using SFramework.UIFramework.Runtime;
 using SFramework.Utility.Runtime;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -163,6 +164,7 @@ namespace SFramework.UIFramework.Editor
         // ---------------------------------------------------------------
 
         private const int MenuItemPriority = 100;
+        private const string AutoGenScriptNameKey = "AutoGenScriptName";
         
         [MenuItem("Assets/创建UITemplate模板", false, MenuItemPriority)]
         public static void CreateUITemplate()
@@ -309,6 +311,33 @@ namespace SFramework.UIFramework.Editor
             
             AssetDatabase.Refresh();
             DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
+            
+            // 4. 脚本挂载
+            EditorPrefs.SetString(AutoGenScriptNameKey, $"{selectedObject.name}View");
+        }
+
+        [DidReloadScripts]
+        private static void AutoAddComponent()
+        {
+            GameObject prefab = Selection.activeObject as GameObject;
+            string scriptName = EditorPrefs.GetString(AutoGenScriptNameKey, "");
+
+            if (string.IsNullOrEmpty(scriptName) || prefab == null ||
+                prefab.name != scriptName.Substring(0, scriptName.Length - 4))
+                return;
+            
+            UIEditorSetting editorSetting =
+                AssetDatabase.LoadAssetAtPath<UIEditorSetting>(UIEditorSettingDefaultSavePath);
+            string scriptPath = Path.Combine(editorSetting.codeFileSavePath, scriptName + ".cs");
+
+            Type scriptType = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptPath).GetClass();
+            if (prefab.GetComponent(scriptType) == null)
+                prefab.AddComponent(scriptType);
+            PrefabUtility.SavePrefabAsset(prefab);
+            AssetDatabase.Refresh();
+
+            EditorPrefs.SetString(AutoGenScriptNameKey, "");
+            DLog.Info($"脚本添加成功: {scriptName}.cs");
         }
 
         private static void GetAllChildGameObjects(Transform parent, ref List<GameObject> result)
