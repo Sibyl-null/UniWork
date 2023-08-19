@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using SFramework.UIFramework.Runtime;
 using SFramework.Utility.Runtime;
@@ -240,8 +241,9 @@ namespace SFramework.UIFramework.Editor
 
             // 2. 数据收集
             HashSet<string> namespaceSet = new HashSet<string> { "SFramework.UIFramework.Runtime" };
-            HashSet<string> goNameSet = new HashSet<string>();
-            List<(string typeName, string goName)> fieldList = new List<(string, string)>();
+            Dictionary<string, string> goNamePathMap = new Dictionary<string, string>();
+            List<(string typeName, string fieldName, string goName)> fieldList =
+                new List<(string typeName, string fieldName, string goName)>();
 
             List<GameObject> childList = new List<GameObject>();
             GetAllChildGameObjects(selectedObject.transform, ref childList);
@@ -256,9 +258,9 @@ namespace SFramework.UIFramework.Editor
                 if (childObj.CompareTag(AutoBindTag) == false)
                     continue;
 
-                if (goNameSet.Contains(childObj.name))
+                if (goNamePathMap.ContainsKey(childObj.name))
                     throw new Exception("[自动生成UIView代码]: 存在对象重名 " + childObj.name);
-                goNameSet.Add(childObj.name);
+                goNamePathMap.Add(childObj.name, GetChildFindPath(childObj.transform));
 
                 Component[] components = childObj.GetComponents<Component>();
                 foreach (Component component in components)
@@ -267,7 +269,7 @@ namespace SFramework.UIFramework.Editor
                                  .Where(bindData => bindData.componentName == component.GetType().Name))
                     {
                         namespaceSet.Add(component.GetType().Namespace);
-                        fieldList.Add((autoBindData.componentName, autoBindData.prefix + childObj.name));
+                        fieldList.Add((autoBindData.componentName, autoBindData.prefix + childObj.name, childObj.name));
                         break;
                     }
                 }
@@ -275,13 +277,19 @@ namespace SFramework.UIFramework.Editor
                 if (shouldBindGameObject)
                 {
                     namespaceSet.Add(typeof(GameObject).Namespace);
-                    fieldList.Add((nameof(GameObject), gameObjectBindData[0].prefix + childObj.name));
+                    fieldList.Add((nameof(GameObject), gameObjectBindData[0].prefix + childObj.name, childObj.name));
                 }
             }
             
             // 3. 代码生成
             StringBuilder sb = new StringBuilder();
-
+            
+            // generate code info
+            sb.AppendLine($"// Auto generate at {DateTime.Now.Date}");
+            sb.AppendLine("// please do not modify this file");
+            sb.AppendLine();
+            
+            // namespace
             foreach (string space in namespaceSet)
                 sb.AppendLine($"using {space};");
             sb.AppendLine();
@@ -292,18 +300,38 @@ namespace SFramework.UIFramework.Editor
                 sb.AppendLine("{");
             }
 
+            // class name
             sb.AppendLine($"\tpublic partial class {selectedObject.name}View : UIBaseView");
-            
             sb.AppendLine("\t{");
-            foreach (var tuple in fieldList)
-                sb.AppendLine($"\t\tpublic {tuple.typeName} {tuple.goName};");
-            sb.AppendLine("\t}");
             
+            // field
+            foreach (var tuple in fieldList)
+                sb.AppendLine($"\t\tpublic {tuple.typeName} {tuple.fieldName};");
+
+            // bind method
+            sb.AppendLine();
+            sb.AppendLine("\t\t// only editor use");
+            sb.AppendLine("\t\tprivate void BindComponent()");
+            sb.AppendLine("\t\t{");
+            
+            foreach (var p in goNamePathMap)
+                sb.AppendLine($"\t\t\tvar {p.Key} = transform.Find(\"{p.Value}\");");
+            sb.AppendLine();
+            foreach (var tuple in fieldList)
+            {
+                sb.AppendLine(tuple.typeName != nameof(GameObject)
+                    ? $"\t\t\t{tuple.fieldName} = {tuple.goName}.GetComponent<{tuple.typeName}>();"
+                    : $"\t\t\t{tuple.fieldName} = {tuple.goName}.gameObject;");
+            }
+
+            sb.AppendLine("\t\t}");
+
+            // end
+            sb.AppendLine("\t}");
             if (string.IsNullOrEmpty(editorSetting.codeNamespace) == false)
                 sb.AppendLine("}");
 
             string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{selectedObject.name}View.cs");
-            
             if (Directory.Exists(editorSetting.codeFileSavePath) == false)
                 Directory.CreateDirectory(editorSetting.codeFileSavePath);
             
@@ -312,7 +340,7 @@ namespace SFramework.UIFramework.Editor
             AssetDatabase.Refresh();
             DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
             
-            // 4. 脚本挂载
+            // 4. 脚本挂载并绑定
             EditorPrefs.SetString(AutoGenScriptNameKey, $"{selectedObject.name}View");
         }
 
@@ -333,6 +361,12 @@ namespace SFramework.UIFramework.Editor
             Type scriptType = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptPath).GetClass();
             if (prefab.GetComponent(scriptType) == null)
                 prefab.AddComponent(scriptType);
+
+            Component component = prefab.GetComponent(scriptType);
+            MethodInfo methodInfo =
+                scriptType.GetMethod("BindComponent", BindingFlags.Instance | BindingFlags.NonPublic);
+            methodInfo.Invoke(component, new object[] { });
+
             PrefabUtility.SavePrefabAsset(prefab);
             AssetDatabase.Refresh();
 
@@ -345,6 +379,19 @@ namespace SFramework.UIFramework.Editor
             result.Add(parent.gameObject);
             foreach (Transform childTrans in parent)
                 GetAllChildGameObjects(childTrans, ref result);
+        }
+
+        private static string GetChildFindPath(Transform child)
+        {
+            string findPath = child.name;
+            
+            while (child.parent != null && child.parent.parent != null)
+            {
+                child = child.parent;
+                findPath = child.name + "/" + findPath;
+            }
+
+            return findPath;
         }
     }
 }
