@@ -185,9 +185,17 @@ namespace SFramework.UIFramework.Editor
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.referenceResolution = new Vector2(runtimeSetting.width, runtimeSetting.height);
             scaler.matchWidthOrHeight = runtimeSetting.match;
-
-            uiTemplate.AddComponent<GraphicRaycaster>();
             
+            uiTemplate.AddComponent<GraphicRaycaster>();
+
+            GameObject contentObj = new GameObject("Content");
+            RectTransform contentTrans = contentObj.AddComponent<RectTransform>();
+            contentTrans.SetParent(uiTemplate.transform);
+            contentTrans.offsetMin = Vector2.zero;
+            contentTrans.offsetMax = Vector2.zero;
+            contentTrans.anchorMin = Vector2.zero;
+            contentTrans.anchorMax = Vector2.one;
+
             // save as prefab
             GameObject prefabAsset =
                 PrefabUtility.SaveAsPrefabAsset(uiTemplate, Path.Combine(savePath, "ZTemplateUI.prefab"));
@@ -198,13 +206,6 @@ namespace SFramework.UIFramework.Editor
             EditorGUIUtility.PingObject(prefabAsset);
         }
 
-        // [MenuItem("Assets/自动生成UIView代码", false, MenuItemPriority)]
-        // public static void GenerateUIViewCode()
-        // {
-        //     string path = GetSelectedPath();
-        //     DLog.Info(path);
-        // }
-
         private static string GetSelectedPath()
         {
             string selectedPath = "";
@@ -213,6 +214,26 @@ namespace SFramework.UIFramework.Editor
                 selectedPath = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
             
             return selectedPath;
+        }
+        
+        [MenuItem("Assets/自动生成UIView代码", false, MenuItemPriority)]
+        public static void GenerateUIViewCode()
+        {
+            string selectedPath = GetSelectedPath();
+            if (selectedPath == "" || File.Exists(selectedPath) == false)
+            {
+                DLog.Warning("[自动生成UIView代码]: 请选择一个Prefab");
+                return;
+            }
+
+            GameObject selectedObject = AssetDatabase.LoadAssetAtPath<GameObject>(selectedPath);
+            if (selectedObject == null)
+            {
+                DLog.Warning("[自动生成UIView代码]: 请选择一个Prefab");
+                return;
+            }
+            
+            
         }
     }
 }
