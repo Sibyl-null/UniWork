@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using SFramework.UIFramework.Runtime;
 using SFramework.Utility.Runtime;
 using UnityEditor;
@@ -165,11 +169,8 @@ namespace SFramework.UIFramework.Editor
         {
             string savePath = GetSelectedPath();
             if (savePath == "" || Directory.Exists(savePath) == false)
-            {
-                DLog.Warning("[CreateUITemplate]: 请选择一个文件夹");
-                return;
-            }
-            
+                throw new Exception("[CreateUITemplate]: 请选择一个文件夹");
+
             // create gameObject
             GameObject uiTemplate = new GameObject("ZTemplateUI");
             uiTemplate.layer = LayerMask.NameToLayer("UI");
@@ -219,21 +220,102 @@ namespace SFramework.UIFramework.Editor
         [MenuItem("Assets/自动生成UIView代码", false, MenuItemPriority)]
         public static void GenerateUIViewCode()
         {
+            // 1. 非法情况判断
             string selectedPath = GetSelectedPath();
             if (selectedPath == "" || File.Exists(selectedPath) == false)
-            {
-                DLog.Warning("[自动生成UIView代码]: 请选择一个Prefab");
-                return;
-            }
+                throw new Exception("[自动生成UIView代码]: 请选择一个Prefab");
 
             GameObject selectedObject = AssetDatabase.LoadAssetAtPath<GameObject>(selectedPath);
             if (selectedObject == null)
+                throw new Exception("[自动生成UIView代码]: 请选择一个Prefab");
+
+            UIEditorSetting editorSetting =
+                AssetDatabase.LoadAssetAtPath<UIEditorSetting>(UIEditorSettingDefaultSavePath);
+            if (editorSetting == null)
+                throw new Exception("[自动生成UIView代码]: UIEditorSetting 加载失败");
+            if (string.IsNullOrEmpty(editorSetting.codeFileSavePath))
+                throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
+
+            // 2. 数据收集
+            HashSet<string> namespaceSet = new HashSet<string> { "SFramework.UIFramework.Runtime" };
+            HashSet<string> goNameSet = new HashSet<string>();
+            List<(string typeName, string goName)> fieldList = new List<(string, string)>();
+
+            List<GameObject> childList = new List<GameObject>();
+            GetAllChildGameObjects(selectedObject.transform, ref childList);
+
+            var gameObjectBindData =
+                editorSetting.autoBindComponents.Where(bindData => bindData.componentName == nameof(GameObject))
+                    .ToArray();
+            bool shouldBindGameObject = gameObjectBindData.Length > 0;
+
+            foreach (GameObject childObj in childList)
             {
-                DLog.Warning("[自动生成UIView代码]: 请选择一个Prefab");
-                return;
+                if (childObj.CompareTag(AutoBindTag) == false)
+                    continue;
+
+                if (goNameSet.Contains(childObj.name))
+                    throw new Exception("[自动生成UIView代码]: 存在对象重名 " + childObj.name);
+                goNameSet.Add(childObj.name);
+
+                Component[] components = childObj.GetComponents<Component>();
+                foreach (Component component in components)
+                {
+                    foreach (var autoBindData in editorSetting.autoBindComponents
+                                 .Where(bindData => bindData.componentName == component.GetType().Name))
+                    {
+                        namespaceSet.Add(component.GetType().Namespace);
+                        fieldList.Add((autoBindData.componentName, autoBindData.prefix + childObj.name));
+                        break;
+                    }
+                }
+
+                if (shouldBindGameObject)
+                {
+                    namespaceSet.Add(typeof(GameObject).Namespace);
+                    fieldList.Add((nameof(GameObject), gameObjectBindData[0].prefix + childObj.name));
+                }
             }
             
+            // 3. 代码生成
+            StringBuilder sb = new StringBuilder();
+
+            foreach (string space in namespaceSet)
+                sb.AppendLine($"using {space};");
+            sb.AppendLine();
+
+            if (string.IsNullOrEmpty(editorSetting.codeNamespace) == false)
+            {
+                sb.AppendLine($"namespace {editorSetting.codeNamespace}");
+                sb.AppendLine("{");
+            }
+
+            sb.AppendLine($"\tpublic partial class {selectedObject.name}View : UIBaseView");
             
+            sb.AppendLine("\t{");
+            foreach (var tuple in fieldList)
+                sb.AppendLine($"\t\tpublic {tuple.typeName} {tuple.goName};");
+            sb.AppendLine("\t}");
+            
+            if (string.IsNullOrEmpty(editorSetting.codeNamespace) == false)
+                sb.AppendLine("}");
+
+            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{selectedObject.name}View.cs");
+            
+            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
+                Directory.CreateDirectory(editorSetting.codeFileSavePath);
+            
+            File.WriteAllText(savePath, sb.ToString());
+            
+            AssetDatabase.Refresh();
+            DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
+        }
+
+        private static void GetAllChildGameObjects(Transform parent, ref List<GameObject> result)
+        {
+            result.Add(parent.gameObject);
+            foreach (Transform childTrans in parent)
+                GetAllChildGameObjects(childTrans, ref result);
         }
     }
 }
