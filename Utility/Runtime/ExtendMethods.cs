@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace SFramework.Utility.Runtime
 {
@@ -12,6 +13,12 @@ namespace SFramework.Utility.Runtime
                 t = obj.AddComponent<T>();
             
             return t;
+        }
+
+        public static void DLogArrayInfos(this Array arr)
+        {
+            foreach (object o in arr)
+                DLog.Info(o.ToString());
         }
     }
 }
