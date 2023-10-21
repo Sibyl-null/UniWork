@@ -1,6 +1,6 @@
 using System;
 
-namespace SFramework.SEvent.Runtime
+namespace SEvent.Runtime
 {
     public abstract class SEventBase
     {
