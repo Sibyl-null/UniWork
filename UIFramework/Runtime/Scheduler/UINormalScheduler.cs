@@ -1,4 +1,4 @@
-﻿namespace UIFramework.Runtime.Scheduler
+﻿namespace SFramework.UIFramework.Runtime.Scheduler
 {
     internal sealed class UINormalScheduler : UIBaseScheduler
     {

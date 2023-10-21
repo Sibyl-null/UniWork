@@ -4,17 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using SFramework.UIFramework.Runtime;
 using SFramework.Utility.Runtime;
-using UIFramework.Runtime;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UIFramework.Editor
+namespace SFramework.UIFramework.Editor
 {
-    public static class UIEditor
+    public class UIEditor
     {
         // ---------------------------------------------------------------
         // 初始化资源
@@ -231,7 +231,7 @@ namespace UIFramework.Editor
                 throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
 
             // 2. 数据收集
-            HashSet<string> namespaceSet = new HashSet<string> { "UIFramework.Runtime" };
+            HashSet<string> namespaceSet = new HashSet<string> { "SFramework.UIFramework.Runtime" };
             Dictionary<string, string> goNamePathMap = new Dictionary<string, string>();
             List<(string typeName, string fieldName, string goName)> fieldList =
                 new List<(string typeName, string fieldName, string goName)>();

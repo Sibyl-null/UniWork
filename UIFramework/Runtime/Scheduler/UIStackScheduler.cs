@@ -1,6 +1,6 @@
 ﻿using SFramework.Utility.Runtime.DataStructure;
 
-namespace UIFramework.Runtime.Scheduler
+namespace SFramework.UIFramework.Runtime.Scheduler
 {
     internal sealed class UIStackScheduler : UIBaseScheduler
     {
