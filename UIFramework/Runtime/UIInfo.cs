@@ -1,5 +1,5 @@
 ﻿using System;
-using SFramework.Utility.Runtime;
+using Utility.Runtime;
 
 namespace UIFramework.Runtime
 {

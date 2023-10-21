@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SFramework.Utility.Runtime.DataStructure
+namespace Utility.Runtime.DataStructure
 {
     public sealed class StackList<T> : IEnumerable<T>
     {

@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SFramework.Utility.Editor
+namespace Utility.Editor
 {
     public static class EditorTool
     {

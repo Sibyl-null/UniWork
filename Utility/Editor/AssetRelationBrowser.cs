@@ -5,7 +5,7 @@ using System.Linq;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 
-namespace SFramework.Utility.Editor
+namespace Utility.Editor
 {
     public class AssetRelationBrowser : OdinEditorWindow
     {

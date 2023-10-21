@@ -1,4 +1,4 @@
-﻿using SFramework.Utility.Runtime.DataStructure;
+﻿using Utility.Runtime.DataStructure;
 
 namespace UIFramework.Runtime.Scheduler
 {
