@@ -1,6 +1,5 @@
 ﻿using UIFramework.Runtime.Scheduler;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UIFramework.Runtime
 {
@@ -14,28 +13,30 @@ namespace UIFramework.Runtime
         {
             _uiView = view;
             Info = info;
-            
+
+            SetUIScale();
             SetUIRenderLayer();
-            SetUIScaler();
             
             OnCreate();
+        }
+
+        private void SetUIScale()
+        {
+            RectTransform rectTrans = _uiView.GetComponent<RectTransform>();
+            rectTrans.pivot = 0.5f * Vector2.one;
+            rectTrans.localScale = Vector3.one;
+            rectTrans.offsetMin = Vector2.zero;
+            rectTrans.offsetMax = Vector2.zero;
+            rectTrans.anchorMin = Vector2.zero;
+            rectTrans.anchorMax = Vector2.one;
         }
 
         private void SetUIRenderLayer()
         {
             _uiView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
             _uiView.UICanvas.worldCamera = UIManager.Instance.UICamera;
+            _uiView.UICanvas.overrideSorting = true;
             _uiView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
-        }
-
-        private void SetUIScaler()
-        {
-            UIRuntimeSetting runtimeSetting = UIManager.Instance.RuntimeSetting;
-            
-            _uiView.UIScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            _uiView.UIScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            _uiView.UIScaler.referenceResolution = new Vector2(runtimeSetting.width, runtimeSetting.height);
-            _uiView.UIScaler.matchWidthOrHeight = runtimeSetting.match;
         }
 
         /*

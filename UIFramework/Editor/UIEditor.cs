@@ -180,15 +180,6 @@ namespace UIFramework.Editor
 
             Canvas canvas = uiTemplate.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
-
-            CanvasScaler scaler = uiTemplate.AddComponent<CanvasScaler>();
-            UIRuntimeSetting runtimeSetting =
-                AssetDatabase.LoadAssetAtPath<UIRuntimeSetting>(UIRuntimeSettingDefaultSavePath);
-            
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.referenceResolution = new Vector2(runtimeSetting.width, runtimeSetting.height);
-            scaler.matchWidthOrHeight = runtimeSetting.match;
             
             uiTemplate.AddComponent<GraphicRaycaster>();
 

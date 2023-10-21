@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using UIFramework.Runtime.Scheduler;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UIFramework.Runtime
 {
@@ -51,6 +52,7 @@ namespace UIFramework.Runtime
             
             _agent = agent;
             GameObject obj = Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
+            obj.layer = LayerMask.NameToLayer("UI");
             DontDestroyOnLoad(obj);
             
             _instance = obj.GetOrAddComponent<UIManager>();
@@ -80,7 +82,20 @@ namespace UIFramework.Runtime
             foreach (UIEnumBaseLayer baseLayer in layers)
             {
                 GameObject bucketObj = new GameObject(baseLayer.value);
+                bucketObj.layer = LayerMask.NameToLayer("UI");
                 bucketObj.transform.SetParent(this.transform, false);
+
+                Canvas bucketCanvas = bucketObj.AddComponent<Canvas>();
+                bucketCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                bucketCanvas.worldCamera = UICamera;
+                bucketCanvas.sortingOrder = baseLayer.key;
+
+                CanvasScaler bucketScaler = bucketObj.AddComponent<CanvasScaler>();
+                bucketScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                bucketScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+                bucketScaler.referenceResolution = new Vector2(RuntimeSetting.width, RuntimeSetting.height);
+                bucketScaler.matchWidthOrHeight = RuntimeSetting.match;
+
                 _bucketTrans.Add(baseLayer.key, bucketObj.transform);
             }
         }
