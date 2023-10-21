@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
-namespace Utility.Runtime
+namespace SFramework.Utility.Runtime
 {
     public static class DLog
     {

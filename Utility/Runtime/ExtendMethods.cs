@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Utility.Runtime
+namespace SFramework.Utility.Runtime
 {
     public static class ExtendMethods
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Utility.Runtime
+namespace SFramework.Utility.Runtime
 {
     public abstract class EnumBaseType<T> where T : EnumBaseType<T>
     {

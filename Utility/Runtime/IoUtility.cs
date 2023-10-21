@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace Utility.Runtime
+namespace SFramework.Utility.Runtime
 {
     public static class IoUtility
     {
