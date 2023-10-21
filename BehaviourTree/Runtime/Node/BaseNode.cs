@@ -15,10 +15,10 @@ namespace SFramework.BehaviourTree.Runtime.Node
         public State curState = State.Free;
         public BaseNode parentNode;
 
-        protected abstract void AddChild(BaseNode child);
-        protected abstract void RemoveChild(BaseNode child);
-        protected abstract void ClearChildren();
-        protected abstract void ForeachChildren(Action<BaseNode> action);
+        public abstract void AddChild(BaseNode child);
+        public abstract void RemoveChild(BaseNode child);
+        public abstract void ClearChildren();
+        public abstract void ForeachChildren(Action<BaseNode> action);
 
         public void Start()
         {

@@ -11,21 +11,21 @@ namespace SFramework.BehaviourTree.Runtime.Node.Action
             Error
         }
 
-        private LogLevel _level = LogLevel.Info;
-        private string _log;
+        public LogLevel logLevel = LogLevel.Info;
+        public string logStr;
         
         protected override void OnStart()
         {
-            switch (_level)
+            switch (logLevel)
             {
                 case LogLevel.Info:
-                    DLog.Info(_log);
+                    DLog.Info(logStr);
                     break;
                 case LogLevel.Warning:
-                    DLog.Warning(_log);
+                    DLog.Warning(logStr);
                     break;
                 case LogLevel.Error:
-                    DLog.Error(_log);
+                    DLog.Error(logStr);
                     break;
             }
             

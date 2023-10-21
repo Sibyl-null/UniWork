@@ -7,19 +7,19 @@ namespace SFramework.BehaviourTree.Runtime.Node.Action
     /// </summary>
     public abstract class BaseActionNode : BaseNode
     {
-        protected sealed override void AddChild(BaseNode child)
+        public sealed override void AddChild(BaseNode child)
         {
         }
 
-        protected sealed override void RemoveChild(BaseNode child)
+        public sealed override void RemoveChild(BaseNode child)
         {
         }
 
-        protected sealed override void ClearChildren()
+        public sealed override void ClearChildren()
         {
         }
 
-        protected sealed override void ForeachChildren(Action<BaseNode> action)
+        public sealed override void ForeachChildren(Action<BaseNode> action)
         {
         }
 

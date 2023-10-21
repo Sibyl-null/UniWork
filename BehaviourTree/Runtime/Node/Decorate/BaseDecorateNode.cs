@@ -9,7 +9,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Decorate
     {
         protected BaseNode _child;
 
-        protected override void AddChild(BaseNode child)
+        public override void AddChild(BaseNode child)
         {
             if (child == null || _child == child)
                 return;
@@ -21,7 +21,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Decorate
             _child = child;
         }
 
-        protected override void RemoveChild(BaseNode child)
+        public override void RemoveChild(BaseNode child)
         {
             if (child == null || child != _child)
                 return;
@@ -30,12 +30,12 @@ namespace SFramework.BehaviourTree.Runtime.Node.Decorate
             _child = null;
         }
 
-        protected override void ClearChildren()
+        public override void ClearChildren()
         {
             RemoveChild(_child);
         }
 
-        protected override void ForeachChildren(Action<BaseNode> action)
+        public override void ForeachChildren(Action<BaseNode> action)
         {
             if (_child == null || action == null)
                 return;

@@ -10,7 +10,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
     {
         protected readonly List<BaseNode> _children = new List<BaseNode>();
 
-        protected override void AddChild(BaseNode child)
+        public override void AddChild(BaseNode child)
         {
             if (child == null)
                 return;
@@ -19,7 +19,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
             _children.Add(child);
         }
 
-        protected override void RemoveChild(BaseNode child)
+        public override void RemoveChild(BaseNode child)
         {
             if (child == null || !_children.Contains(child))
                 return;
@@ -28,13 +28,13 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
             _children.Remove(child);
         }
 
-        protected override void ClearChildren()
+        public override void ClearChildren()
         {
             for (int i = _children.Count - 1; i >= 0; --i)
                 RemoveChild(_children[i]);
         }
 
-        protected override void ForeachChildren(Action<BaseNode> action)
+        public override void ForeachChildren(Action<BaseNode> action)
         {
             if (action == null || _children.Count == 0)
                 return;

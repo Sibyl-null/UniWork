@@ -5,11 +5,11 @@ namespace SFramework.BehaviourTree.Runtime.Node.Action
 {
     public class DelayNode : BaseActionNode
     {
-        private float _delayTime;
+        public float delayTime;
         
         protected override void OnStart()
         {
-            DelayTime(_delayTime).Forget();
+            DelayTime(delayTime).Forget();
         }
 
         protected override void OnCancel()
