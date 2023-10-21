@@ -2,6 +2,7 @@
 
 namespace SFramework.BehaviourTree.Runtime.Node
 {
+    [Serializable]
     public abstract class BaseNode
     {
         public enum State
@@ -12,14 +13,27 @@ namespace SFramework.BehaviourTree.Runtime.Node
             Failed      // 失败
         }
 
-        public State curState = State.Free;
-        public BaseNode parentNode;
+        public int id;
 
+        [NonSerialized] public BehaviourTree owner;
+        [NonSerialized] public State curState = State.Free;
+        [NonSerialized] public BaseNode parentNode;
+
+        
+        // -----------------------------------------------------------------
+        // 节点操作
+        // -----------------------------------------------------------------
+        
         public abstract void AddChild(BaseNode child);
         public abstract void RemoveChild(BaseNode child);
         public abstract void ClearChildren();
         public abstract void ForeachChildren(Action<BaseNode> action);
 
+        
+        // -----------------------------------------------------------------
+        // 生命周期
+        // -----------------------------------------------------------------
+        
         public void Start()
         {
             if (curState == State.Running)
@@ -45,10 +59,25 @@ namespace SFramework.BehaviourTree.Runtime.Node
             parentNode?.OnChildFinished(this, success);
         }
 
+        public virtual void OnBehaviourTreeStart()
+        {
+            curState = State.Free;
+        }
+
         protected abstract void OnStart();
         protected abstract void OnCancel();
         protected abstract void OnChildFinished(BaseNode child, bool success);
+        
+        
+        // -----------------------------------------------------------------
+        // 序列化支持
+        // -----------------------------------------------------------------
 
+        public abstract void RebuildChildrenId();
+        public abstract void RebuildNodeReference();
+        
+        // -----------------------------------------------------------------
+        
         public override string ToString()
         {
             return GetType().Name;

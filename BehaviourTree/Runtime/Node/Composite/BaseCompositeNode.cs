@@ -6,9 +6,12 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
     /// <summary>
     /// 复合节点基类
     /// </summary>
+    [Serializable]
     public abstract class BaseCompositeNode : BaseNode
     {
-        protected readonly List<BaseNode> _children = new List<BaseNode>();
+        public List<int> childrenIds = new List<int>();
+        
+        [NonSerialized] protected readonly List<BaseNode> _children = new List<BaseNode>();
 
         public override void AddChild(BaseNode child)
         {
@@ -41,6 +44,25 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
             
             foreach (BaseNode child in _children)
                 action.Invoke(child);
+        }
+        
+        // ----------------------------------------------------------------
+
+        public override void RebuildChildrenId()
+        {
+            childrenIds.Clear();
+            foreach (BaseNode node in _children)
+                childrenIds.Add(node.id);                
+        }
+
+        public override void RebuildNodeReference()
+        {
+            _children.Clear();
+            foreach (int childId in childrenIds)
+            {
+                if (childId != 0)
+                    AddChild(owner.GetNode(childId));
+            }
         }
     }
 }

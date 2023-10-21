@@ -5,9 +5,12 @@ namespace SFramework.BehaviourTree.Runtime.Node.Decorate
     /// <summary>
     /// 装饰节点基类
     /// </summary>
+    [Serializable]
     public abstract class BaseDecorateNode : BaseNode
     {
-        protected BaseNode _child;
+        public int childId;
+        
+        [NonSerialized] protected BaseNode _child;
 
         public override void AddChild(BaseNode child)
         {
@@ -43,6 +46,8 @@ namespace SFramework.BehaviourTree.Runtime.Node.Decorate
             action.Invoke(_child);
         }
 
+        // ----------------------------------------------------------------
+        
         protected override void OnStart()
         {
             _child?.Start();
@@ -56,6 +61,20 @@ namespace SFramework.BehaviourTree.Runtime.Node.Decorate
         protected override void OnChildFinished(BaseNode child, bool success)
         {
             Finish(success);
+        }
+        
+        // ----------------------------------------------------------------
+
+        public override void RebuildChildrenId()
+        {
+            if (_child != null)
+                childId = _child.id;
+        }
+
+        public override void RebuildNodeReference()
+        {
+            if (childId != 0)
+                AddChild(owner.GetNode(childId));
         }
     }
 }

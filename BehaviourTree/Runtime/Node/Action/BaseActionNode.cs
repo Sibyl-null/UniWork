@@ -22,8 +22,20 @@ namespace SFramework.BehaviourTree.Runtime.Node.Action
         public sealed override void ForeachChildren(Action<BaseNode> action)
         {
         }
+        
+        // ----------------------------------------------------------------
 
         protected sealed override void OnChildFinished(BaseNode child, bool success)
+        {
+        }
+        
+        // ----------------------------------------------------------------
+
+        public sealed override void RebuildChildrenId()
+        {
+        }
+
+        public sealed override void RebuildNodeReference()
         {
         }
     }
