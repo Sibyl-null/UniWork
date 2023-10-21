@@ -1,8 +1,8 @@
-﻿using SFramework.UIFramework.Runtime.Scheduler;
+﻿using UIFramework.Runtime.Scheduler;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SFramework.UIFramework.Runtime
+namespace UIFramework.Runtime
 {
     public abstract class UIBaseCtrl
     {

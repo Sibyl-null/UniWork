@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SFramework.UIFramework.Runtime
+namespace UIFramework.Runtime
 {
     public class UIRuntimeSetting : ScriptableObject
     {

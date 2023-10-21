@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace SFramework.UIFramework.Runtime
+namespace UIFramework.Runtime
 {
     public abstract class UIManagerBaseAgent
     {

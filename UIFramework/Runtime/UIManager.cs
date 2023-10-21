@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SFramework.UIFramework.Runtime.Scheduler;
 using SFramework.Utility.Runtime;
 using Sirenix.OdinInspector;
+using UIFramework.Runtime.Scheduler;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace SFramework.UIFramework.Runtime
+namespace UIFramework.Runtime
 {
     public class UIManager : MonoBehaviour
     {
@@ -69,7 +69,7 @@ namespace SFramework.UIFramework.Runtime
         internal void AddInfo(UIEnumBaseType uiEnumType, UIInfo info)
         {
             if (_infos.ContainsKey(uiEnumType))
-                throw new Exception($"{uiEnumType.ToString()}已注册");
+                throw new Exception($"{uiEnumType}已注册");
             
             _infos.Add(uiEnumType, info);
         }
