@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SFramework.BehaviourTree.Runtime.Node.Composite
 {
     /// <summary>
-    /// 装饰节点基类
+    /// 复合节点基类
     /// </summary>
     public abstract class BaseCompositeNode : BaseNode
     {
@@ -21,7 +21,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
 
         protected override void RemoveChild(BaseNode child)
         {
-            if (child == null)
+            if (child == null || !_children.Contains(child))
                 return;
 
             child.parentNode = null;
@@ -36,7 +36,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
 
         protected override void ForeachChildren(Action<BaseNode> action)
         {
-            if (action == null)
+            if (action == null || _children.Count == 0)
                 return;
             
             foreach (BaseNode child in _children)
