@@ -1,6 +1,6 @@
 ﻿using SFramework.UIFramework.Runtime.Scheduler;
+using SFramework.Utility.Runtime;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SFramework.UIFramework.Runtime
 {
@@ -8,34 +8,31 @@ namespace SFramework.UIFramework.Runtime
     {
         protected UIBaseView _uiView;
         public UIInfo Info { get; private set; }
-        public bool IsShow => _uiView.UICanvas.enabled && _uiView.gameObject.activeSelf;
+        public bool IsShow { get; private set; }
 
         public void Initialize(UIBaseView view, UIInfo info)
         {
             _uiView = view;
             Info = info;
-            
+
+            SetUIScale();
             SetUIRenderLayer();
-            SetUIScaler();
             
             OnCreate();
+        }
+
+        private void SetUIScale()
+        {
+            RectTransform rectTrans = _uiView.GetComponent<RectTransform>();
+            rectTrans.Overspread();
         }
 
         private void SetUIRenderLayer()
         {
             _uiView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
             _uiView.UICanvas.worldCamera = UIManager.Instance.UICamera;
+            _uiView.UICanvas.overrideSorting = true;
             _uiView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
-        }
-
-        private void SetUIScaler()
-        {
-            UIRuntimeSetting runtimeSetting = UIManager.Instance.RuntimeSetting;
-            
-            _uiView.UIScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            _uiView.UIScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            _uiView.UIScaler.referenceResolution = new Vector2(runtimeSetting.width, runtimeSetting.height);
-            _uiView.UIScaler.matchWidthOrHeight = runtimeSetting.match;
         }
 
         /*
@@ -47,15 +44,15 @@ namespace SFramework.UIFramework.Runtime
 
         public virtual void OnShow(UIBaseParameter param = null)
         {
-            _uiView.UICanvas.enabled = true;
-            _uiView.UIRaycaster.enabled = true;
+            _uiView.gameObject.SetActiveByClip(true);
             _uiView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            IsShow = true;
         }
 
         public virtual void OnHide()
         {
-            _uiView.UICanvas.enabled = false;
-            _uiView.UIRaycaster.enabled = false;
+            _uiView.gameObject.SetActiveByClip(false);
+            IsShow = false;
         }
 
         /*
