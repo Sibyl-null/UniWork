@@ -29,7 +29,6 @@ namespace SFramework.UIFramework.Editor
         public static void CreateAll()
         {
             CreateUIRootPrefab();
-            CreateUIRuntimeSetting();
             CreateUIEditorSetting();
             AddAutoFieldTag();
         }
@@ -86,29 +85,6 @@ namespace SFramework.UIFramework.Editor
             eventSystemObj.AddComponent<EventSystem>();
             eventSystemObj.AddComponent<StandaloneInputModule>();
             return eventSystemObj.transform;
-        }
-
-        [MenuItem("SFramework/UIFramework/初始化/创建UIRuntimeSetting")]
-        public static void CreateUIRuntimeSetting()
-        {
-            if (File.Exists(UIRuntimeSettingDefaultSavePath))
-            {
-                DLog.Warning("UIRuntimeSetting已存在：" + UIRuntimeSettingDefaultSavePath);
-                return;
-            }
-
-            string foldPath =
-                UIRuntimeSettingDefaultSavePath.Substring(0, UIRuntimeSettingDefaultSavePath.LastIndexOf('/'));
-            if (!Directory.Exists(foldPath))
-                Directory.CreateDirectory(foldPath);
-            
-            UIRuntimeSetting runtimeSetting = ScriptableObject.CreateInstance<UIRuntimeSetting>();
-            AssetDatabase.CreateAsset(runtimeSetting, UIRuntimeSettingDefaultSavePath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            Selection.activeObject = runtimeSetting;
-            EditorGUIUtility.PingObject(runtimeSetting);
         }
 
         [MenuItem("SFramework/UIFramework/初始化/创建UIEditorSetting")]

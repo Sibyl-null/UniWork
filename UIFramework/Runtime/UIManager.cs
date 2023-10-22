@@ -7,7 +7,6 @@ using SFramework.Utility.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace SFramework.UIFramework.Runtime
 {
@@ -20,8 +19,8 @@ namespace SFramework.UIFramework.Runtime
             new Dictionary<UIEnumBaseType, UIInfo>();
         private readonly Dictionary<UIEnumBaseType, UIBaseCtrl> _instantiatedCtrls =
             new Dictionary<UIEnumBaseType, UIBaseCtrl>();
-        private readonly Dictionary<int, Transform> _bucketTrans = 
-            new Dictionary<int, Transform>();
+        private readonly Dictionary<int, RectTransform> _bucketTrans = 
+            new Dictionary<int, RectTransform>();
 
         private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = 
             new Dictionary<UIScheduleMode, UIBaseScheduler>()
@@ -37,7 +36,6 @@ namespace SFramework.UIFramework.Runtime
         public event Action EscapeEvent;
         public Camera UICamera { get; private set; }
         public int OrderLayerIncrement { get; private set; } = 0;
-        public UIRuntimeSetting RuntimeSetting { get; private set; }
 
         public bool EnableInput
         {
@@ -61,7 +59,6 @@ namespace SFramework.UIFramework.Runtime
 
         private void Initialize()
         {
-            RuntimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
             UICamera = GetComponentInChildren<Camera>();
             _eventSystem = GetComponentInChildren<EventSystem>();
             _agent.InitUIInfo();
@@ -85,18 +82,13 @@ namespace SFramework.UIFramework.Runtime
                 bucketObj.layer = LayerMask.NameToLayer("UI");
                 bucketObj.transform.SetParent(this.transform, false);
 
-                Canvas bucketCanvas = bucketObj.AddComponent<Canvas>();
-                bucketCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-                bucketCanvas.worldCamera = UICamera;
-                bucketCanvas.sortingOrder = baseLayer.key;
+                RectTransform rectTrans = bucketObj.GetOrAddComponent<RectTransform>();
+                rectTrans.offsetMin = Vector2.zero;
+                rectTrans.offsetMax = Vector2.zero;
+                rectTrans.anchorMin = Vector2.zero;
+                rectTrans.anchorMax = Vector2.one;
 
-                CanvasScaler bucketScaler = bucketObj.AddComponent<CanvasScaler>();
-                bucketScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                bucketScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-                bucketScaler.referenceResolution = new Vector2(RuntimeSetting.width, RuntimeSetting.height);
-                bucketScaler.matchWidthOrHeight = RuntimeSetting.match;
-
-                _bucketTrans.Add(baseLayer.key, bucketObj.transform);
+                _bucketTrans.Add(baseLayer.key, rectTrans);
             }
         }
 
