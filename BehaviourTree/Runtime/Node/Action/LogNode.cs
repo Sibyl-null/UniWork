@@ -1,7 +1,9 @@
-﻿using SFramework.Utility.Runtime;
+﻿using SFramework.BehaviourTree.Runtime.Attribute;
+using SFramework.Utility.Runtime;
 
 namespace SFramework.BehaviourTree.Runtime.Node.Action
 {
+    [NodeInfo(name = "日志节点")]
     public class LogNode : BaseActionNode
     {
         public enum LogLevel

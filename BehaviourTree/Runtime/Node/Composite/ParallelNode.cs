@@ -1,8 +1,8 @@
-﻿namespace SFramework.BehaviourTree.Runtime.Node.Composite
+﻿using SFramework.BehaviourTree.Runtime.Attribute;
+
+namespace SFramework.BehaviourTree.Runtime.Node.Composite
 {
-    /// <summary>
-    /// 并行节点（同时运行所有节点，根据设置的并行条件决定此节点如何判断成功/失败）
-    /// </summary>
+    [NodeInfo(name = "并行节点", desc = "同时运行所有节点，根据设置的并行条件决定此节点如何判断成功/失败")]
     public class ParallelNode : BaseCompositeNode
     {
         public enum ParallelCondition

@@ -1,8 +1,8 @@
-﻿namespace SFramework.BehaviourTree.Runtime.Node.Decorate
+﻿using SFramework.BehaviourTree.Runtime.Attribute;
+
+namespace SFramework.BehaviourTree.Runtime.Node.Decorate
 {
-    /// <summary>
-    /// 反转节点（对子节点运行结果取反）
-    /// </summary>
+    [NodeInfo(name = "反转节点", desc = "对子节点运行结果取反")]
     public class InvertNode : BaseDecorateNode
     {
         protected override void OnChildFinished(BaseNode child, bool success)

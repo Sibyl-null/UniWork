@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFramework.BehaviourTree.Runtime.Attribute;
 
 namespace SFramework.BehaviourTree.Runtime.Node.Composite
 {
@@ -7,6 +8,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Composite
     /// 复合节点基类
     /// </summary>
     [Serializable]
+    [ChildCapacityInfo(capacity = ChildCapacity.Multi)]
     public abstract class BaseCompositeNode : BaseNode
     {
         public List<int> childrenIds = new List<int>();

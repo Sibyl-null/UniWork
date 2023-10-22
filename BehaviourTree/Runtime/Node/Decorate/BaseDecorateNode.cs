@@ -1,4 +1,5 @@
 ﻿using System;
+using SFramework.BehaviourTree.Runtime.Attribute;
 
 namespace SFramework.BehaviourTree.Runtime.Node.Decorate
 {
@@ -6,6 +7,7 @@ namespace SFramework.BehaviourTree.Runtime.Node.Decorate
     /// 装饰节点基类
     /// </summary>
     [Serializable]
+    [ChildCapacityInfo(capacity = ChildCapacity.Single)]
     public abstract class BaseDecorateNode : BaseNode
     {
         public int childId;

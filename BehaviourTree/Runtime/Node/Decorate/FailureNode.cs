@@ -1,8 +1,8 @@
-﻿namespace SFramework.BehaviourTree.Runtime.Node.Decorate
+﻿using SFramework.BehaviourTree.Runtime.Attribute;
+
+namespace SFramework.BehaviourTree.Runtime.Node.Decorate
 {
-    /// <summary>
-    /// 失败节点（无论子节点运行结果是什么，此节点都运行失败）
-    /// </summary>
+    [NodeInfo(name = "失败节点", desc = "无论子节点运行结果是什么，此节点都运行失败")]
     public class FailureNode : BaseDecorateNode
     {
         protected override void OnChildFinished(BaseNode child, bool success)

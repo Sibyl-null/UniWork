@@ -1,8 +1,10 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using SFramework.BehaviourTree.Runtime.Attribute;
 
 namespace SFramework.BehaviourTree.Runtime.Node.Action
 {
+    [NodeInfo(name = "延时节点")]
     public class DelayNode : BaseActionNode
     {
         public float delayTime;
