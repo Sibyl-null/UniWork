@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SFramework.BehaviourTree.Runtime.BlackBoard
 {
     public class BTBlackBoard
     {
-        private readonly Dictionary<string, IBTBlackBoardParam> _paramDic = new Dictionary<string, IBTBlackBoardParam>();
+        private readonly Dictionary<string, BTBlackBoardBaseParam> _paramDic = new Dictionary<string, BTBlackBoardBaseParam>();
 
-        public void SetParam(string key, IBTBlackBoardParam param)
+        public void SetParam(string key, BTBlackBoardBaseParam baseParam)
         {
             if (_paramDic.ContainsKey(key))
-                _paramDic[key] = param;
+                _paramDic[key] = baseParam;
             else
-                _paramDic.Add(key, param);
+                _paramDic.Add(key, baseParam);
         }
 
-        public T GetParam<T>(string key) where T : class, IBTBlackBoardParam
+        public T GetParam<T>(string key) where T : BTBlackBoardBaseParam
         {
             if (_paramDic.ContainsKey(key) == false)
                 return null;
@@ -26,6 +27,11 @@ namespace SFramework.BehaviourTree.Runtime.BlackBoard
         {
             if (_paramDic.ContainsKey(key))
                 _paramDic.Remove(key);
+        }
+
+        public List<BTBlackBoardBaseParam> GetAllParamList()
+        {
+            return _paramDic.Values.ToList();
         }
     }
 }

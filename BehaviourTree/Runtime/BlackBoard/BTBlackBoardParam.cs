@@ -2,14 +2,14 @@
 
 namespace SFramework.BehaviourTree.Runtime.BlackBoard
 {
-    public interface IBTBlackBoardParam
+    public abstract class BTBlackBoardBaseParam
     {
+        public string key;
     }
     
     [Serializable]
-    public class BtIbtBlackBoardParam<T> : IBTBlackBoardParam
+    public class BtBtBlackBoardBaseParam<T> : BTBlackBoardBaseParam
     {
-        public string key;
         public T value;
     }
 }
