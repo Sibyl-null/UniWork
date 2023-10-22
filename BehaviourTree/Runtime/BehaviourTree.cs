@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFramework.BehaviourTree.Runtime.BlackBoard;
 using SFramework.BehaviourTree.Runtime.Node;
 using SFramework.Utility.Runtime;
 
@@ -9,6 +10,7 @@ namespace SFramework.BehaviourTree.Runtime
         public int rootId;
         public RootNode rootNode;
         public List<BaseNode> allNodes = new List<BaseNode>();
+        public BTBlackBoard btBlackBoard = new BTBlackBoard();
 
         public static BehaviourTree Create()
         {

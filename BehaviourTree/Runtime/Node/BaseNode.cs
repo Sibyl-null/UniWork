@@ -1,4 +1,5 @@
 ﻿using System;
+using SFramework.BehaviourTree.Runtime.BlackBoard;
 
 namespace SFramework.BehaviourTree.Runtime.Node
 {
@@ -19,6 +20,8 @@ namespace SFramework.BehaviourTree.Runtime.Node
         [NonSerialized] public State curState = State.Free;
         [NonSerialized] public BaseNode parentNode;
 
+        public BTBlackBoard BlackBoard => owner.btBlackBoard;
+        
         
         // -----------------------------------------------------------------
         // 节点操作
