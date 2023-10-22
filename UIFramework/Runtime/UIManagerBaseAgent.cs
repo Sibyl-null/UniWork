@@ -5,7 +5,7 @@ namespace SFramework.UIFramework.Runtime
     public abstract class UIManagerBaseAgent
     {
         public abstract string UIRootLoadPath { get; }
-        public abstract string RuntimeSettingLoadPath { get; }
+        public virtual int LayerOrderOnceRaise => 10;
         
         protected void AddInfo(UIEnumBaseType uiEnumType, UIInfo info)
         {

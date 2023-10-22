@@ -12,7 +12,7 @@ namespace SFramework.UIFramework.Runtime
 {
     public class UIManager : MonoBehaviour
     {
-        private static UIManager _instance;
+        public static UIManager Instance { get; private set; }
         private static UIManagerBaseAgent _agent;
 
         private readonly Dictionary<UIEnumBaseType, UIInfo> _infos = 
@@ -31,9 +31,8 @@ namespace SFramework.UIFramework.Runtime
         };
 
         private EventSystem _eventSystem;
-
-        public static UIManager Instance => _instance;
-        public event Action EscapeEvent;
+        
+        public event Action OnEscapeEvent;
         public Camera UICamera { get; private set; }
         public int OrderLayerIncrement { get; private set; } = 0;
 
@@ -45,15 +44,15 @@ namespace SFramework.UIFramework.Runtime
 
         public static void Create(UIManagerBaseAgent agent)
         {
-            if (_instance != null)
+            if (Instance != null)
                 throw new Exception("UIManager repeat created");
             
             _agent = agent;
             GameObject obj = Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
             DontDestroyOnLoad(obj);
             
-            _instance = obj.GetOrAddComponent<UIManager>();
-            _instance.Initialize();
+            Instance = obj.GetOrAddComponent<UIManager>();
+            Instance.Initialize();
         }
 
         private void Initialize()
@@ -67,7 +66,7 @@ namespace SFramework.UIFramework.Runtime
         internal void AddInfo(UIEnumBaseType uiEnumType, UIInfo info)
         {
             if (_infos.ContainsKey(uiEnumType))
-                throw new Exception($"{uiEnumType.ToString()}已注册");
+                throw new Exception($"{uiEnumType}已注册");
             
             _infos.Add(uiEnumType, info);
         }
@@ -98,7 +97,7 @@ namespace SFramework.UIFramework.Runtime
                     stackScheduler.EscapeUI();
                 }
                 else
-                    EscapeEvent?.Invoke();
+                    OnEscapeEvent?.Invoke();
             }
         }
 
@@ -141,7 +140,7 @@ namespace SFramework.UIFramework.Runtime
         {
             UIBaseCtrl ctrl = GetUICtrl(uiEnumType);
 
-            ++OrderLayerIncrement;
+            OrderLayerIncrement += _agent.LayerOrderOnceRaise;
             
             if (ctrl == null)
             {
