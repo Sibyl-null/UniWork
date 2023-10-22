@@ -50,7 +50,6 @@ namespace SFramework.UIFramework.Runtime
             
             _agent = agent;
             GameObject obj = Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
-            obj.layer = LayerMask.NameToLayer("UI");
             DontDestroyOnLoad(obj);
             
             _instance = obj.GetOrAddComponent<UIManager>();

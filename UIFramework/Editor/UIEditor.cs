@@ -21,7 +21,6 @@ namespace SFramework.UIFramework.Editor
         // ---------------------------------------------------------------
         
         public const string UIRootDefaultSavePath = "Assets/Resources/UIRoot.prefab";
-        public const string UIRuntimeSettingDefaultSavePath = "Assets/Resources/UIRuntimeSetting.asset";
         public const string UIEditorSettingDefaultSavePath = "Assets/Editor/Config/UIEditorSetting.asset";
         public const string AutoBindTag = "AutoField";
 
@@ -58,7 +57,6 @@ namespace SFramework.UIFramework.Editor
         private static GameObject CreateUIRootObj()
         {
             GameObject uiRootObj = new GameObject("UIRoot");
-            uiRootObj.AddComponent<UIManager>();
 
             Transform eventSystemTrans = CreateEventSystemObj();
             eventSystemTrans.SetParent(uiRootObj.transform);
@@ -66,14 +64,34 @@ namespace SFramework.UIFramework.Editor
             Transform uiCameraTrans = CreateUICameraObj();
             uiCameraTrans.SetParent(uiRootObj.transform);
 
+            ModifyUIRootObj(uiRootObj, uiCameraTrans.GetComponent<Camera>());
+            
             return uiRootObj;
+        }
+
+        private static void ModifyUIRootObj(GameObject root, Camera uiCamera)
+        {
+            Canvas canvas = root.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = uiCamera;
+
+            CanvasScaler canvasScaler = root.AddComponent<CanvasScaler>();
+            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            canvasScaler.matchWidthOrHeight = 1;
+            canvasScaler.referenceResolution = new Vector2(1920f, 1080f);
+            
+            root.AddComponent<UIManager>();
+            root.layer = LayerMask.NameToLayer("UI");
         }
 
         private static Transform CreateUICameraObj()
         {
             GameObject uiCameraObj = new GameObject("UICamera");
             uiCameraObj.layer = LayerMask.NameToLayer("UI");
+            uiCameraObj.transform.localPosition = new Vector3(0, 0, -100);
+            
             Camera uiCamera = uiCameraObj.AddComponent<Camera>();
+            uiCamera.orthographic = true;
             uiCamera.clearFlags = CameraClearFlags.Depth;
             uiCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
             return uiCameraObj.transform;
