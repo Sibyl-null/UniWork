@@ -33,5 +33,16 @@ namespace SFramework.Utility.Runtime
             rectTrans.anchorMin = Vector2.zero;
             rectTrans.anchorMax = Vector2.one;
         }
+
+        public static void SetActiveByClip(this GameObject go, bool active)
+        {
+            if (active && go.activeSelf == false)
+                go.SetActive(true);
+
+            Transform trans = go.transform;
+            Vector3 localPos = trans.localPosition;
+            localPos.z = active ? 0f : -1000f;
+            trans.localPosition = localPos;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace SFramework.UIFramework.Runtime
     {
         protected UIBaseView _uiView;
         public UIInfo Info { get; private set; }
-        public bool IsShow => _uiView.UICanvas.enabled && _uiView.gameObject.activeSelf;
+        public bool IsShow { get; private set; }
 
         public void Initialize(UIBaseView view, UIInfo info)
         {
@@ -44,15 +44,15 @@ namespace SFramework.UIFramework.Runtime
 
         public virtual void OnShow(UIBaseParameter param = null)
         {
-            _uiView.UICanvas.enabled = true;
-            _uiView.UIRaycaster.enabled = true;
+            _uiView.gameObject.SetActiveByClip(true);
             _uiView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            IsShow = true;
         }
 
         public virtual void OnHide()
         {
-            _uiView.UICanvas.enabled = false;
-            _uiView.UIRaycaster.enabled = false;
+            _uiView.gameObject.SetActiveByClip(false);
+            IsShow = false;
         }
 
         /*
