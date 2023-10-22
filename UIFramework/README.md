@@ -61,40 +61,37 @@ public class UIEnumLayer : UIEnumBaseLayer
 ```
 public class UIMgrAgent : UIManagerBaseAgent
 {
-    // 加载UIRoot和UIRuntimeSetting使用的路径
     public override string UIRootLoadPath => "UIRoot";
-    public override string RuntimeSettingLoadPath => "UIRuntimeSetting";
+    // 每次显示界面时，LayerOrder的增量
+    public override int LayerOrderOnceRaise => 20;
 
     public override ReadOnlyCollection<UIEnumBaseLayer> GetAllLayers()
     {
-        // 返回自定义的UILayer枚举类对象列表
         return UIEnumLayer.GetAllEnumTypes();
     }
     
     public override T Load<T>(string path)
     {
-        // 返回加载资源的方式，Resources / AssetBundle ...
         return Resources.Load<T>(path);
     }
 
-    // 在这里添加所有UIInfo信息
     public override void InitUIInfo()
     {
-        AddInfo(UIEnumType.UITestOne, new UIInfo
+        AddInfo(UIEnumType.UITestOne, new UIInfo()
         {
-            UIEnumBaseType = UIEnumType.UITestOne,
             UIEnumBaseLayer = UIEnumLayer.Middle,
+            UIEnumBaseType = UIEnumType.UITestOne,
             ViewType = typeof(UITestOneView),
             CtrlType = typeof(UITestOneCtrl),
             ScheduleMode = UIScheduleMode.Stack,
-            ResPath = "UITestOne",
+            ResPath = "UITestOne"
         });
     }
 }
 ```
 4. 通过MenuItem功能，创建UIRoot的预制体。自行调整存放位置匹配加载路径。
-5. 通过MenuItem功能，创建UIRuntimeSetting。自行调整存放位置匹配加载路径。
 
 ## Editor功能
-MenuItem：SFramework -> UIFramework
-其中自动生成 View Ctrl 代码的 EditorWindow 需要 Odin 插件才会生效。
+View 代码自动生成。
+设置需要引用的控件的 Tag 为 AutoField。
+选择 UI Prefab, 右键选择 "自动生成UIView代码", 即可自动生成 View 代码并挂载到 Prefab 上.
