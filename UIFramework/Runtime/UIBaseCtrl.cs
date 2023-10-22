@@ -1,4 +1,5 @@
 ﻿using SFramework.UIFramework.Runtime.Scheduler;
+using SFramework.Utility.Runtime;
 using UnityEngine;
 
 namespace SFramework.UIFramework.Runtime
@@ -23,12 +24,7 @@ namespace SFramework.UIFramework.Runtime
         private void SetUIScale()
         {
             RectTransform rectTrans = _uiView.GetComponent<RectTransform>();
-            rectTrans.pivot = 0.5f * Vector2.one;
-            rectTrans.localScale = Vector3.one;
-            rectTrans.offsetMin = Vector2.zero;
-            rectTrans.offsetMax = Vector2.zero;
-            rectTrans.anchorMin = Vector2.zero;
-            rectTrans.anchorMax = Vector2.one;
+            rectTrans.Overspread();
         }
 
         private void SetUIRenderLayer()

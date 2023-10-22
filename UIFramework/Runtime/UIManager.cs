@@ -83,10 +83,7 @@ namespace SFramework.UIFramework.Runtime
                 bucketObj.transform.SetParent(this.transform, false);
 
                 RectTransform rectTrans = bucketObj.GetOrAddComponent<RectTransform>();
-                rectTrans.offsetMin = Vector2.zero;
-                rectTrans.offsetMax = Vector2.zero;
-                rectTrans.anchorMin = Vector2.zero;
-                rectTrans.anchorMax = Vector2.one;
+                rectTrans.Overspread();
 
                 _bucketTrans.Add(baseLayer.key, rectTrans);
             }
