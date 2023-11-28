@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using SFramework.UIFramework.Runtime.Scheduler;
 using SFramework.Utility.Runtime;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+#endif
 
 namespace SFramework.UIFramework.Runtime
 {
@@ -223,7 +225,7 @@ namespace SFramework.UIFramework.Runtime
         // ----------------------------------------------------------------------------
         // 调试
         // ----------------------------------------------------------------------------
-
+#if ODIN_INSPECTOR
         [Button, PropertySpace]
         private void PrintAllInstantiatedUI()
         {
@@ -274,5 +276,6 @@ namespace SFramework.UIFramework.Runtime
             
             DLog.Info(sb.ToString());
         }
+#endif
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +21,6 @@ namespace SFramework.UIFramework.Editor
             }
         }
 
-        [FolderPath]
         public string codeFileSavePath = "Assets/Scripts/AutoGen/UI";
         public string codeNamespace = "UI";
 
