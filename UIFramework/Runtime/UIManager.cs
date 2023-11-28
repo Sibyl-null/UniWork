@@ -1,18 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SFramework.UIFramework.Runtime.Scheduler;
 using SFramework.Utility.Runtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
-#if ODIN_INSPECTOR
-using Sirenix.OdinInspector;
-#endif
 
 namespace SFramework.UIFramework.Runtime
 {
-    public class UIManager : MonoBehaviour
+    public partial class UIManager : MonoBehaviour
     {
         public static UIManager Instance { get; private set; }
         private static UIManagerBaseAgent _agent;
@@ -220,62 +215,5 @@ namespace SFramework.UIFramework.Runtime
             _instantiatedCtrls.Add(info.UIEnumBaseType, ctrl);
             return ctrl;
         }
-        
-        
-        // ----------------------------------------------------------------------------
-        // 调试
-        // ----------------------------------------------------------------------------
-#if ODIN_INSPECTOR
-        [Button, PropertySpace]
-        private void PrintAllInstantiatedUI()
-        {
-            IEnumerable<string> instantiatedUIs = _instantiatedCtrls.Keys.Select(type => type.value);
-            
-            int index = 0;
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("AllInstantiatedUI: ");
-            
-            foreach (string uiName in instantiatedUIs)
-            {
-                sb.AppendLine($"{index++}: {uiName}");
-            }
-            
-            DLog.Info(sb.ToString());
-        }
-        
-        [Button, PropertySpace]
-        private void PrintAllInStackUI()
-        {
-            var uiStack = (_schedulers[UIScheduleMode.Stack] as UIStackScheduler).UiStack;
-            
-            int index = 0;
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("AllInStackUI: ");
-            
-            foreach (UIEnumBaseType type in uiStack)
-            {
-                sb.AppendLine($"{index++}: {type.value}");
-            }
-            
-            DLog.Info(sb.ToString());
-        }
-
-        [Button, PropertySpace]
-        private void PrintAllInQueueUI()
-        {
-            var queueUI = (_schedulers[UIScheduleMode.Queue] as UIQueueScheduler).UiQueue;
-            
-            int index = 0;
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("AllInQueueUI: ");
-            
-            foreach (UIEnumBaseType type in queueUI)
-            {
-                sb.AppendLine($"{index++}: {type.value}");
-            }
-            
-            DLog.Info(sb.ToString());
-        }
-#endif
     }
 }
