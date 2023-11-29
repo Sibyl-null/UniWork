@@ -1,7 +1,9 @@
 {
     "name": "UniWork.Utility.Editor",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:299c632e3bf0b3a4885864742f538d04"
+    ],
     "includePlatforms": [
         "Editor"
     ],
