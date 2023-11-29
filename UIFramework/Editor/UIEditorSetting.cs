@@ -22,7 +22,7 @@ namespace SFramework.UIFramework.Editor
         }
 
         public string codeFileSavePath = "Assets/Scripts/AutoGen/UI";
-        public string codeNamespace = "UI";
+        public string codeNamespace = "AutoGen.UI";
 
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()
         {
