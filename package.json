@@ -1,7 +1,7 @@
 {
-  "name": "com.sibylwork.sframework",
+  "name": "com.sibyl.uniwork",
   "version": "0.1.0",
-  "displayName": "SFramework",
+  "displayName": "UniWork",
   "description": "A Unity GameFramework",
   "unity": "2021.3",
   "dependencies": {
