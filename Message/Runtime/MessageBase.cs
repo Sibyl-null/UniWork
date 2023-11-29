@@ -1,19 +1,26 @@
 using System;
+using System.Collections.Generic;
 
 namespace UniWork.Message.Runtime
 {
     public abstract class MessageBase
     {
-        protected Delegate _delegate;
+        protected readonly LinkedList<Delegate> _delegates = new LinkedList<Delegate>();
 
-        protected void _Register(Delegate d)
+        protected void RegisterInternal(Delegate d)
         {
-            _delegate = Delegate.Combine(_delegate, d);
+            if (d == null)
+                return;
+
+            _delegates.AddLast(d);
         }
 
-        protected void _UnRegister(Delegate d)
+        protected void UnRegisterInternal(Delegate d)
         {
-            _delegate = Delegate.Remove(_delegate, d);
+            if (d == null)
+                return;
+            
+            _delegates.Remove(d);
         }
     }
 }

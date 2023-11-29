@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace UniWork.Message.Runtime
 {
@@ -6,17 +7,25 @@ namespace UniWork.Message.Runtime
     {
         public void Register(Action ac)
         {
-            _Register(ac);
+            RegisterInternal(ac);
         }
 
         public void UnRegister(Action ac)
         {
-            _UnRegister(ac);
+            UnRegisterInternal(ac);
         }
 
         public void BroadCast()
         {
-            (_delegate as Action)?.Invoke();
+            if (_delegates.Count == 0)
+                return;
+
+            LinkedListNode<Delegate> curNode = _delegates.First;
+            while (curNode != null)
+            {
+                ((Action)curNode.Value).Invoke();
+                curNode = curNode.Next;
+            }
         }
     }
     
@@ -24,17 +33,25 @@ namespace UniWork.Message.Runtime
     {
         public void Register(Action<T1> ac)
         {
-            _Register(ac);
+            RegisterInternal(ac);
         }
 
         public void UnRegister(Action<T1> ac)
         {
-            _UnRegister(ac);
+            UnRegisterInternal(ac);
         }
 
         public void BroadCast(T1 t1)
         {
-            (_delegate as Action<T1>)?.Invoke(t1);
+            if (_delegates.Count == 0)
+                return;
+
+            LinkedListNode<Delegate> curNode = _delegates.First;
+            while (curNode != null)
+            {
+                ((Action<T1>)curNode.Value).Invoke(t1);
+                curNode = curNode.Next;
+            }
         }
     }
     
@@ -42,17 +59,25 @@ namespace UniWork.Message.Runtime
     {
         public void Register(Action<T1, T2> ac)
         {
-            _Register(ac);
+            RegisterInternal(ac);
         }
 
         public void UnRegister(Action<T1, T2> ac)
         {
-            _UnRegister(ac);
+            UnRegisterInternal(ac);
         }
 
         public void BroadCast(T1 t1, T2 t2)
         {
-            (_delegate as Action<T1, T2>)?.Invoke(t1, t2);
+            if (_delegates.Count == 0)
+                return;
+
+            LinkedListNode<Delegate> curNode = _delegates.First;
+            while (curNode != null)
+            {
+                ((Action<T1, T2>)curNode.Value).Invoke(t1, t2);
+                curNode = curNode.Next;
+            }
         }
     }
     
@@ -60,17 +85,25 @@ namespace UniWork.Message.Runtime
     {
         public void Register(Action<T1, T2, T3> ac)
         {
-            _Register(ac);
+            RegisterInternal(ac);
         }
 
         public void UnRegister(Action<T1, T2, T3> ac)
         {
-            _UnRegister(ac);
+            UnRegisterInternal(ac);
         }
 
         public void BroadCast(T1 t1, T2 t2, T3 t3)
         {
-            (_delegate as Action<T1, T2, T3>)?.Invoke(t1, t2, t3);
+            if (_delegates.Count == 0)
+                return;
+
+            LinkedListNode<Delegate> curNode = _delegates.First;
+            while (curNode != null)
+            {
+                ((Action<T1, T2, T3>)curNode.Value).Invoke(t1, t2, t3);
+                curNode = curNode.Next;
+            }
         }
     }
     
@@ -78,17 +111,25 @@ namespace UniWork.Message.Runtime
     {
         public void Register(Action<T1, T2, T3, T4> ac)
         {
-            _Register(ac);
+            RegisterInternal(ac);
         }
 
         public void UnRegister(Action<T1, T2, T3, T4> ac)
         {
-            _UnRegister(ac);
+            UnRegisterInternal(ac);
         }
 
         public void BroadCast(T1 t1, T2 t2, T3 t3, T4 t4)
         {
-            (_delegate as Action<T1, T2, T3, T4>)?.Invoke(t1, t2, t3, t4);
+            if (_delegates.Count == 0)
+                return;
+
+            LinkedListNode<Delegate> curNode = _delegates.First;
+            while (curNode != null)
+            {
+                ((Action<T1, T2, T3, T4>)curNode.Value).Invoke(t1, t2, t3, t4);
+                curNode = curNode.Next;
+            }
         }
     }
 }
