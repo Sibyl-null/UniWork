@@ -2,12 +2,10 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 
-namespace UniWork.UniBundle.Editor
+namespace UniWork.UniBundle.Editor.SettingDefine
 {
     public class BundleEditorSetting : ScriptableObject
     {
-        public string bundleFolder = "AssetBundle";
-        
         // ----------------------------------------------
 
         public const string LoadPath = "Assets/Editor/Config/BundleEditorSetting.asset";
