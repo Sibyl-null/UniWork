@@ -1,13 +1,11 @@
 {
-    "name": "SFramework.Store.Editor",
+    "name": "UniWork.Store.Runtime",
     "rootNamespace": "",
     "references": [
-        "GUID:c3c6c7e63224440849c34a59815d6aea",
+        "GUID:756335c0388f7114790e504ed368ae1d",
         "GUID:299c632e3bf0b3a4885864742f538d04"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

@@ -1,8 +1,7 @@
 {
-    "name": "SFramework.Store.Runtime",
+    "name": "UniWork.UIFramework.Runtime",
     "rootNamespace": "",
     "references": [
-        "GUID:756335c0388f7114790e504ed368ae1d",
         "GUID:299c632e3bf0b3a4885864742f538d04"
     ],
     "includePlatforms": [],

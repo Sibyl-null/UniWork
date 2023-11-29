@@ -1,5 +1,5 @@
 {
-    "name": "SFramework.ObjectPool.Runtime",
+    "name": "UniWork.ObjectPool.Runtime",
     "rootNamespace": "",
     "references": [
         "GUID:299c632e3bf0b3a4885864742f538d04"
