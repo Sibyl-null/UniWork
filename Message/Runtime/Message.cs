@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SFramework.SEvent.Runtime
+namespace SFramework.Message.Runtime
 {
-    public class SEvent : SEventBase
+    public class Message : MessageBase
     {
         public void Register(Action ac)
         {
@@ -20,7 +20,7 @@ namespace SFramework.SEvent.Runtime
         }
     }
     
-    public class SEvent<T1> : SEventBase
+    public class Message<T1> : MessageBase
     {
         public void Register(Action<T1> ac)
         {
@@ -38,7 +38,7 @@ namespace SFramework.SEvent.Runtime
         }
     }
     
-    public class SEvent<T1, T2> : SEventBase
+    public class Message<T1, T2> : MessageBase
     {
         public void Register(Action<T1, T2> ac)
         {
@@ -56,7 +56,7 @@ namespace SFramework.SEvent.Runtime
         }
     }
     
-    public class SEvent<T1, T2, T3> : SEventBase
+    public class Message<T1, T2, T3> : MessageBase
     {
         public void Register(Action<T1, T2, T3> ac)
         {
@@ -74,7 +74,7 @@ namespace SFramework.SEvent.Runtime
         }
     }
     
-    public class SEvent<T1, T2, T3, T4> : SEventBase
+    public class Message<T1, T2, T3, T4> : MessageBase
     {
         public void Register(Action<T1, T2, T3, T4> ac)
         {

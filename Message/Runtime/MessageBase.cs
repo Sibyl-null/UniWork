@@ -1,8 +1,8 @@
 using System;
 
-namespace SFramework.SEvent.Runtime
+namespace SFramework.Message.Runtime
 {
-    public abstract class SEventBase
+    public abstract class MessageBase
     {
         protected Delegate _delegate;
 
