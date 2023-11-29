@@ -1,9 +1,12 @@
 #if ODIN_INSPECTOR
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using System.Linq;
 using System.Text;
+using UniWork.UIFramework.Runtime.Scheduler;
+using UniWork.Utility.Runtime;
 
-namespace SFramework.UIFramework.Runtime
+namespace UniWork.UIFramework.Runtime
 {
     public partial class UIManager
     {
