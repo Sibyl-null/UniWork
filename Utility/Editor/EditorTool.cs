@@ -1,11 +1,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SFramework.Utility.Editor
+namespace UniWork.Utility.Editor
 {
     public static class EditorTool
     {
-        [MenuItem("SFramework/EditorTool/打开PersistentDataPath")]
+        [MenuItem("UniWork/EditorTool/打开PersistentDataPath")]
         public static void Open()
         {
             EditorUtility.RevealInFinder(Application.persistentDataPath);

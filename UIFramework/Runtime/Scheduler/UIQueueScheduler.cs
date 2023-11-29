@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SFramework.Utility.Runtime;
+using UniWork.Utility.Runtime;
 
-namespace SFramework.UIFramework.Runtime.Scheduler
+namespace UniWork.UIFramework.Runtime.Scheduler
 {
     internal sealed class UIQueueScheduler : UIBaseScheduler
     {

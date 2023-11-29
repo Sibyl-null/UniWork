@@ -1,4 +1,4 @@
-﻿namespace SFramework.BehaviourTree.Runtime.Attribute
+﻿namespace UniWork.BehaviourTree.Runtime.Attribute
 {
     public enum ChildCapacity
     {

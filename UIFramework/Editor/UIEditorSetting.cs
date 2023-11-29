@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SFramework.UIFramework.Editor
+namespace UniWork.UIFramework.Editor
 {
     public class UIEditorSetting : ScriptableObject
     {
@@ -22,9 +21,8 @@ namespace SFramework.UIFramework.Editor
             }
         }
 
-        [FolderPath]
         public string codeFileSavePath = "Assets/Scripts/AutoGen/UI";
-        public string codeNamespace = "UI";
+        public string codeNamespace = "AutoGen.UI";
 
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()
         {

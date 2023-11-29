@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace SFramework.UIFramework.Runtime
+namespace UniWork.UIFramework.Runtime
 {
     [RequireComponent(typeof(Canvas), typeof(GraphicRaycaster))]
     public abstract class UIBaseView : MonoBehaviour

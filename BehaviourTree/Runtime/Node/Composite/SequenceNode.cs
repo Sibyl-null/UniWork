@@ -1,6 +1,6 @@
-﻿using SFramework.BehaviourTree.Runtime.Attribute;
+﻿using UniWork.BehaviourTree.Runtime.Attribute;
 
-namespace SFramework.BehaviourTree.Runtime.Node.Composite
+namespace UniWork.BehaviourTree.Runtime.Node.Composite
 {
     [NodeInfo(name = "序列节点", desc = "依次执行子节点，直到有子节点运行失败，则此节点运行失败，否则成功")]
     public class SequenceNode : BaseCompositeNode

@@ -1,0 +1,20 @@
+{
+    "name": "UniWork.UIFramework.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5273ced5248bdef49bb42d55bd05f8dc",
+        "GUID:299c632e3bf0b3a4885864742f538d04",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

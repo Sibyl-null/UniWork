@@ -1,8 +1,8 @@
-﻿using SFramework.UIFramework.Runtime.Scheduler;
-using SFramework.Utility.Runtime;
+﻿using UniWork.Utility.Runtime;
 using UnityEngine;
+using UniWork.UIFramework.Runtime.Scheduler;
 
-namespace SFramework.UIFramework.Runtime
+namespace UniWork.UIFramework.Runtime
 {
     public abstract class UIBaseCtrl
     {

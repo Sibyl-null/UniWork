@@ -4,15 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using SFramework.UIFramework.Runtime;
-using SFramework.Utility.Runtime;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UniWork.UIFramework.Runtime;
+using UniWork.Utility.Runtime;
 
-namespace SFramework.UIFramework.Editor
+namespace UniWork.UIFramework.Editor
 {
     public class UIEditor
     {
@@ -24,7 +24,7 @@ namespace SFramework.UIFramework.Editor
         public const string UIEditorSettingDefaultSavePath = "Assets/Editor/Config/UIEditorSetting.asset";
         public const string AutoBindTag = "AutoField";
 
-        [MenuItem("SFramework/UIFramework/初始化/创建全部", false, 1)]
+        [MenuItem("UniWork/UIFramework/初始化/创建全部", false, 1)]
         public static void CreateAll()
         {
             CreateUIRootPrefab();
@@ -32,7 +32,7 @@ namespace SFramework.UIFramework.Editor
             AddAutoFieldTag();
         }
         
-        [MenuItem("SFramework/UIFramework/初始化/创建UIRoot预设体")]
+        [MenuItem("UniWork/UIFramework/初始化/创建UIRoot预设体")]
         public static void CreateUIRootPrefab()
         {
             if (File.Exists(UIRootDefaultSavePath))
@@ -105,7 +105,7 @@ namespace SFramework.UIFramework.Editor
             return eventSystemObj.transform;
         }
 
-        [MenuItem("SFramework/UIFramework/初始化/创建UIEditorSetting")]
+        [MenuItem("UniWork/UIFramework/初始化/创建UIEditorSetting")]
         public static void CreateUIEditorSetting()
         {
             if (File.Exists(UIEditorSettingDefaultSavePath))
@@ -128,7 +128,7 @@ namespace SFramework.UIFramework.Editor
             EditorGUIUtility.PingObject(editorSetting);
         }
 
-        [MenuItem("SFramework/UIFramework/初始化/添加AutoField Tag")]
+        [MenuItem("UniWork/UIFramework/初始化/添加AutoField Tag")]
         public static void AddAutoFieldTag()
         {
             SerializedObject tagManager =
@@ -225,7 +225,7 @@ namespace SFramework.UIFramework.Editor
                 throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
 
             // 2. 数据收集
-            HashSet<string> namespaceSet = new HashSet<string> { "SFramework.UIFramework.Runtime" };
+            HashSet<string> namespaceSet = new HashSet<string> { "UniWork.UIFramework.Runtime" };
             Dictionary<string, string> goNamePathMap = new Dictionary<string, string>();
             List<(string typeName, string fieldName, string goName)> fieldList =
                 new List<(string typeName, string fieldName, string goName)>();

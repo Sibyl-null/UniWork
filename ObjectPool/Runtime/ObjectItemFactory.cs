@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace SFramework.ObjectPool.Runtime
+namespace UniWork.ObjectPool.Runtime
 {
     internal class ObjectItemFactory
     {

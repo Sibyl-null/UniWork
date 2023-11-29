@@ -1,10 +1,11 @@
 {
-    "name": "com.sibylwork.sframework",
-    "version": "0.1.0",
-    "displayName": "SFramework",
-    "description": "A Unity GameFramework",
-    "unity": "2021.3",
-    "dependencies": {
-        "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
-    }
+  "name": "com.sibyl.uniwork",
+  "version": "0.1.0",
+  "displayName": "UniWork",
+  "description": "A Unity GameFramework",
+  "unity": "2021.3",
+  "dependencies": {
+    "com.unity.ugui": "1.0.0",
+    "com.unity.textmeshpro": "3.0.6"
+  }
 }

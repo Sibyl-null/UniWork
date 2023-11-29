@@ -1,4 +1,4 @@
-﻿namespace SFramework.UIFramework.Runtime.Scheduler
+﻿namespace UniWork.UIFramework.Runtime.Scheduler
 {
     public abstract class UIBaseParameter{}
     

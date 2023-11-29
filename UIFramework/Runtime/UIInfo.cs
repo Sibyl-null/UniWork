@@ -1,7 +1,7 @@
 ﻿using System;
-using SFramework.Utility.Runtime;
+using UniWork.Utility.Runtime;
 
-namespace SFramework.UIFramework.Runtime
+namespace UniWork.UIFramework.Runtime
 {
     public abstract class UIEnumBaseType : EnumBaseType<UIEnumBaseType>
     {

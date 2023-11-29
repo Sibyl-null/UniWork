@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using SFramework.ReferencePool.Runtime;
 using UnityEditor;
 using UnityEngine;
+using UniWork.ReferencePool.Runtime;
 
-namespace SFramework.ReferencePool.Editor
+namespace UniWork.ReferencePool.Editor
 {
     public class ReferencePoolWindow : EditorWindow
     {
-        [MenuItem("SFramework/ReferencePool/打开ReferencePoolWindow面板")]
+        [MenuItem("UniWork/ReferencePool/打开ReferencePoolWindow面板")]
         public static void Open()
         {
             GetWindow<ReferencePoolWindow>().Show();

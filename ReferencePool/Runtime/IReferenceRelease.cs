@@ -1,4 +1,4 @@
-﻿namespace SFramework.ReferencePool.Runtime
+﻿namespace UniWork.ReferencePool.Runtime
 {
     public interface IReferenceRelease
     {
