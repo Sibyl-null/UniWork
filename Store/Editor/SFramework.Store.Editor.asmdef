@@ -1,0 +1,19 @@
+{
+    "name": "SFramework.Store.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c3c6c7e63224440849c34a59815d6aea",
+        "GUID:299c632e3bf0b3a4885864742f538d04"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
