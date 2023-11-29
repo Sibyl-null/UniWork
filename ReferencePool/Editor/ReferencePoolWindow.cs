@@ -9,7 +9,7 @@ namespace UniWork.ReferencePool.Editor
 {
     public class ReferencePoolWindow : EditorWindow
     {
-        [MenuItem("SFramework/ReferencePool/打开ReferencePoolWindow面板")]
+        [MenuItem("UniWork/ReferencePool/打开ReferencePoolWindow面板")]
         public static void Open()
         {
             GetWindow<ReferencePoolWindow>().Show();

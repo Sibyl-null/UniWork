@@ -14,7 +14,7 @@ namespace UniWork.Store.Editor
         public static string GenPath = "Assets/Scripts/AutoGen/Store";
         public static string Namespace = "AutoGen.Store";
         
-        [MenuItem("SFramework/Store/StoreContainer 类生成")]
+        [MenuItem("UniWork/Store/StoreContainer 类生成")]
         public static void GenStoreContainer()
         {
             Assembly assembly = Assembly.Load("Assembly-CSharp");
@@ -81,7 +81,7 @@ namespace UniWork.Store.Editor
             {
                 "System",
                 "MemoryPack",
-                "SFramework.Store.Runtime"
+                "UniWork.Store.Runtime"
             };
 
             foreach (Type type in types)

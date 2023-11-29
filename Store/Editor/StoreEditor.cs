@@ -7,7 +7,7 @@ namespace UniWork.Store.Editor
 {
     public static class StoreEditor
     {
-        [MenuItem("SFramework/Store/清除 Store 数据")]
+        [MenuItem("UniWork/Store/清除 Store 数据")]
         public static void ClearStoreData()
         {
             if (File.Exists(StoreRoot.StorePath))
