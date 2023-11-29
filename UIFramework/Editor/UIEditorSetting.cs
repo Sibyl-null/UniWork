@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SFramework.UIFramework.Editor
+namespace UniWork.UIFramework.Editor
 {
     public class UIEditorSetting : ScriptableObject
     {

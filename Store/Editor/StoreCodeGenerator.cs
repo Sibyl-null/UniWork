@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using SFramework.Store.Runtime;
 using UnityEditor;
+using UniWork.Store.Runtime;
 
-namespace SFramework.Store.Editor
+namespace UniWork.Store.Editor
 {
     public static class StoreCodeGenerator
     {

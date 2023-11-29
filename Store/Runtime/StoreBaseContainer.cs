@@ -1,4 +1,4 @@
-namespace SFramework.Store.Runtime
+namespace UniWork.Store.Runtime
 {
     public abstract class StoreBaseContainer
     {

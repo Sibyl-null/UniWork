@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFramework.BehaviourTree.Runtime.BlackBoard
+namespace UniWork.BehaviourTree.Runtime.BlackBoard
 {
     public abstract class BTBlackBoardBaseParam
     {

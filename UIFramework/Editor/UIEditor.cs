@@ -4,15 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using SFramework.UIFramework.Runtime;
-using SFramework.Utility.Runtime;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UniWork.UIFramework.Runtime;
+using UniWork.Utility.Runtime;
 
-namespace SFramework.UIFramework.Editor
+namespace UniWork.UIFramework.Editor
 {
     public class UIEditor
     {

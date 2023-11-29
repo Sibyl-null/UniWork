@@ -1,7 +1,7 @@
 ﻿using System;
-using SFramework.BehaviourTree.Runtime.Attribute;
+using UniWork.BehaviourTree.Runtime.Attribute;
 
-namespace SFramework.BehaviourTree.Runtime.Node.Action
+namespace UniWork.BehaviourTree.Runtime.Node.Action
 {
     /// <summary>
     /// 动作节点基类

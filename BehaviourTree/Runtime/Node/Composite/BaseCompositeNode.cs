@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFramework.BehaviourTree.Runtime.Attribute;
+using UniWork.BehaviourTree.Runtime.Attribute;
 
-namespace SFramework.BehaviourTree.Runtime.Node.Composite
+namespace UniWork.BehaviourTree.Runtime.Node.Composite
 {
     /// <summary>
     /// 复合节点基类

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFramework.Message.Runtime
+namespace UniWork.Message.Runtime
 {
     public class Message : MessageBase
     {

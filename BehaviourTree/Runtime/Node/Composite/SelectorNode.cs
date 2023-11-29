@@ -1,6 +1,6 @@
-﻿using SFramework.BehaviourTree.Runtime.Attribute;
+﻿using UniWork.BehaviourTree.Runtime.Attribute;
 
-namespace SFramework.BehaviourTree.Runtime.Node.Composite
+namespace UniWork.BehaviourTree.Runtime.Node.Composite
 {
     [NodeInfo(name = "选择节点", desc = "依次执行子节点，直到有子节点运行成功，则此节点运行成功，否则失败")]
     public class SelectorNode : BaseCompositeNode

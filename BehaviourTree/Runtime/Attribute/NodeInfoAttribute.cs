@@ -1,4 +1,4 @@
-﻿namespace SFramework.BehaviourTree.Runtime.Attribute
+﻿namespace UniWork.BehaviourTree.Runtime.Attribute
 {
     /// <summary>
     /// 节点信息特性

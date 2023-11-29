@@ -1,7 +1,7 @@
 ﻿using System;
-using SFramework.BehaviourTree.Runtime.BlackBoard;
+using UniWork.BehaviourTree.Runtime.BlackBoard;
 
-namespace SFramework.BehaviourTree.Runtime.Node
+namespace UniWork.BehaviourTree.Runtime.Node
 {
     [Serializable]
     public abstract class BaseNode

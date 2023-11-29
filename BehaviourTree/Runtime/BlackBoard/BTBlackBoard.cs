@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SFramework.BehaviourTree.Runtime.BlackBoard
+namespace UniWork.BehaviourTree.Runtime.BlackBoard
 {
     public class BTBlackBoard
     {

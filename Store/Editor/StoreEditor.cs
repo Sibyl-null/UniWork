@@ -1,9 +1,9 @@
 using System.IO;
-using SFramework.Store.Runtime;
-using SFramework.Utility.Runtime;
 using UnityEditor;
+using UniWork.Store.Runtime;
+using UniWork.Utility.Runtime;
 
-namespace SFramework.Store.Editor
+namespace UniWork.Store.Editor
 {
     public static class StoreEditor
     {

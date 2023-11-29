@@ -1,7 +1,7 @@
 ﻿using System;
-using SFramework.BehaviourTree.Runtime.Attribute;
+using UniWork.BehaviourTree.Runtime.Attribute;
 
-namespace SFramework.BehaviourTree.Runtime.Node.Decorate
+namespace UniWork.BehaviourTree.Runtime.Node.Decorate
 {
     /// <summary>
     /// 装饰节点基类

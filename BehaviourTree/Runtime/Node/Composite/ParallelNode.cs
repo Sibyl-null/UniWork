@@ -1,6 +1,6 @@
-﻿using SFramework.BehaviourTree.Runtime.Attribute;
+﻿using UniWork.BehaviourTree.Runtime.Attribute;
 
-namespace SFramework.BehaviourTree.Runtime.Node.Composite
+namespace UniWork.BehaviourTree.Runtime.Node.Composite
 {
     [NodeInfo(name = "并行节点", desc = "同时运行所有节点，根据设置的并行条件决定此节点如何判断成功/失败")]
     public class ParallelNode : BaseCompositeNode

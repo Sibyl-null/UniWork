@@ -1,4 +1,4 @@
-﻿namespace SFramework.BehaviourTree.Runtime.SerializeProvider
+﻿namespace UniWork.BehaviourTree.Runtime.SerializeProvider
 {
     public interface IBehaviourTreeSerializeDataProvider
     {
