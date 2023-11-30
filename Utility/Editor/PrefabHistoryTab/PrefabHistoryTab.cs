@@ -22,7 +22,7 @@ namespace UniWork.Utility.Editor.PrefabHistoryTab
             PrefabStage.prefabStageClosing += OnPrefabStageClosing;
         }
 
-        [MenuItem("Project/PrefabHistoryTab/Show"), DidReloadScripts]
+        [DidReloadScripts]
         public static void ShowPrefabHistoryTab()
         {
             SceneView sceneView = SceneView.lastActiveSceneView;
@@ -35,6 +35,9 @@ namespace UniWork.Utility.Editor.PrefabHistoryTab
             VisualTreeAsset treeAsset =
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
                     "Packages/com.sibyl.uniwork/Utility/Editor/PrefabHistoryTab/PrefabHistoryTab.uxml");
+            if (treeAsset == null)
+                return;
+            
             _panel = treeAsset.CloneTree();
             _scrollView = _panel.Q<ScrollView>("ScrollView");
             
@@ -62,19 +65,11 @@ namespace UniWork.Utility.Editor.PrefabHistoryTab
             sceneView.rootVisualElement.Add(_panel);
         }
 
-        [MenuItem("Project/PrefabHistoryTab/Hide")]
-        public static void HidePrefabHistoryTab()
-        {
-            SceneView sceneView = SceneView.lastActiveSceneView;
-            if (sceneView == null || _panel == null)
-                return;
-            
-            sceneView.rootVisualElement.Remove(_panel);
-            _panel = null;
-        }
-
         private static void OnPrefabStageOpened(PrefabStage stage)
         {
+            if (_panel == null || _scrollView == null)
+                ShowPrefabHistoryTab();
+            
             AddItem(stage.assetPath);
             
             NowOpenItem?.OnOpenChange(false);
