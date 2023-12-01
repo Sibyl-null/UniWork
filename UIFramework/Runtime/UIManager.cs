@@ -180,6 +180,9 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnHide();
             
             ctrl.OnDestroy();
+            Destroy(ctrl.UIView.gameObject);
+            
+            _agent.UnLoad(ctrl.Info.ResPath);
             _instantiatedCtrls.Remove(uiEnumType);
         }
 
