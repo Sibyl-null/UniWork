@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using Object = UnityEngine.Object;
-using Unity.BuildReportInspector.Mobile;
 
 namespace Unity.BuildReportInspector
 {
@@ -32,7 +31,6 @@ namespace Unity.BuildReportInspector
         }
 
         private BuildReport Report => target as BuildReport;
-        private MobileAppendix MobileAppendix => MobileHelper.LoadMobileAppendix(Report.summary.guid.ToString());
 
         private const int LineHeight = 20;
 
@@ -79,11 +77,7 @@ namespace Unity.BuildReportInspector
                     OnAssetsGUI();
                     break;
                 case ReportDisplayMode.OutputFiles:
-                    OnOutputFilesHeaderGUI();
-                    if (MobileAppendix == null)
-                        OnOutputFilesGUI();
-                    else
-                        OnMobileOutputFilesGUI();
+                    OnOutputFilesGUI();
                     break;
                 case ReportDisplayMode.Stripping:
                     OnStrippingGUI();
@@ -103,49 +97,8 @@ namespace Unity.BuildReportInspector
             EditorGUILayout.LabelField("    Build Name: ", Application.productName);
             EditorGUILayout.LabelField("    Platform: ", Report.summary.platform.ToString());
             EditorGUILayout.LabelField("    Total Time: ", FormatTime(Report.summary.totalTime));
-            EditorGUILayout.LabelField("    Total Size: ", FormatSize(MobileAppendix == null ? Report.summary.totalSize : (ulong)MobileAppendix.BuildSize));
+            EditorGUILayout.LabelField("    Total Size: ", FormatSize(Report.summary.totalSize));
             EditorGUILayout.LabelField("    Build Result: ", Report.summary.result.ToString());
-
-            // Show Mobile appendix data below the build summary
-            OnMobileAppendixGUI();
-        }
-
-        private void OnMobileAppendixGUI()
-        {
-            if (MobileAppendix != null)
-            {
-                if (MobileAppendix.Architectures != null)
-                {
-                    EditorGUILayout.LabelField("    Download Sizes: ");
-                    foreach (var entry in MobileAppendix.Architectures)
-                    {
-                        var sizeText = entry.DownloadSize == 0 ? "N/A" : FormatSize((ulong) entry.DownloadSize);
-                        EditorGUILayout.LabelField($"            {entry.Name}", sizeText);
-                    }
-                }
-                else
-                {
-                    EditorGUILayout.HelpBox("Could not determine the architectures present in the build.", MessageType.Warning);
-                }
-            }
-#if UNITY_EDITOR_OSX
-            // On macOS, show a help dialog for generating the MobileAppendix for iOS/tvOS
-            else if (Report.summary.platform == BuildTarget.iOS || Report.summary.platform == BuildTarget.tvOS)
-            {
-                EditorGUILayout.HelpBox("To get more accurate report data, please provide an .ipa file generated from a " +
-                                        "matching Unity build using the dialog below.", MessageType.Warning);
-                if (!GUILayout.Button("Select an .ipa bundle"))
-                {
-                    return;
-                }
-                var ipaPath = EditorUtility.OpenFilePanel("Select an .ipa build.", "", "ipa");
-                if (!string.IsNullOrEmpty(ipaPath))
-                {
-                    // If an .ipa is selected, generate the MobileAppendix
-                    MobileHelper.GenerateAppleAppendix(ipaPath, Report.summary.guid.ToString());
-                }
-            }
-#endif // UNITY_EDITOR_OSX
         }
 
         private static string FormatSize(ulong size)
