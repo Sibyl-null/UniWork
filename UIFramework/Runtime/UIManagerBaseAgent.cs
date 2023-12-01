@@ -7,9 +7,9 @@ namespace UniWork.UIFramework.Runtime
         public abstract string UIRootLoadPath { get; }
         public virtual int LayerOrderOnceRaise => 10;
         
-        protected void AddInfo(UIBaseType uiType, UIInfo info)
+        protected void AddInfo(UIInfo info)
         {
-            UIManager.Instance.AddInfo(uiType, info);
+            UIManager.Instance.AddInfo(info);
         }
         
         public abstract ReadOnlyCollection<UIBaseLayer> GetAllLayers();

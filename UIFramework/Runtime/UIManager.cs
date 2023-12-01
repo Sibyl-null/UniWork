@@ -60,12 +60,12 @@ namespace UniWork.UIFramework.Runtime
             CreateBuckets();
         }
 
-        internal void AddInfo(UIBaseType uiType, UIInfo info)
+        internal void AddInfo(UIInfo info)
         {
-            if (_infos.ContainsKey(uiType))
-                throw new Exception($"{uiType}已注册");
+            if (_infos.ContainsKey(info.UIBaseType))
+                throw new Exception($"{info.UIBaseType}已注册");
             
-            _infos.Add(uiType, info);
+            _infos.Add(info.UIBaseType, info);
         }
 
         private void CreateBuckets()
@@ -211,7 +211,7 @@ namespace UniWork.UIFramework.Runtime
 
         private UIBaseCtrl CreateUICtrl(GameObject uiObj, UIInfo info)
         {
-            UIBaseView view = (UIBaseView)uiObj.GetComponent(info.ViewType);
+            UIBaseView view = (UIBaseView)uiObj.GetComponent(typeof(UIBaseView));
             UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(info.CtrlType);
             ctrl.Initialize(view, info);
 

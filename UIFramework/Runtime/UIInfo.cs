@@ -26,9 +26,18 @@ namespace UniWork.UIFramework.Runtime
     {
         public UIBaseType UIBaseType;
         public UIBaseLayer UIBaseLayer;
-        public Type ViewType;
         public Type CtrlType;
         public UIScheduleMode ScheduleMode;
         public string ResPath;
+
+        public UIInfo(UIBaseType uiBaseType, UIBaseLayer uiBaseLayer, 
+            Type ctrlType, UIScheduleMode scheduleMode, string resPath)
+        {
+            UIBaseType = uiBaseType;
+            UIBaseLayer = uiBaseLayer;
+            CtrlType = ctrlType;
+            ScheduleMode = scheduleMode;
+            ResPath = resPath;
+        }
     }
 }
