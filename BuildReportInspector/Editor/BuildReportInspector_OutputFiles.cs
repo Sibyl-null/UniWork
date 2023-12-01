@@ -32,7 +32,8 @@ namespace Unity.BuildReportInspector
                     continue;
                 GUILayout.BeginHorizontal(odd ? GUIStyleUtilities.OddStyle : GUIStyleUtilities.EvenStyle);
                 odd = !odd;
-                GUILayout.Label(new GUIContent(file.path.Substring(longestCommonRoot.Length), file.path), GUILayout.MaxWidth(EditorGUIUtility.currentViewWidth - 260));
+                GUILayout.Label(new GUIContent(file.path.Substring(longestCommonRoot.Length), file.path),
+                    GUILayout.MaxWidth(EditorGUIUtility.currentViewWidth - 260));
                 GUILayout.Label(file.role);
                 GUILayout.Label(FormatSize(file.size), GUIStyleUtilities.SizeStyle);
                 GUILayout.EndHorizontal();

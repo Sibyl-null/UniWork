@@ -1,35 +1,13 @@
 using System;
-using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
-using Object = UnityEngine.Object;
 
 namespace Unity.BuildReportInspector
 {
     [CustomEditor(typeof(BuildReport))]
     public partial class BuildReportInspector : Editor
     {
-        [MenuItem("Window/Open Last Build Report", true)]
-        public static bool ValidateOpenLastBuild()
-        {
-            return File.Exists("Library/LastBuild.buildreport");
-        }
-
-        [MenuItem("Window/Open Last Build Report")]
-        public static void OpenLastBuild()
-        {
-            const string buildReportDir = "Assets/BuildReports";
-            if (!Directory.Exists(buildReportDir))
-                Directory.CreateDirectory(buildReportDir);
-
-            var date = File.GetLastWriteTime("Library/LastBuild.buildreport");
-            var assetPath = buildReportDir + "/Build_" + date.ToString("yyyy-dd-MMM-HH-mm-ss") + ".buildreport";
-            File.Copy("Library/LastBuild.buildreport", assetPath, true);
-            AssetDatabase.ImportAsset(assetPath);
-            Selection.objects = new Object[] { AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath) };
-        }
-
         private BuildReport Report => target as BuildReport;
 
         private const int LineHeight = 20;
