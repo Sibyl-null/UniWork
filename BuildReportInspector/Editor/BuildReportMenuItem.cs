@@ -10,13 +10,13 @@ namespace UniWork.BuildReportInspector.Editor
         private const string BuildReportDir = "Assets/BuildReports";
         private const string TargetReportPath = "Library/LastBuild.buildreport";
         
-        [MenuItem("Window/Open Last Build Report", true)]
+        [MenuItem("UniWork/EditorTool/Copy Last Build Report", true)]
         public static bool ValidateOpenLastBuild()
         {
             return File.Exists(TargetReportPath);
         }
 
-        [MenuItem("Window/Open Last Build Report")]
+        [MenuItem("UniWork/EditorTool/Copy Last Build Report")]
         public static void OpenLastBuild()
         {
             if (!Directory.Exists(BuildReportDir))
