@@ -7,7 +7,7 @@ using UniWork.Utility.Runtime;
 
 namespace UniWork.UIFramework.Runtime
 {
-    public partial class UIManager : MonoBehaviour
+    public class UIManager : MonoBehaviour
     {
         public static UIManager Instance { get; private set; }
         private static UIManagerBaseAgent _agent;
