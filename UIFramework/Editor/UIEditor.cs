@@ -14,17 +14,17 @@ using UniWork.Utility.Runtime;
 
 namespace UniWork.UIFramework.Editor
 {
-    public class UIEditor
+    public static class UIEditor
     {
         // ---------------------------------------------------------------
         // 初始化资源
         // ---------------------------------------------------------------
-        
-        public const string UIRootDefaultSavePath = "Assets/Resources/UIRoot.prefab";
-        public const string UIEditorSettingDefaultSavePath = "Assets/Editor/Config/UIEditorSetting.asset";
-        public const string AutoBindTag = "AutoField";
 
-        [MenuItem("UniWork/UIFramework/初始化/创建全部", false, 1)]
+        private const string UIRootDefaultSavePath = "Assets/Resources/UIRoot.prefab";
+        private const string UIEditorSettingDefaultSavePath = "Assets/Editor/Config/UIEditorSetting.asset";
+        private const string AutoBindTag = "AutoField";
+
+        [MenuItem("UniWork/UIFramework/创建全部", false, 1)]
         public static void CreateAll()
         {
             CreateUIRootPrefab();
@@ -32,7 +32,7 @@ namespace UniWork.UIFramework.Editor
             AddAutoFieldTag();
         }
         
-        [MenuItem("UniWork/UIFramework/初始化/创建UIRoot预设体")]
+        [MenuItem("UniWork/UIFramework/创建UIRoot预设体")]
         public static void CreateUIRootPrefab()
         {
             if (File.Exists(UIRootDefaultSavePath))
@@ -105,7 +105,7 @@ namespace UniWork.UIFramework.Editor
             return eventSystemObj.transform;
         }
 
-        [MenuItem("UniWork/UIFramework/初始化/创建UIEditorSetting")]
+        [MenuItem("UniWork/UIFramework/创建UIEditorSetting")]
         public static void CreateUIEditorSetting()
         {
             if (File.Exists(UIEditorSettingDefaultSavePath))
@@ -128,7 +128,7 @@ namespace UniWork.UIFramework.Editor
             EditorGUIUtility.PingObject(editorSetting);
         }
 
-        [MenuItem("UniWork/UIFramework/初始化/添加AutoField Tag")]
+        [MenuItem("UniWork/UIFramework/添加AutoField Tag")]
         public static void AddAutoFieldTag()
         {
             SerializedObject tagManager =
