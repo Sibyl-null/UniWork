@@ -32,7 +32,7 @@ namespace UniWork.UIFramework.Runtime
             UIView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
             UIView.UICanvas.worldCamera = UIManager.Instance.UICamera;
             UIView.UICanvas.overrideSorting = true;
-            UIView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            UIView.UICanvas.sortingOrder = Info.UIBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
         }
 
         /**
@@ -45,7 +45,7 @@ namespace UniWork.UIFramework.Runtime
         public virtual void OnShow(UIBaseParameter param = null)
         {
             UIView.gameObject.SetActiveByClip(true);
-            UIView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            UIView.UICanvas.sortingOrder = Info.UIBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
             IsShow = true;
         }
 
@@ -64,7 +64,7 @@ namespace UniWork.UIFramework.Runtime
 
         public virtual void OnEscape()
         {
-            UIManager.Instance.HideUI(Info.UIEnumBaseType);
+            UIManager.Instance.HideUI(Info.UIBaseType);
         }
     }
 }

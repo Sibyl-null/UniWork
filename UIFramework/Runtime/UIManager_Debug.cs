@@ -36,7 +36,7 @@ namespace UniWork.UIFramework.Runtime
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("AllInStackUI: ");
             
-            foreach (UIEnumBaseType type in uiStack)
+            foreach (UIBaseType type in uiStack)
             {
                 sb.AppendLine($"{index++}: {type.value}");
             }
@@ -53,7 +53,7 @@ namespace UniWork.UIFramework.Runtime
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("AllInQueueUI: ");
             
-            foreach (UIEnumBaseType type in queueUI)
+            foreach (UIBaseType type in queueUI)
             {
                 sb.AppendLine($"{index++}: {type.value}");
             }

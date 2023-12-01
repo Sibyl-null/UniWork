@@ -4,8 +4,8 @@
     
     internal abstract class UIBaseScheduler
     {
-        internal abstract void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null);
-        internal abstract void HideUI(UIEnumBaseType uiEnumType);
-        internal abstract void DestroyUI(UIEnumBaseType uiEnumType);
+        internal abstract void ShowUI(UIBaseType uiType, UIBaseParameter param = null);
+        internal abstract void HideUI(UIBaseType uiType);
+        internal abstract void DestroyUI(UIBaseType uiType);
     }
 }

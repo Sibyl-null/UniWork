@@ -4,15 +4,15 @@ namespace UniWork.UIFramework.Runtime.Scheduler
 {
     internal sealed class UIStackScheduler : UIBaseScheduler
     {
-        private readonly StackList<UIEnumBaseType> _uiStack = new StackList<UIEnumBaseType>();
+        private readonly StackList<UIBaseType> _uiStack = new StackList<UIBaseType>();
         
-        internal StackList<UIEnumBaseType> UiStack => _uiStack;
+        internal StackList<UIBaseType> UiStack => _uiStack;
         internal bool IsEmpty => _uiStack.Count == 0;
 
-        internal override void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
+        internal override void ShowUI(UIBaseType uiType, UIBaseParameter param = null)
         {
             // 约定（保证）栈顶的元素一定是显示的
-            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiEnumType);
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiType);
             if (ctrl != null && ctrl.IsShow)
                 return;
 
@@ -20,27 +20,27 @@ namespace UniWork.UIFramework.Runtime.Scheduler
                 UIManager.Instance.HideUIInternal(_uiStack.Peek());
             
             // 若要打开的是非栈顶元素，先从栈中移除，防止重复进栈。
-            if (_uiStack.Contains(uiEnumType))
-                _uiStack.Remove(uiEnumType);
+            if (_uiStack.Contains(uiType))
+                _uiStack.Remove(uiType);
                 
-            _uiStack.Push(uiEnumType);
-            UIManager.Instance.ShowUIInternal(uiEnumType, param);
+            _uiStack.Push(uiType);
+            UIManager.Instance.ShowUIInternal(uiType, param);
         }
 
-        internal override void HideUI(UIEnumBaseType uiEnumType)
+        internal override void HideUI(UIBaseType uiType)
         {
-            UIManager.Instance.HideUIInternal(uiEnumType);
-            TryShowNextStackUI(uiEnumType);
+            UIManager.Instance.HideUIInternal(uiType);
+            TryShowNextStackUI(uiType);
         }
 
-        internal override void DestroyUI(UIEnumBaseType uiEnumType)
+        internal override void DestroyUI(UIBaseType uiType)
         {
-            UIManager.Instance.DestroyUIInternal(uiEnumType);
+            UIManager.Instance.DestroyUIInternal(uiType);
             
-            if (_uiStack.Count > 0 && _uiStack.Peek() != uiEnumType)
-                _uiStack.Remove(uiEnumType);
+            if (_uiStack.Count > 0 && _uiStack.Peek() != uiType)
+                _uiStack.Remove(uiType);
             else
-                TryShowNextStackUI(uiEnumType);
+                TryShowNextStackUI(uiType);
         }
 
         internal void EscapeUI()
@@ -48,9 +48,9 @@ namespace UniWork.UIFramework.Runtime.Scheduler
             UIManager.Instance.GetUICtrl(_uiStack.Peek()).OnEscape();
         }
         
-        private void TryShowNextStackUI(UIEnumBaseType uiEnumType)
+        private void TryShowNextStackUI(UIBaseType uiType)
         {
-            if (_uiStack.Count > 0 && _uiStack.Peek() == uiEnumType)
+            if (_uiStack.Count > 0 && _uiStack.Peek() == uiType)
             {
                 _uiStack.Pop();
                 if (_uiStack.Count > 0)

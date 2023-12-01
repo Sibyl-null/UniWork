@@ -2,19 +2,19 @@
 {
     internal sealed class UINormalScheduler : UIBaseScheduler
     {
-        internal override void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
+        internal override void ShowUI(UIBaseType uiType, UIBaseParameter param = null)
         {
-            UIManager.Instance.ShowUIInternal(uiEnumType, param);
+            UIManager.Instance.ShowUIInternal(uiType, param);
         }
 
-        internal override void HideUI(UIEnumBaseType uiEnumType)
+        internal override void HideUI(UIBaseType uiType)
         {
-            UIManager.Instance.HideUIInternal(uiEnumType);
+            UIManager.Instance.HideUIInternal(uiType);
         }
 
-        internal override void DestroyUI(UIEnumBaseType uiEnumType)
+        internal override void DestroyUI(UIBaseType uiType)
         {
-            UIManager.Instance.DestroyUIInternal(uiEnumType);
+            UIManager.Instance.DestroyUIInternal(uiType);
         }
     }
 }
