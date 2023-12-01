@@ -5,49 +5,49 @@ namespace UniWork.UIFramework.Runtime.Scheduler
 {
     internal sealed class UIQueueScheduler : UIBaseScheduler
     {
-        private readonly Queue<UIEnumBaseType> _uiQueue = new Queue<UIEnumBaseType>();
+        private readonly Queue<UIBaseType> _uiQueue = new Queue<UIBaseType>();
 
-        internal Queue<UIEnumBaseType> UiQueue => _uiQueue;
+        internal Queue<UIBaseType> UiQueue => _uiQueue;
         internal bool IsEmpty => _uiQueue.Count == 0;
         
-        internal override void ShowUI(UIEnumBaseType uiEnumType, UIBaseParameter param = null)
+        internal override void ShowUI(UIBaseType uiType, UIBaseParameter param = null)
         {
-            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiEnumType);
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiType);
             if (ctrl != null && ctrl.IsShow)
                 return;
             
             if (_uiQueue.Count == 0)
-                UIManager.Instance.ShowUIInternal(uiEnumType, param);
-            _uiQueue.Enqueue(uiEnumType);
+                UIManager.Instance.ShowUIInternal(uiType, param);
+            _uiQueue.Enqueue(uiType);
         }
 
-        internal override void HideUI(UIEnumBaseType uiEnumType)
+        internal override void HideUI(UIBaseType uiType)
         {
-            if (_uiQueue.Count > 0 && _uiQueue.Peek() != uiEnumType)
+            if (_uiQueue.Count > 0 && _uiQueue.Peek() != uiType)
             {
                 DLog.Error("UI 队列调用: 不允许隐藏非队头元素");
                 return;
             }
             
-            UIManager.Instance.HideUIInternal(uiEnumType);
-            TryShowNextQueueUI(uiEnumType);
+            UIManager.Instance.HideUIInternal(uiType);
+            TryShowNextQueueUI(uiType);
         }
 
-        internal override void DestroyUI(UIEnumBaseType uiEnumType)
+        internal override void DestroyUI(UIBaseType uiType)
         {
-            if (_uiQueue.Count > 0 && _uiQueue.Peek() != uiEnumType)
+            if (_uiQueue.Count > 0 && _uiQueue.Peek() != uiType)
             {
                 DLog.Error("UI 队列调用: 不允许销毁非队头元素");
                 return;
             }
             
-            UIManager.Instance.DestroyUIInternal(uiEnumType);
-            TryShowNextQueueUI(uiEnumType);
+            UIManager.Instance.DestroyUIInternal(uiType);
+            TryShowNextQueueUI(uiType);
         }
         
-        private void TryShowNextQueueUI(UIEnumBaseType uiEnumType)
+        private void TryShowNextQueueUI(UIBaseType uiType)
         {
-            if (_uiQueue.Count > 0 && _uiQueue.Peek() == uiEnumType)
+            if (_uiQueue.Count > 0 && _uiQueue.Peek() == uiType)
             {
                 _uiQueue.Dequeue();
                 if (_uiQueue.Count > 0)

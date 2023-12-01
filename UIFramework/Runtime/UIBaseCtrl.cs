@@ -6,13 +6,13 @@ namespace UniWork.UIFramework.Runtime
 {
     public abstract class UIBaseCtrl
     {
-        protected UIBaseView _uiView;
+        public UIBaseView UIView { get; private set; }
         public UIInfo Info { get; private set; }
         public bool IsShow { get; private set; }
 
         public void Initialize(UIBaseView view, UIInfo info)
         {
-            _uiView = view;
+            UIView = view;
             Info = info;
 
             SetUIScale();
@@ -23,19 +23,19 @@ namespace UniWork.UIFramework.Runtime
 
         private void SetUIScale()
         {
-            RectTransform rectTrans = _uiView.GetComponent<RectTransform>();
+            RectTransform rectTrans = UIView.GetComponent<RectTransform>();
             rectTrans.Overspread();
         }
 
         private void SetUIRenderLayer()
         {
-            _uiView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
-            _uiView.UICanvas.worldCamera = UIManager.Instance.UICamera;
-            _uiView.UICanvas.overrideSorting = true;
-            _uiView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            UIView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            UIView.UICanvas.worldCamera = UIManager.Instance.UICamera;
+            UIView.UICanvas.overrideSorting = true;
+            UIView.UICanvas.sortingOrder = Info.UIBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
         }
 
-        /*
+        /**
          * 一般用于初始化控件
          */
         protected virtual void OnCreate()
@@ -44,28 +44,27 @@ namespace UniWork.UIFramework.Runtime
 
         public virtual void OnShow(UIBaseParameter param = null)
         {
-            _uiView.gameObject.SetActiveByClip(true);
-            _uiView.UICanvas.sortingOrder = Info.UIEnumBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            UIView.gameObject.SetActiveByClip(true);
+            UIView.UICanvas.sortingOrder = Info.UIBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
             IsShow = true;
         }
 
         public virtual void OnHide()
         {
-            _uiView.gameObject.SetActiveByClip(false);
+            UIView.gameObject.SetActiveByClip(false);
             IsShow = false;
         }
 
-        /*
+        /**
          * 销毁对象，释放资源
          */
         public virtual void OnDestroy()
         {
-            GameObject.Destroy(_uiView.gameObject);
         }
 
         public virtual void OnEscape()
         {
-            UIManager.Instance.HideUI(Info.UIEnumBaseType);
+            UIManager.Instance.HideUI(Info.UIBaseType);
         }
     }
 }

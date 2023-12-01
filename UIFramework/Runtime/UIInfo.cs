@@ -3,16 +3,16 @@ using UniWork.Utility.Runtime;
 
 namespace UniWork.UIFramework.Runtime
 {
-    public abstract class UIEnumBaseType : EnumBaseType<UIEnumBaseType>
+    public abstract class UIBaseType : EnumBaseType<UIBaseType>
     {
-        protected UIEnumBaseType(int key, string value) : base(key, value)
+        protected UIBaseType(int key, string value) : base(key, value)
         {
         }
     }
 
-    public abstract class UIEnumBaseLayer : EnumBaseType<UIEnumBaseLayer>
+    public abstract class UIBaseLayer : EnumBaseType<UIBaseLayer>
     {
-        protected UIEnumBaseLayer(int key, string value) : base(key, value)
+        protected UIBaseLayer(int key, string value) : base(key, value)
         {
         }
     }
@@ -24,11 +24,20 @@ namespace UniWork.UIFramework.Runtime
 
     public class UIInfo
     {
-        public UIEnumBaseType UIEnumBaseType;
-        public UIEnumBaseLayer UIEnumBaseLayer;
-        public Type ViewType;
+        public UIBaseType UIBaseType;
+        public UIBaseLayer UIBaseLayer;
         public Type CtrlType;
         public UIScheduleMode ScheduleMode;
         public string ResPath;
+
+        public UIInfo(UIBaseType uiBaseType, UIBaseLayer uiBaseLayer, 
+            Type ctrlType, UIScheduleMode scheduleMode, string resPath)
+        {
+            UIBaseType = uiBaseType;
+            UIBaseLayer = uiBaseLayer;
+            CtrlType = ctrlType;
+            ScheduleMode = scheduleMode;
+            ResPath = resPath;
+        }
     }
 }

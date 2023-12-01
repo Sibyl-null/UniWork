@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Button name="Item" style="height: 29px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; flex-direction: row; align-items: center; background-color: rgb(50, 50, 50); width: auto; justify-content: flex-start; -unity-text-align: middle-center; white-space: nowrap; position: relative;">
+        <ui:Label text="Label" name="Label" style="padding-left: 5px; padding-right: 0; height: auto;" />
+        <ui:Button text="X" display-tooltip-when-elided="true" name="Close" enable-rich-text="false" style="flex-direction: row; font-size: 8px;" />
+        <ui:VisualElement name="Division" style="height: 100%; width: 1px; background-color: rgb(20, 20, 20);" />
+    </ui:Button>
+</ui:UXML>
