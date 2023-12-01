@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Unity.BuildReportInspector
+namespace UniWork.BuildReportInspector.Editor
 {
     public partial class BuildReportInspector
     {

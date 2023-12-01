@@ -3,10 +3,10 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 
-namespace Unity.BuildReportInspector
+namespace UniWork.BuildReportInspector.Editor
 {
     [CustomEditor(typeof(BuildReport))]
-    public partial class BuildReportInspector : Editor
+    public partial class BuildReportInspector : UnityEditor.Editor
     {
         private BuildReport Report => target as BuildReport;
 

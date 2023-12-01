@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Unity.BuildReportInspector
+namespace UniWork.BuildReportInspector.Editor
 {
     public static class GUIStyleUtilities
     {

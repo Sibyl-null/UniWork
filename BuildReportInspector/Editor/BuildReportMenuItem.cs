@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 
-namespace Unity.BuildReportInspector
+namespace UniWork.BuildReportInspector.Editor
 {
     public static class BuildReportMenuItem
     {
