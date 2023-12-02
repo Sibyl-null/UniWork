@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UniWork.UniBundle.Editor.BuildContexts;
+using UniWork.UniBundle.Editor.BundleBuilder.BuildContexts;
 using UniWork.UniBundle.Editor.SettingDefine;
 
-namespace UniWork.UniBundle.Editor.BuildTasks
+namespace UniWork.UniBundle.Editor.BundleBuilder.BuildTasks
 {
     internal class CollectAssetsTask : IBuildTask
     {

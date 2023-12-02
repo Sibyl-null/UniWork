@@ -1,4 +1,4 @@
-namespace UniWork.UniBundle.Editor.BuildTasks
+namespace UniWork.UniBundle.Editor.BundleBuilder.BuildTasks
 {
     public interface IBuildTask
     {

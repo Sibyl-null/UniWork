@@ -1,9 +1,9 @@
 using UnityEditor;
-using UniWork.UniBundle.Editor.BuildContexts;
-using UniWork.UniBundle.Editor.BuildTasks;
+using UniWork.UniBundle.Editor.BundleBuilder.BuildContexts;
+using UniWork.UniBundle.Editor.BundleBuilder.BuildTasks;
 using UniWork.UniBundle.Editor.SettingDefine;
 
-namespace UniWork.UniBundle.Editor
+namespace UniWork.UniBundle.Editor.BundleBuilder
 {
     public static class BundleBuilder
     {
