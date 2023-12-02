@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UniWork.UIFramework.Runtime.Scheduler;
@@ -112,6 +113,16 @@ namespace UniWork.UIFramework.Runtime
             else
                 DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
         }
+
+        public async UniTask ShowUIAsync(UIBaseType uiType, UIBaseParameter param = null)
+        {
+            UIInfo info = GetUIInfo(uiType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                await scheduler.ShowUIAsync(uiType, param);
+            else
+                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+        }
         
         public void HideUI(UIBaseType uiType)
         {
@@ -143,6 +154,25 @@ namespace UniWork.UIFramework.Runtime
             {
                 UIInfo info = _infos[uiType];
                 GameObject uiObj = CreateUIObject(info);
+                ctrl = CreateUICtrl(uiObj, info);
+                ctrl.OnShow(param);
+                return;
+            }
+
+            if (!ctrl.IsShow)
+                ctrl.OnShow(param);
+        }
+
+        internal async UniTask ShowUIAsyncInternal(UIBaseType uiType, UIBaseParameter param = null)
+        {
+            UIBaseCtrl ctrl = GetUICtrl(uiType);
+
+            OrderLayerIncrement += _agent.LayerOrderOnceRaise;
+            
+            if (ctrl == null)
+            {
+                UIInfo info = _infos[uiType];
+                GameObject uiObj = await CreateUIObjectAsync(info);
                 ctrl = CreateUICtrl(uiObj, info);
                 ctrl.OnShow(param);
                 return;
@@ -206,6 +236,13 @@ namespace UniWork.UIFramework.Runtime
         {
             Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
             GameObject uiPrefab = _agent.Load<GameObject>(info.ResPath);
+            return Instantiate(uiPrefab, bucketTrans, false);
+        }
+
+        private async UniTask<GameObject> CreateUIObjectAsync(UIInfo info)
+        {
+            Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
+            GameObject uiPrefab = await _agent.LoadAsync<GameObject>(info.ResPath);
             return Instantiate(uiPrefab, bucketTrans, false);
         }
 
