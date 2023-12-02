@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 using UniWork.UniBundle.Editor.BundleCollection;
 using UniWork.UniBundle.Editor.SettingDefine;
 using UniWork.UniBundle.Editor.ShaderVariantCollection;
@@ -33,7 +34,7 @@ namespace UniWork.UniBundle.Editor
                 string[] deps = AssetDatabase.GetDependencies(file);
                 foreach (string dep in deps)
                 {
-                    if (Path.GetExtension(dep) == ".mat")
+                    if (AssetDatabase.GetMainAssetTypeAtPath(dep) == typeof(Material))
                         materials.Add(dep);
                 }
             }

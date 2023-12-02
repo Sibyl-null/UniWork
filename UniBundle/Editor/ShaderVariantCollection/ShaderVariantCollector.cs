@@ -11,20 +11,43 @@ namespace UniWork.UniBundle.Editor.ShaderVariantCollection
 {
     public static class ShaderVariantCollector
     {        
+        private enum ESteps
+        {
+            None,
+            ClearLastVariants,
+            CollectVariants,
+            WaitingDone,
+        }
+        
+        private static ESteps _steps = ESteps.None;
+        private static List<string> _materials;
+        private static string _savePath;
+        private static float _waitTime;
+
+        private const float WaitDoneDelayTime = 1f;
+        
         public static void Run(List<string> materials, string savePath)
         {
-            PrepareCollection(savePath);
-            ProcessCollection(materials, savePath);
+            if (_steps != ESteps.None)
+                return;
+
+            _materials = materials;
+            _savePath = savePath;
+            
+            PrepareCollection();
+            
+            _steps = ESteps.ClearLastVariants;
+            EditorApplication.update += EditorUpdate;
         }
 
-        private static void PrepareCollection(string savePath)
+        private static void PrepareCollection()
         {
-            string directory = Path.GetDirectoryName(savePath);
+            string directory = Path.GetDirectoryName(_savePath);
             if (Directory.Exists(directory) == false)
                 Directory.CreateDirectory(directory);
 
-            if (File.Exists(savePath))
-                AssetDatabase.DeleteAsset(savePath);
+            if (File.Exists(_savePath))
+                AssetDatabase.DeleteAsset(_savePath);
             
             // 聚焦到 GameView 窗口
             System.Type type = Assembly.Load("UnityEditor").GetType("UnityEditor.GameView");
@@ -34,17 +57,49 @@ namespace UniWork.UniBundle.Editor.ShaderVariantCollection
             EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects);
         }
         
-        private static void ProcessCollection(List<string> materials, string savePath)
+        private static void EditorUpdate()
         {
-            ShaderVariantHelper.ClearCurrentVariantRecord();
+            if (_steps == ESteps.None)
+                return;
 
+            if (_steps == ESteps.ClearLastVariants)
+            {
+                ShaderVariantHelper.ClearCurrentVariantRecord();
+                _steps = ESteps.CollectVariants;
+                return;
+            }
+
+            if (_steps == ESteps.CollectVariants)
+            {
+                CollectVariants();
+                _steps = ESteps.WaitingDone;
+                _waitTime = Time.realtimeSinceStartup + WaitDoneDelayTime;
+                return;
+            }
+
+            if (_steps == ESteps.WaitingDone)
+            {
+                if (Time.realtimeSinceStartup < _waitTime) 
+                    return;
+                
+                _steps = ESteps.None;
+                ShaderVariantHelper.SaveCurrentVariantRecord(_savePath);
+                
+                AssetDatabase.Refresh();
+                EditorApplication.update -= EditorUpdate;
+                DLog.Info("[ShaderVariantCollector] 收集完毕");
+            }
+        }
+
+        private static void CollectVariants()
+        {
             Camera camera = Camera.main;
             if (camera == null)
                 throw new BuildFailedException("[ShaderVariantCollector] Not find main camera");
             
             // 设置主相机
             float aspect = camera.aspect;
-            int totalMaterials = materials.Count;
+            int totalMaterials = _materials.Count;
             float height = Mathf.Sqrt(totalMaterials / aspect) + 1;
             float width = Mathf.Sqrt(totalMaterials / aspect) * aspect + 1;
             float halfHeight = Mathf.CeilToInt(height / 2f);
@@ -57,9 +112,9 @@ namespace UniWork.UniBundle.Editor.ShaderVariantCollection
             int xMax = (int)(width - 1);
             int x = 0, y = 0;
             int progressValue = 0;
-            for (int i = 0; i < materials.Count; i++)
+            for (int i = 0; i < _materials.Count; i++)
             {
-                string material = materials[i];
+                string material = _materials[i];
                 Vector3 position = new Vector3(x - halfWidth + 1f, y - halfHeight + 1f, 0f);
                 GameObject go = CreateSphere(material, position, i);
                 if (go == null)
@@ -76,14 +131,10 @@ namespace UniWork.UniBundle.Editor.ShaderVariantCollection
                 }
 
                 ++progressValue;
-                EditorUtility.DisplayProgressBar("变体收集进度", $"照射所有材质球 : {progressValue}/{materials.Count}",
-                    progressValue / (float)materials.Count);
+                EditorUtility.DisplayProgressBar("变体收集进度", $"照射所有材质球 : {progressValue}/{_materials.Count}",
+                    progressValue / (float)_materials.Count);
             }
             EditorUtility.ClearProgressBar();
-            
-            ShaderVariantHelper.SaveCurrentVariantRecord(savePath);
-            AssetDatabase.Refresh();
-            DLog.Info("[ShaderVariantCollector] 收集完毕");
         }
 
         private static GameObject CreateSphere(string materialPath, Vector3 position, int index)
