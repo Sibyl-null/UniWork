@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor.Build;
 
-namespace UniWork.UniBundle.Editor.BundleBuilder.BuildContexts
+namespace UniWork.UniBundle.Editor.BundleCollection.BuildContexts
 {
     internal interface IContextData
     {
