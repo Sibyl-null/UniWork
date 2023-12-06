@@ -11,7 +11,7 @@ namespace UniWork.BehaviourTree.Runtime.SerializeProvider
         
         // SerializeReference 特性可支持多态序列化
         [SerializeReference] public List<BaseNode> allNodes;
-        [SerializeReference] public List<BTBlackBoardBaseParam> blackBoardParams;
+        [SerializeReference] public List<BtBlackBoardBaseParam> blackBoardParams;
         
         public void Serialize(BehaviourTree tree)
         {
@@ -30,7 +30,7 @@ namespace UniWork.BehaviourTree.Runtime.SerializeProvider
             };
             tree.DeserializePostProcess();
 
-            foreach (BTBlackBoardBaseParam param in blackBoardParams)
+            foreach (BtBlackBoardBaseParam param in blackBoardParams)
                 tree.btBlackBoard.SetParam(param.key, param);
             
             return tree;

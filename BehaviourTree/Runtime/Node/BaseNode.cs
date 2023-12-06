@@ -20,7 +20,7 @@ namespace UniWork.BehaviourTree.Runtime.Node
         [NonSerialized] public State curState = State.Free;
         [NonSerialized] public BaseNode parentNode;
 
-        public BTBlackBoard BlackBoard => owner.btBlackBoard;
+        public BtBlackBoard BlackBoard => owner.btBlackBoard;
         
         
         // -----------------------------------------------------------------

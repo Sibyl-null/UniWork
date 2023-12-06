@@ -2,13 +2,13 @@
 
 namespace UniWork.BehaviourTree.Runtime.BlackBoard
 {
-    public abstract class BTBlackBoardBaseParam
+    public abstract class BtBlackBoardBaseParam
     {
         public string key;
     }
     
     [Serializable]
-    public class BtBtBlackBoardBaseParam<T> : BTBlackBoardBaseParam
+    public class BtBtBlackBoardBaseParam<T> : BtBlackBoardBaseParam
     {
         public T value;
     }

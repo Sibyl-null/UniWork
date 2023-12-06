@@ -10,7 +10,7 @@ namespace UniWork.BehaviourTree.Runtime
         public int rootId;
         public RootNode rootNode;
         public List<BaseNode> allNodes = new List<BaseNode>();
-        public BTBlackBoard btBlackBoard = new BTBlackBoard();
+        public BtBlackBoard btBlackBoard = new BtBlackBoard();
 
         public static BehaviourTree Create()
         {
