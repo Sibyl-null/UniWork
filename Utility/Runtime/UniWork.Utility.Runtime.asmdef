@@ -1,6 +1,6 @@
 {
     "name": "UniWork.Utility.Runtime",
-    "rootNamespace": "",
+    "rootNamespace": "UniWork",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
