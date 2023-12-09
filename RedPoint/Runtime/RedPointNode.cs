@@ -83,6 +83,7 @@ namespace UniWork.RedPoint.Runtime
                 return false;
 
             _children.Remove(key);
+            RedPointManager.Instance.MarkDirtyNode(Parent);
             return true;
         }
         
@@ -130,6 +131,7 @@ namespace UniWork.RedPoint.Runtime
 
             Value = newValue;
             _onValueChanged?.Invoke(newValue);
+            RedPointManager.Instance.MarkDirtyNode(Parent);
         }
     }
 }
