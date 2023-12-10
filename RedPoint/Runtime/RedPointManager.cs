@@ -11,35 +11,10 @@ namespace UniWork.RedPoint.Runtime
 
         // FullPath -> RedPointNode
         private readonly Dictionary<string, RedPointNode> _nodes = new Dictionary<string, RedPointNode>();
-        private HashSet<RedPointNode> _dirtyNodeSet = new HashSet<RedPointNode>();
-        private List<RedPointNode> _tempDirtyNodes = new List<RedPointNode>();
 
-        public char SplitChar { get; } = '/';
+        public char SplitChar { get; } = '|';
         public StringBuilder CachedSb { get; } = new StringBuilder();
         public RedPointNode RootNode { get; } = new RedPointNode("RootNode", null);
-
-        public void Tick()
-        {
-            if (_dirtyNodeSet.Count == 0)
-                return;
-            
-            _tempDirtyNodes.Clear();
-            foreach (RedPointNode node in _dirtyNodeSet)
-                _tempDirtyNodes.Add(node);
-            
-            _dirtyNodeSet.Clear();
-
-            foreach (RedPointNode node in _tempDirtyNodes)
-                node.ChangeValueByChild();
-        }
-
-        public void MarkDirtyNode(RedPointNode node)
-        {
-            if (node == null || node == RootNode)
-                return;
-
-            _dirtyNodeSet.Add(node);
-        }
         
         public RedPointNode GetNode(string path)
         {
@@ -56,10 +31,7 @@ namespace UniWork.RedPoint.Runtime
         {
             RedPointNode node = GetNode(path);
             if (node != null)
-            {
-                DLog.Warning("[RedPoint] RedPoint 已存在: " + path);
                 return node;
-            }
 
             node = RootNode;
             int startIndex = 0;
@@ -87,17 +59,26 @@ namespace UniWork.RedPoint.Runtime
             _nodes.Remove(path);
             return node.Parent.RemoveChild(new RangeString(node.Name, 0, node.Name.Length - 1));
         }
-        
-        public void AddNodeListener(string path, Action<int> valueChangedAction)
+
+        public void SetLeafNodeState(string path, bool show)
         {
             RedPointNode node = GetNode(path);
-            node.AddListener(valueChangedAction);
+            if (node == null)
+                return;
+            
+            node.SetStateIfLeaf(show);
+        }
+        
+        public void AddNodeListener(string path, Action<RedPointNode> nodeRefreshAction)
+        {
+            RedPointNode node = GetNode(path);
+            node.AddListener(nodeRefreshAction);
         }
 
-        public void RemoveNodeListener(string path, Action<int> valueChangedAction)
+        public void RemoveNodeListener(string path, Action<RedPointNode> nodeRefreshAction)
         {
             RedPointNode node = GetNode(path);
-            node.RemoveListener(valueChangedAction);
+            node.RemoveListener(nodeRefreshAction);
         }
     }
 }

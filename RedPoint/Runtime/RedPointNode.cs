@@ -6,19 +6,20 @@ namespace UniWork.RedPoint.Runtime
 {
     public class RedPointNode
     {
-        private readonly Dictionary<RangeString, RedPointNode> _children = new Dictionary<RangeString, RedPointNode>();
-        private Action<int> _onValueChanged;
+        private readonly Dictionary<RangeString, RedPointNode> _children = new();
+        private Action<RedPointNode> _onNodeRefresh;
         
         public string Name { get; private set; }
-        public int Value { get; private set; }      // 叶节点值单独计数，非叶节点值为子节点值总和
         public RedPointNode Parent { get; private set; }
         public string FullPath { get; private set; }
+        public bool IsShow { get; private set; }
+        
+        public int ChildCount => _children.Count;
         public bool IsLeaf => _children.Count == 0;
 
         public RedPointNode(string name, RedPointNode parent)
         {
             Name = name;
-            Value = 0;
             Parent = parent;
 
             if (parent == null || parent == RedPointManager.Instance.RootNode)
@@ -31,16 +32,34 @@ namespace UniWork.RedPoint.Runtime
             }
         }
 
-        public void AddListener(Action<int> action)
+        public void AddListener(Action<RedPointNode> action)
         {
             if (action != null)
-                _onValueChanged += action;
+                _onNodeRefresh += action;
         }
 
-        public void RemoveListener(Action<int> action)
+        public void RemoveListener(Action<RedPointNode> action)
         {
             if (action != null)
-                _onValueChanged -= action;
+                _onNodeRefresh -= action;
+        }
+
+        public void SetStateIfLeaf(bool show)
+        {
+            if (IsLeaf == false)
+            {
+                DLog.Error("[RedPoint] 禁止直接设置非叶节点显隐");
+                return;
+            }
+
+            IsShow = show;
+            InvokeNodeRefresh();
+        }
+        
+        private void InvokeNodeRefresh()
+        {
+            _onNodeRefresh?.Invoke(this);
+            Parent?.InvokeNodeRefresh();
         }
 
         public override string ToString()
@@ -83,55 +102,7 @@ namespace UniWork.RedPoint.Runtime
                 return false;
 
             _children.Remove(key);
-            RedPointManager.Instance.MarkDirtyNode(Parent);
             return true;
-        }
-        
-        
-        // ----------------------------------------------------------------------------
-        // 节点值更改
-        // ----------------------------------------------------------------------------
-
-        /**
-         * 改变节点值，只能在叶节点上调用
-         */
-        public void ChangeValueBySelf(int value)
-        {
-            if (!IsLeaf)
-            {
-                DLog.Error($"[RedPoint] {nameof(ChangeValueBySelf)} 方法不能在非叶节点上调用");
-                return;
-            }
-
-            ChangeValueInternal(value);
-        }
-
-        /**
-         * 根据子节点刷新节点值，只能在非叶节点上调用
-         */
-        public void ChangeValueByChild()
-        {
-            if (IsLeaf)
-            {
-                DLog.Error($"[RedPoint] {nameof(ChangeValueByChild)} 方法不能在叶节点上调用");
-                return;
-            }
-
-            int sum = 0;
-            foreach (RedPointNode node in _children.Values)
-                sum += node.Value;
-            
-            ChangeValueInternal(sum);
-        }
-        
-        private void ChangeValueInternal(int newValue)
-        {
-            if (Value == newValue)
-                return;
-
-            Value = newValue;
-            _onValueChanged?.Invoke(newValue);
-            RedPointManager.Instance.MarkDirtyNode(Parent);
         }
     }
 }
