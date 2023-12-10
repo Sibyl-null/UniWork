@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using UniWork.Utility.Runtime;
 
+// Note: 分为两种节点, 过程节点和叶节点. 过程节点 - 子节点显示数量改变事件. 叶节点 - 是否显隐事件.
+// 外部只能添加移除叶节点。提供刷新叶节点方法 -> 调用叶节点事件 
+// 事先定义一堆叶节点路径，初始化时添加。即整个红点树在初始化时就构建完成，节点不论显隐都在树中
+// UI: 根据路径找到节点，注册事件。 调用叶节点刷新。
+
 namespace UniWork.RedPoint.Runtime
 {
     public class RedPointManager
