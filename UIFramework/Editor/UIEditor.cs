@@ -16,7 +16,7 @@ namespace UniWork.UIFramework.Editor
         // ---------------------------------------------------------------
 
         private const string UIRootDefaultSavePath = "Assets/Resources/UIRoot.prefab";
-        public const string UIEditorSettingDefaultSavePath = "Assets/Editor/Config/UIEditorSetting.asset";
+        private const string UIEditorSettingDefaultSavePath = "Assets/Editor/Config/UIEditorSetting.asset";
         private const string AutoBindTag = "AutoField";
 
         [MenuItem("UniWork/UIFramework/创建全部", false, 1)]

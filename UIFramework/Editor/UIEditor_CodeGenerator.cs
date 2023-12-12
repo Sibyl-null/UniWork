@@ -37,15 +37,12 @@ namespace UniWork.UIFramework.Editor
             if (selectedObject == null)
                 throw new Exception("[自动生成UIView代码]: 请选择一个Prefab");
 
-            UIEditorSetting editorSetting =
-                AssetDatabase.LoadAssetAtPath<UIEditorSetting>(UIEditorSettingDefaultSavePath);
-            if (editorSetting == null)
-                throw new Exception("[自动生成UIView代码]: UIEditorSetting 加载失败");
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             if (string.IsNullOrEmpty(editorSetting.codeFileSavePath))
                 throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
             
 
-            CodeGenerateData data = CollectGenerateData(editorSetting, selectedObject);
+            CodeGenerateData data = CollectGenerateData(selectedObject);
             string code = GenerateCode(data);
 
             string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{selectedObject.name}View.cs");
@@ -61,8 +58,10 @@ namespace UniWork.UIFramework.Editor
             EditorPrefs.SetString(AutoGenScriptNameKey, $"{selectedObject.name}View");
         }
 
-        private static CodeGenerateData CollectGenerateData(UIEditorSetting editorSetting, GameObject selectedObject)
+        private static CodeGenerateData CollectGenerateData(GameObject selectedObject)
         {
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
+            
             HashSet<string> namespaceSet = new HashSet<string> { typeof(UIBaseView).Namespace };
             Dictionary<string, string> goNamePathMap = new Dictionary<string, string>();
             List<(string typeName, string fieldName, string goName)> fieldList =

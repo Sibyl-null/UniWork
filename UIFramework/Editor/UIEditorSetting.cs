@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,5 +39,18 @@ namespace UniWork.UIFramework.Editor
             new AutoBindData("cg", nameof(CanvasGroup)),
             new AutoBindData("dp", nameof(Dropdown))
         };
+        
+        // ----------------------------------------------------------------------------------
+
+        private const string SavePath = "Assets/Editor/Config/UIEditorSetting.asset";
+
+        public static UIEditorSetting MustLoad()
+        {
+            UIEditorSetting setting = AssetDatabase.LoadAssetAtPath<UIEditorSetting>(SavePath);
+            if (setting == null)
+                throw new Exception("UIEditorSetting 加载失败, path = " + SavePath);
+
+            return setting;
+        }
     }
 }
