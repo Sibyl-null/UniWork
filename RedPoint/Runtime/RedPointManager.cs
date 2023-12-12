@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UniWork.RedPoint.Runtime.Nodes;
 using UniWork.Utility.Runtime;
 
 // Note: 分为两种节点, 过程节点和叶节点. 过程节点 - 子节点显示数量改变事件. 叶节点 - 是否显隐事件.
@@ -10,18 +11,54 @@ using UniWork.Utility.Runtime;
 
 namespace UniWork.RedPoint.Runtime
 {
+    public struct LeafNodeDefine
+    {
+        public readonly string Path;
+        public readonly Func<bool> Func;
+
+        public LeafNodeDefine(string path, Func<bool> func)
+        {
+            Path = path;
+            Func = func;
+        }
+    }
+    
     public class RedPointManager
     {
-        public static RedPointManager Instance { get; } = new RedPointManager();
+        public static RedPointManager Instance { get; private set; }
 
-        // FullPath -> RedPointNode
-        private readonly Dictionary<string, RedPointNode> _nodes = new Dictionary<string, RedPointNode>();
+        // FullPath -> RedPointBaseNode
+        private readonly Dictionary<string, RedPointBaseNode> _nodes = new Dictionary<string, RedPointBaseNode>();
 
         public char SplitChar { get; } = '|';
         public StringBuilder CachedSb { get; } = new StringBuilder();
-        public RedPointNode RootNode { get; } = new RedPointNode("RootNode", null);
+        private RedPointRouteNode RootNode { get; } = new RedPointRouteNode("RootNode", null);
+
+        public static void Create(List<LeafNodeDefine> leafNodeDefines)
+        {
+            Instance = new RedPointManager();
+            Instance.Init(leafNodeDefines);
+        }
+
+        private void Init(List<LeafNodeDefine> leafNodeDefines)
+        {
+            foreach (LeafNodeDefine define in leafNodeDefines)
+                AddLeafNode(define.Path, define.Func);
+        }
+
+        public void RefreshNode(string path)
+        {
+            RedPointBaseNode node = GetNode(path);
+            if (node == null)
+            {
+                DLog.Error("[RedPoint] 该路径不存在节点: " + path);
+                return;
+            }
+            
+            node.Refresh();
+        }
         
-        public RedPointNode GetNode(string path)
+        public RedPointBaseNode GetNode(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -29,16 +66,15 @@ namespace UniWork.RedPoint.Runtime
                 return null;
             }
 
-            return _nodes.TryGetValue(path, out RedPointNode node) ? node : null;
+            return _nodes.TryGetValue(path, out RedPointBaseNode node) ? node : null;
         }
 
-        public RedPointNode AddNode(string path)
+        public RedPointLeafNode AddLeafNode(string path, Func<bool> judgeDisplayFunc)
         {
-            RedPointNode node = GetNode(path);
-            if (node != null)
-                return node;
+            if (GetNode(path) != null)
+                throw new Exception("[RedPoint] 重复添加节点: " + path);
 
-            node = RootNode;
+            RedPointRouteNode routeNode = RootNode;
             int startIndex = 0;
 
             for (int i = 0; i < path.Length; ++i)
@@ -46,44 +82,36 @@ namespace UniWork.RedPoint.Runtime
                 if (path[i] != SplitChar)
                     continue;
 
-                node = node.GetOrAddChild(new RangeString(path, startIndex, i - 1));
+                routeNode = routeNode.GetOrAddRouteChild(new RangeString(path, startIndex, i - 1));
                 startIndex = i + 1;
+
+                if (_nodes.ContainsKey(path.Substring(0, i)) == false)
+                    _nodes.Add(path.Substring(0, i), routeNode);
             }
 
-            node = node.GetOrAddChild(new RangeString(path, startIndex, path.Length - 1));
-            _nodes.Add(path, node);
-            return node;
+            // 最后一个节点是叶节点
+            RedPointLeafNode leafNode =
+                routeNode.GetOrAddLeafChild(new RangeString(path, startIndex, path.Length - 1), judgeDisplayFunc);
+            leafNode.Refresh();
+
+            _nodes.Add(path, leafNode);
+            return leafNode;
         }
 
-        public bool RemoveNode(string path)
+        public void RemoveLeafNode(string path)
         {
-            if (_nodes.ContainsKey(path) == false)
-                return false;
+            if (GetNode(path) == null)
+                throw new Exception("[RedPoint] 不存在该节点: " + path);
 
-            RedPointNode node = _nodes[path];
-            _nodes.Remove(path);
-            return node.Parent.RemoveChild(new RangeString(node.Name, 0, node.Name.Length - 1));
-        }
+            RedPointBaseNode node = _nodes[path];
+            if (node.NodeType != RedPointType.Leaf)
+                throw new Exception("[RedPoint] 不允许移除非叶节点: " + path);
 
-        public void SetLeafNodeState(string path, bool show)
-        {
-            RedPointNode node = GetNode(path);
-            if (node == null)
-                return;
+            RedPointRouteNode parent = (RedPointRouteNode)node.Parent;
+            parent.RemoveChild(new RangeString(node.Name, 0, node.Name.Length - 1));
+            parent.Refresh();
             
-            node.SetStateIfLeaf(show);
-        }
-        
-        public void AddNodeListener(string path, Action<RedPointNode> nodeRefreshAction)
-        {
-            RedPointNode node = GetNode(path);
-            node.AddListener(nodeRefreshAction);
-        }
-
-        public void RemoveNodeListener(string path, Action<RedPointNode> nodeRefreshAction)
-        {
-            RedPointNode node = GetNode(path);
-            node.RemoveListener(nodeRefreshAction);
+            _nodes.Remove(path);
         }
     }
 }
