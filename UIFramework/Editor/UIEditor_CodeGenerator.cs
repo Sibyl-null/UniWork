@@ -43,8 +43,26 @@ namespace UniWork.UIFramework.Editor
                 throw new Exception("[自动生成UIView代码]: UIEditorSetting 加载失败");
             if (string.IsNullOrEmpty(editorSetting.codeFileSavePath))
                 throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
+            
 
-            // 2. 数据收集
+            CodeGenerateData data = CollectGenerateData(editorSetting, selectedObject);
+            string code = GenerateCode(data);
+
+            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{selectedObject.name}View.cs");
+            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
+                Directory.CreateDirectory(editorSetting.codeFileSavePath);
+            
+            File.WriteAllText(savePath, code);
+            
+            AssetDatabase.Refresh();
+            DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
+            
+            // 4. 脚本挂载并绑定
+            EditorPrefs.SetString(AutoGenScriptNameKey, $"{selectedObject.name}View");
+        }
+
+        private static CodeGenerateData CollectGenerateData(UIEditorSetting editorSetting, GameObject selectedObject)
+        {
             HashSet<string> namespaceSet = new HashSet<string> { typeof(UIBaseView).Namespace };
             Dictionary<string, string> goNamePathMap = new Dictionary<string, string>();
             List<(string typeName, string fieldName, string goName)> fieldList =
@@ -94,20 +112,7 @@ namespace UniWork.UIFramework.Editor
                 GoNamePathMap = goNamePathMap,
                 FieldList = fieldList
             };
-
-            string code = GenerateCode(data);
-
-            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{selectedObject.name}View.cs");
-            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileSavePath);
-            
-            File.WriteAllText(savePath, code);
-            
-            AssetDatabase.Refresh();
-            DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
-            
-            // 4. 脚本挂载并绑定
-            EditorPrefs.SetString(AutoGenScriptNameKey, $"{selectedObject.name}View");
+            return data;
         }
 
         private static string GenerateCode(CodeGenerateData data)
@@ -115,7 +120,7 @@ namespace UniWork.UIFramework.Editor
             StringBuilder sb = new StringBuilder();
             
             // generate code info
-            sb.AppendLine($"// Auto generate at {DateTime.Now.Date}");
+            sb.AppendLine($"// Auto generate at {DateTime.Now}");
             sb.AppendLine("// please do not modify this file");
             sb.AppendLine();
             
