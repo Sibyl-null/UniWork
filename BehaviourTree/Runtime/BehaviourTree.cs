@@ -80,7 +80,7 @@ namespace UniWork.BehaviourTree.Runtime
             
             // 设置所有节点的子节点 id
             foreach (BaseNode node in allNodes)
-                node.RebuildChildrenId();                
+                node.RebuildChildrenId();
         }
 
         /// <summary>

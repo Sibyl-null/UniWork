@@ -2,6 +2,7 @@
 
 namespace UniWork.BehaviourTree.Runtime.BlackBoard
 {
+    [Serializable]
     public abstract class BtBlackBoardBaseParam
     {
         public string key;

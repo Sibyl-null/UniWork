@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UniWork.BehaviourTree.Runtime.BlackBoard;
 using UniWork.BehaviourTree.Runtime.Node;
 
 namespace UniWork.BehaviourTree.Runtime.SerializeProvider
 {
+    [Serializable]
     public class BehaviourTreeSO : ScriptableObject, IBehaviourTreeSerializeDataProvider
     {
         public int rootId;
