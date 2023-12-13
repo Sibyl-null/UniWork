@@ -17,6 +17,18 @@ namespace UniWork.BehaviourTree.Runtime
             return new BehaviourTree();
         }
 
+        // TODO: 改变加入列表的方式
+        public void Init()
+        {
+            AddNodeToList(rootNode);
+        }
+
+        private void AddNodeToList(BaseNode node)
+        {
+            allNodes.Add(node);
+            node.ForeachChildren(AddNodeToList);
+        }
+
         public void Start()
         {
             if (rootNode == null)

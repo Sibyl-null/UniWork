@@ -21,8 +21,8 @@ namespace UniWork.BehaviourTree.Runtime.Node
         [NonSerialized] public BaseNode parentNode;
 
         public BtBlackBoard BlackBoard => owner.btBlackBoard;
-        
-        
+
+
         // -----------------------------------------------------------------
         // 节点操作
         // -----------------------------------------------------------------
