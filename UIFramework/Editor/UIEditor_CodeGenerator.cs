@@ -28,7 +28,16 @@ namespace UniWork.UIFramework.Editor
         [MenuItem("Assets/自动生成UIView代码", false, MenuItemPriority)]
         public static void GenerateUIViewCode()
         {
-            // 1. 非法情况判断
+            GameObject selectedObject = VerifySetting();
+            CodeGenerateData data = CollectGenerateData(selectedObject);
+            GenerateCode(data);
+
+            // 脚本挂载并绑定
+            EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.ClassName}View");
+        }
+
+        private static GameObject VerifySetting()
+        {
             string selectedPath = GetSelectedPath();
             if (selectedPath == "" || File.Exists(selectedPath) == false)
                 throw new Exception("[自动生成UIView代码]: 请选择一个Prefab");
@@ -40,22 +49,8 @@ namespace UniWork.UIFramework.Editor
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             if (string.IsNullOrEmpty(editorSetting.codeFileSavePath))
                 throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
-            
 
-            CodeGenerateData data = CollectGenerateData(selectedObject);
-            string code = GenerateCode(data);
-
-            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{selectedObject.name}View.cs");
-            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileSavePath);
-            
-            File.WriteAllText(savePath, code);
-            
-            AssetDatabase.Refresh();
-            DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
-            
-            // 4. 脚本挂载并绑定
-            EditorPrefs.SetString(AutoGenScriptNameKey, $"{selectedObject.name}View");
+            return selectedObject;
         }
 
         private static CodeGenerateData CollectGenerateData(GameObject selectedObject)
@@ -114,8 +109,9 @@ namespace UniWork.UIFramework.Editor
             return data;
         }
 
-        private static string GenerateCode(CodeGenerateData data)
+        private static void GenerateCode(CodeGenerateData data)
         {
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             StringBuilder sb = new StringBuilder();
             
             // generate code info
@@ -164,8 +160,15 @@ namespace UniWork.UIFramework.Editor
             sb.AppendLine("\t}");
             if (string.IsNullOrEmpty(data.YourNamespace) == false)
                 sb.AppendLine("}");
-
-            return sb.ToString();
+            
+            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{data.ClassName}View.cs");
+            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
+                Directory.CreateDirectory(editorSetting.codeFileSavePath);
+            
+            File.WriteAllText(savePath, sb.ToString());
+            
+            AssetDatabase.Refresh();
+            DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
         }
 
         [DidReloadScripts]
