@@ -7,7 +7,7 @@ namespace UniWork.BehaviourTree.Runtime
 {
     public class BehaviourTree
     {
-        public RootNode rootNode;
+        public RootNode rootNode = new RootNode();
         public List<BaseNode> allNodes = new List<BaseNode>();
         public BtBlackBoard btBlackBoard = new BtBlackBoard();
 
@@ -15,6 +15,8 @@ namespace UniWork.BehaviourTree.Runtime
         {
             return new BehaviourTree();
         }
+        
+        private BehaviourTree(){}
 
         // TODO: 改变加入列表的方式
         public void Init()

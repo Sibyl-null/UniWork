@@ -24,10 +24,8 @@ namespace UniWork.BehaviourTree.Runtime.SerializeProvider
 
         public BehaviourTree Deserialize()
         {
-            BehaviourTree tree = new BehaviourTree()
-            {
-                allNodes = allNodes
-            };
+            BehaviourTree tree = BehaviourTree.Create();
+            tree.allNodes = allNodes;
             
             foreach (BtBlackBoardBaseParam param in blackBoardParams)
                 tree.btBlackBoard.SetParam(param.key, param);
