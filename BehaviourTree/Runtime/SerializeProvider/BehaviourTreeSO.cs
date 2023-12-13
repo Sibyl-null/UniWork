@@ -18,7 +18,6 @@ namespace UniWork.BehaviourTree.Runtime.SerializeProvider
         public void Serialize(BehaviourTree tree)
         {
             tree.SerializePreProcess();
-            rootId = tree.rootId;
             allNodes = tree.allNodes;
             blackBoardParams = tree.btBlackBoard.GetAllParamList();
         }
@@ -27,14 +26,13 @@ namespace UniWork.BehaviourTree.Runtime.SerializeProvider
         {
             BehaviourTree tree = new BehaviourTree()
             {
-                rootId = rootId,
                 allNodes = allNodes
             };
-            tree.DeserializePostProcess();
-
+            
             foreach (BtBlackBoardBaseParam param in blackBoardParams)
                 tree.btBlackBoard.SetParam(param.key, param);
             
+            tree.DeserializePostProcess();
             return tree;
         }
     }
