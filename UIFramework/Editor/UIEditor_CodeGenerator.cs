@@ -131,7 +131,7 @@ namespace UniWork.UIFramework.Editor
         private static void ScribanGenerateCode(CodeGenerateData data)
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            string str = File.ReadAllText("Packages/UniWork/UIFramework/Editor/UIViewTemplate.scriban");
+            TextAsset textAsset = Resources.Load<TextAsset>("UIViewTemplate");
 
             ScriptObject scriptObject = new ScriptObject();
             scriptObject.Import(data);
@@ -139,7 +139,7 @@ namespace UniWork.UIFramework.Editor
             TemplateContext context = new TemplateContext();
             context.PushGlobal(scriptObject);
 
-            Template template = Template.Parse(str);
+            Template template = Template.Parse(textAsset.text);
             if (template.HasErrors)
             {
                 foreach (var error in template.Messages)
