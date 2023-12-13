@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using Scriban;
+using Scriban.Runtime;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -12,13 +14,28 @@ using UniWork.Utility.Runtime;
 
 namespace UniWork.UIFramework.Editor
 {
+    internal struct FieldData
+    {
+        public readonly string TypeName;
+        public readonly string FieldName;
+        public readonly string GoName;
+
+        public FieldData(string typeName, string fieldName, string goName)
+        {
+            TypeName = typeName;
+            FieldName = fieldName;
+            GoName = goName;
+        }
+    }
+    
     internal class CodeGenerateData
     {
+        public string NowDateTime;
         public string YourNamespace;
         public string ClassName;
         public string[] Namespaces;
         public Dictionary<string, string> GoNamePathMap;
-        public List<(string typeName, string fieldName, string goName)> FieldList;
+        public List<FieldData> Fields;
     }
     
     public static partial class UIEditor
@@ -30,10 +47,10 @@ namespace UniWork.UIFramework.Editor
         {
             GameObject selectedObject = VerifySetting();
             CodeGenerateData data = CollectGenerateData(selectedObject);
-            GenerateCode(data);
+            ScribanGenerateCode(data);
 
             // 脚本挂载并绑定
-            EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.ClassName}View");
+            EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.ClassName}");
         }
 
         private static GameObject VerifySetting()
@@ -59,8 +76,7 @@ namespace UniWork.UIFramework.Editor
             
             HashSet<string> namespaceSet = new HashSet<string> { typeof(UIBaseView).Namespace };
             Dictionary<string, string> goNamePathMap = new Dictionary<string, string>();
-            List<(string typeName, string fieldName, string goName)> fieldList =
-                new List<(string typeName, string fieldName, string goName)>();
+            List<FieldData> fieldList = new List<FieldData>();
 
             List<GameObject> childList = new List<GameObject>();
             GetAllChildGameObjects(selectedObject.transform, ref childList);
@@ -86,7 +102,8 @@ namespace UniWork.UIFramework.Editor
                                  .Where(bindData => bindData.componentName == component.GetType().Name))
                     {
                         namespaceSet.Add(component.GetType().Namespace);
-                        fieldList.Add((autoBindData.componentName, autoBindData.prefix + childObj.name, childObj.name));
+                        fieldList.Add(new FieldData(autoBindData.componentName, autoBindData.prefix + childObj.name,
+                            childObj.name));
                         break;
                     }
                 }
@@ -94,78 +111,50 @@ namespace UniWork.UIFramework.Editor
                 if (shouldBindGameObject)
                 {
                     namespaceSet.Add(typeof(GameObject).Namespace);
-                    fieldList.Add((nameof(GameObject), gameObjectBindData[0].prefix + childObj.name, childObj.name));
+                    fieldList.Add(new FieldData(nameof(GameObject), gameObjectBindData[0].prefix + childObj.name,
+                        childObj.name));
                 }
             }
 
             CodeGenerateData data = new CodeGenerateData
             {
+                NowDateTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
                 YourNamespace = editorSetting.codeNamespace,
-                ClassName = selectedObject.name,
+                ClassName = selectedObject.name + "View",
                 Namespaces = namespaceSet.ToArray(),
                 GoNamePathMap = goNamePathMap,
-                FieldList = fieldList
+                Fields = fieldList
             };
             return data;
         }
 
-        private static void GenerateCode(CodeGenerateData data)
+        private static void ScribanGenerateCode(CodeGenerateData data)
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            StringBuilder sb = new StringBuilder();
-            
-            // generate code info
-            sb.AppendLine($"// Auto generate at {DateTime.Now}");
-            sb.AppendLine("// please do not modify this file");
-            sb.AppendLine();
-            
-            // namespace
-            foreach (string space in data.Namespaces)
-                sb.AppendLine($"using {space};");
-            sb.AppendLine();
+            string str = File.ReadAllText("Packages/UniWork/UIFramework/Editor/UIViewTemplate.scriban");
 
-            if (string.IsNullOrEmpty(data.YourNamespace) == false)
+            ScriptObject scriptObject = new ScriptObject();
+            scriptObject.Import(data);
+
+            TemplateContext context = new TemplateContext();
+            context.PushGlobal(scriptObject);
+
+            Template template = Template.Parse(str);
+            if (template.HasErrors)
             {
-                sb.AppendLine($"namespace {data.YourNamespace}");
-                sb.AppendLine("{");
+                foreach (var error in template.Messages)
+                    DLog.Error(error.ToString());
+
+                throw new Exception("UIView 生成失败，Scriban 模版解析出错");
             }
-
-            // class name
-            sb.AppendLine($"\tpublic partial class {data.ClassName}View : UIBaseView");
-            sb.AppendLine("\t{");
             
-            // field
-            foreach (var tuple in data.FieldList)
-                sb.AppendLine($"\t\tpublic {tuple.typeName} {tuple.fieldName};");
+            string code = template.Render(context);
 
-            // bind method
-            sb.AppendLine();
-            sb.AppendLine("\t\t// only editor use");
-            sb.AppendLine("\t\tprivate void BindComponent()");
-            sb.AppendLine("\t\t{");
-            
-            foreach (var p in data.GoNamePathMap)
-                sb.AppendLine($"\t\t\tvar {p.Key} = transform.Find(\"{p.Value}\");");
-            sb.AppendLine();
-            foreach (var tuple in data.FieldList)
-            {
-                sb.AppendLine(tuple.typeName != nameof(GameObject)
-                    ? $"\t\t\t{tuple.fieldName} = {tuple.goName}.GetComponent<{tuple.typeName}>();"
-                    : $"\t\t\t{tuple.fieldName} = {tuple.goName}.gameObject;");
-            }
-
-            sb.AppendLine("\t\t}");
-
-            // end
-            sb.AppendLine("\t}");
-            if (string.IsNullOrEmpty(data.YourNamespace) == false)
-                sb.AppendLine("}");
-            
-            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{data.ClassName}View.cs");
+            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{data.ClassName}.cs");
             if (Directory.Exists(editorSetting.codeFileSavePath) == false)
                 Directory.CreateDirectory(editorSetting.codeFileSavePath);
             
-            File.WriteAllText(savePath, sb.ToString());
+            File.WriteAllText(savePath, code);
             
             AssetDatabase.Refresh();
             DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
@@ -180,9 +169,8 @@ namespace UniWork.UIFramework.Editor
             if (string.IsNullOrEmpty(scriptName) || prefab == null ||
                 prefab.name != scriptName.Substring(0, scriptName.Length - 4))
                 return;
-            
-            UIEditorSetting editorSetting =
-                AssetDatabase.LoadAssetAtPath<UIEditorSetting>(UIEditorSettingDefaultSavePath);
+
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string scriptPath = Path.Combine(editorSetting.codeFileSavePath, scriptName + ".cs");
 
             Type scriptType = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptPath).GetClass();
