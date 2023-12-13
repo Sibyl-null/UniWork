@@ -30,7 +30,7 @@ namespace UniWork.RedPoint.Runtime
         // FullPath -> RedPointBaseNode
         private readonly Dictionary<string, RedPointBaseNode> _nodes = new Dictionary<string, RedPointBaseNode>();
 
-        public char SplitChar { get; } = '|';
+        public char SplitChar => '|';
         public StringBuilder CachedSb { get; } = new StringBuilder();
         private RedPointRouteNode RootNode { get; } = new RedPointRouteNode("RootNode", null);
 
@@ -85,8 +85,9 @@ namespace UniWork.RedPoint.Runtime
                 routeNode = routeNode.GetOrAddRouteChild(new RangeString(path, startIndex, i - 1));
                 startIndex = i + 1;
 
-                if (_nodes.ContainsKey(path.Substring(0, i)) == false)
-                    _nodes.Add(path.Substring(0, i), routeNode);
+                string subPath = path.Substring(0, i);
+                if (_nodes.ContainsKey(subPath) == false)
+                    _nodes.Add(subPath, routeNode);
             }
 
             // 最后一个节点是叶节点
