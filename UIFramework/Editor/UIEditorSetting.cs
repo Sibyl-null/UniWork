@@ -4,6 +4,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UniWork.Utility.Editor;
 
 namespace UniWork.UIFramework.Editor
 {
@@ -51,6 +52,11 @@ namespace UniWork.UIFramework.Editor
                 throw new Exception("UIEditorSetting 加载失败, path = " + SavePath);
 
             return setting;
+        }
+
+        public static void CreateAsset()
+        {
+            EditorMethodUtility.CreateScriptableObjectAsset<UIEditorSetting>(SavePath);
         }
     }
 }

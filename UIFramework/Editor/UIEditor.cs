@@ -103,24 +103,7 @@ namespace UniWork.UIFramework.Editor
         [MenuItem("UniWork/UIFramework/创建UIEditorSetting")]
         public static void CreateUIEditorSetting()
         {
-            if (File.Exists(UIEditorSettingDefaultSavePath))
-            {
-                DLog.Warning("UIEditorSetting已存在：" + UIEditorSettingDefaultSavePath);
-                return;
-            }
-
-            string foldPath =
-                UIEditorSettingDefaultSavePath.Substring(0, UIEditorSettingDefaultSavePath.LastIndexOf('/'));
-            if (!Directory.Exists(foldPath))
-                Directory.CreateDirectory(foldPath);
-            
-            UIEditorSetting editorSetting = ScriptableObject.CreateInstance<UIEditorSetting>();
-            AssetDatabase.CreateAsset(editorSetting, UIEditorSettingDefaultSavePath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            Selection.activeObject = editorSetting;
-            EditorGUIUtility.PingObject(editorSetting);
+            UIEditorSetting.CreateAsset();
         }
 
         [MenuItem("UniWork/UIFramework/添加AutoField Tag")]
