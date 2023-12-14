@@ -9,6 +9,7 @@ namespace UniWork.UIFramework.Runtime
         public UIBaseView UIView { get; private set; }
         public UIInfo Info { get; private set; }
         public bool IsShow { get; private set; }
+        public bool EnableInput => UIManager.Instance.EnableInput && UIView.UIRaycaster.enabled;
 
         public void Initialize(UIBaseView view, UIInfo info)
         {

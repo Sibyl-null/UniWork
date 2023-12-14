@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using UniWork.Utility.Runtime;
 using UniWork.Utility.Runtime.DataStructure;
 
 namespace UniWork.UIFramework.Runtime.Scheduler
@@ -62,7 +63,14 @@ namespace UniWork.UIFramework.Runtime.Scheduler
 
         internal void EscapeUI()
         {
-            UIManager.Instance.GetUICtrl(_uiStack.Peek()).OnEscape();
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(_uiStack.Peek());
+            if (ctrl.EnableInput == false)
+            {
+                DLog.Info("[UIManager] Ctrl Input 禁用中，返回键无效. UIType: " + ctrl.Info.UIBaseType.value);
+                return;
+            }
+            
+            ctrl.OnEscape();
         }
         
         private void TryShowNextStackUI(UIBaseType uiType)

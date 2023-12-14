@@ -14,15 +14,11 @@ namespace UniWork.UIFramework.Runtime
         public static UIManager Instance { get; private set; }
         private static UIManagerBaseAgent _agent;
 
-        private readonly Dictionary<UIBaseType, UIInfo> _infos = 
-            new Dictionary<UIBaseType, UIInfo>();
-        private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls =
-            new Dictionary<UIBaseType, UIBaseCtrl>();
-        private readonly Dictionary<int, RectTransform> _bucketTrans = 
-            new Dictionary<int, RectTransform>();
+        private readonly Dictionary<UIBaseType, UIInfo> _infos = new();
+        private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls = new();
+        private readonly Dictionary<int, RectTransform> _bucketTrans = new();
 
-        private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = 
-            new Dictionary<UIScheduleMode, UIBaseScheduler>()
+        private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
         {
             { UIScheduleMode.Normal, new UINormalScheduler() },
             { UIScheduleMode.Queue, new UIQueueScheduler() },
@@ -34,7 +30,7 @@ namespace UniWork.UIFramework.Runtime
         
         public event Action OnEscapeEvent;
         public Camera UICamera { get; private set; }
-        public int OrderLayerIncrement { get; private set; } = 0;
+        public int OrderLayerIncrement { get; private set; }
 
         public bool EnableInput
         {
