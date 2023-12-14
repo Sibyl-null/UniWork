@@ -85,9 +85,12 @@ namespace UniWork.UIFramework.Runtime
             }
         }
 
-        private void Update()
+        /**
+         * 需要外部在按下返回键时调用 (例如键盘 ESC 键，手机返回键等)
+         */
+        public void RunEscapeClick()
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && EnableInput)
+            if (EnableInput)
             {
                 UIStackScheduler stackScheduler = (UIStackScheduler)_schedulers[UIScheduleMode.Stack];
                 if (!stackScheduler.IsEmpty)
