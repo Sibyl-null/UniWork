@@ -1,0 +1,16 @@
+{
+    "name": "UniWork.FiniteStateMachine.Runtime",
+    "rootNamespace": "UniWork",
+    "references": [
+        "GUID:299c632e3bf0b3a4885864742f538d04"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
