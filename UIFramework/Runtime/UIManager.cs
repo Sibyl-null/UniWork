@@ -12,7 +12,7 @@ namespace UniWork.UIFramework.Runtime
     public class UIManager
     {
         public static UIManager Instance { get; private set; }
-        private static UIManagerBaseAgent _agent;
+        private static UIBaseAgent _agent;
 
         private readonly Dictionary<UIBaseType, UIInfo> _infos = new();
         private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls = new();
@@ -40,7 +40,7 @@ namespace UniWork.UIFramework.Runtime
         
         private UIManager(){}
 
-        public static void Create(UIManagerBaseAgent agent)
+        public static void Create(UIBaseAgent agent)
         {
             if (Instance != null)
                 throw new Exception("UIManager repeat created");
