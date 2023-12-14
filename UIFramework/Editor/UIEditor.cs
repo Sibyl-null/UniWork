@@ -4,8 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UniWork.UIFramework.Runtime;
 using UniWork.Utility.Runtime;
+using Object = UnityEngine.Object;
 
 namespace UniWork.UIFramework.Editor
 {
@@ -41,7 +41,7 @@ namespace UniWork.UIFramework.Editor
 
             GameObject uiRootObj = CreateUIRootObj();
             GameObject prefabAsset = PrefabUtility.SaveAsPrefabAsset(uiRootObj, UIRootDefaultSavePath);
-            GameObject.DestroyImmediate(uiRootObj);
+            Object.DestroyImmediate(uiRootObj);
             
             AssetDatabase.Refresh();
             Selection.activeObject = prefabAsset;
@@ -74,7 +74,6 @@ namespace UniWork.UIFramework.Editor
             canvasScaler.matchWidthOrHeight = 1;
             canvasScaler.referenceResolution = new Vector2(1920f, 1080f);
             
-            root.AddComponent<UIManager>();
             root.layer = LayerMask.NameToLayer("UI");
         }
 
@@ -164,7 +163,7 @@ namespace UniWork.UIFramework.Editor
             // save as prefab
             GameObject prefabAsset =
                 PrefabUtility.SaveAsPrefabAsset(uiTemplate, Path.Combine(savePath, "ZTemplateUI.prefab"));
-            GameObject.DestroyImmediate(uiTemplate);
+            Object.DestroyImmediate(uiTemplate);
             
             AssetDatabase.Refresh();
             Selection.activeObject = prefabAsset;

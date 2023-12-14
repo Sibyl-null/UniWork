@@ -5,10 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UniWork.UIFramework.Runtime.Scheduler;
 using UniWork.Utility.Runtime;
+using Object = UnityEngine.Object;
 
 namespace UniWork.UIFramework.Runtime
 {
-    public class UIManager : MonoBehaviour
+    public class UIManager
     {
         public static UIManager Instance { get; private set; }
         private static UIManagerBaseAgent _agent;
@@ -28,6 +29,7 @@ namespace UniWork.UIFramework.Runtime
             { UIScheduleMode.Stack, new UIStackScheduler() }
         };
 
+        private GameObject _rootGo;
         private EventSystem _eventSystem;
         
         public event Action OnEscapeEvent;
@@ -39,6 +41,8 @@ namespace UniWork.UIFramework.Runtime
             get => _eventSystem.isActiveAndEnabled;
             set => _eventSystem.enabled = value;
         }
+        
+        private UIManager(){}
 
         public static void Create(UIManagerBaseAgent agent)
         {
@@ -46,17 +50,17 @@ namespace UniWork.UIFramework.Runtime
                 throw new Exception("UIManager repeat created");
             
             _agent = agent;
-            GameObject obj = Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
-            DontDestroyOnLoad(obj);
-            
-            Instance = obj.GetOrAddComponent<UIManager>();
+            GameObject obj = Object.Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
+            Object.DontDestroyOnLoad(obj);
+
+            Instance = new UIManager();
             Instance.Initialize();
         }
 
         private void Initialize()
         {
-            UICamera = GetComponentInChildren<Camera>();
-            _eventSystem = GetComponentInChildren<EventSystem>();
+            UICamera = _rootGo.GetComponentInChildren<Camera>();
+            _eventSystem = _rootGo.GetComponentInChildren<EventSystem>();
             _agent.InitUIInfo();
             CreateBuckets();
         }
@@ -76,7 +80,7 @@ namespace UniWork.UIFramework.Runtime
             {
                 GameObject bucketObj = new GameObject(baseLayer.value);
                 bucketObj.layer = LayerMask.NameToLayer("UI");
-                bucketObj.transform.SetParent(this.transform, false);
+                bucketObj.transform.SetParent(_rootGo.transform, false);
 
                 RectTransform rectTrans = bucketObj.GetOrAddComponent<RectTransform>();
                 rectTrans.Overspread();
@@ -213,7 +217,7 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnHide();
             
             ctrl.OnDestroy();
-            Destroy(ctrl.UIView.gameObject);
+            Object.Destroy(ctrl.UIView.gameObject);
             
             _agent.UnLoad(ctrl.Info.ResPath);
             _instantiatedCtrls.Remove(uiType);
@@ -239,14 +243,14 @@ namespace UniWork.UIFramework.Runtime
         {
             Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
             GameObject uiPrefab = _agent.Load<GameObject>(info.ResPath);
-            return Instantiate(uiPrefab, bucketTrans, false);
+            return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
 
         private async UniTask<GameObject> CreateUIObjectAsync(UIInfo info)
         {
             Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
             GameObject uiPrefab = await _agent.LoadAsync<GameObject>(info.ResPath);
-            return Instantiate(uiPrefab, bucketTrans, false);
+            return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
 
         private UIBaseCtrl CreateUICtrl(GameObject uiObj, UIInfo info)
