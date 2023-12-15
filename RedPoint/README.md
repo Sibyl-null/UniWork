@@ -43,7 +43,7 @@ public class RedPointLauncher : MonoBehaviour
 {
     private void Awake()
     {
-        RedPointManager.Create(RedPointDefine.NodeDefines);
+        RedPointTree.Create(RedPointDefine.NodeDefines);
 
         GameObject prefab = Resources.Load<GameObject>("RedPointCanvas");
         Instantiate(prefab);
@@ -69,19 +69,19 @@ public class RedPointCanvas : MonoBehaviour
         
         if (GUILayout.Button("ATwo"))
         {
-            RedPointDefine.AOneShow = !RedPointDefine.AOneShow;
+            RedPointDefine.ATwoShow = !RedPointDefine.ATwoShow;
             ATwo.Refresh();
         }
         
         if (GUILayout.Button("BOne"))
         {
-            RedPointDefine.AOneShow = !RedPointDefine.AOneShow;
+            RedPointDefine.BOneShow = !RedPointDefine.BOneShow;
             BOne.Refresh();
         }
         
         if (GUILayout.Button("BTwo"))
         {
-            RedPointDefine.AOneShow = !RedPointDefine.AOneShow;
+            RedPointDefine.BTwoShow = !RedPointDefine.BTwoShow;
             BTwo.Refresh();
         }
     }
