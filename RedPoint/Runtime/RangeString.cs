@@ -58,11 +58,11 @@ namespace UniWork.RedPoint.Runtime
 
         public override string ToString()
         {
-            RedPointManager.Instance.CachedSb.Clear();
+            RedPointTree.CachedSb.Clear();
             for (int i = _startIndex; i <= _endIndex; ++i)
-                RedPointManager.Instance.CachedSb.Append(_source[i]);
+                RedPointTree.CachedSb.Append(_source[i]);
 
-            return RedPointManager.Instance.CachedSb.ToString();
+            return RedPointTree.CachedSb.ToString();
         }
     }
 }

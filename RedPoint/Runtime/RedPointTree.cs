@@ -23,30 +23,30 @@ namespace UniWork.RedPoint.Runtime
         }
     }
     
-    public class RedPointManager
+    public static class RedPointTree
     {
-        public static RedPointManager Instance { get; private set; }
-
         // FullPath -> RedPointBaseNode
-        private readonly Dictionary<string, RedPointBaseNode> _nodes = new Dictionary<string, RedPointBaseNode>();
+        private static readonly Dictionary<string, RedPointBaseNode> _nodes = new();
 
-        public char SplitChar => '|';
-        public StringBuilder CachedSb { get; } = new StringBuilder();
-        private RedPointRouteNode RootNode { get; } = new RedPointRouteNode("RootNode", null);
+        public static char SplitChar => '|';
+        public static StringBuilder CachedSb { get; } = new();
+        private static RedPointRouteNode RootNode { get; set; }
 
         public static void Create(List<LeafNodeDefine> leafNodeDefines)
         {
-            Instance = new RedPointManager();
-            Instance.Init(leafNodeDefines);
-        }
-
-        private void Init(List<LeafNodeDefine> leafNodeDefines)
-        {
+            RootNode = new RedPointRouteNode("RootNode", null);
             foreach (LeafNodeDefine define in leafNodeDefines)
                 AddLeafNode(define.Path, define.Func);
         }
 
-        public void RefreshNode(string path)
+        public static void Release()
+        {
+            _nodes.Clear();
+            CachedSb.Clear();
+            RootNode = null;
+        }
+
+        public static void RefreshNode(string path)
         {
             RedPointBaseNode node = GetNode(path);
             if (node == null)
@@ -58,7 +58,7 @@ namespace UniWork.RedPoint.Runtime
             node.Refresh();
         }
         
-        public RedPointBaseNode GetNode(string path)
+        public static RedPointBaseNode GetNode(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -69,7 +69,7 @@ namespace UniWork.RedPoint.Runtime
             return _nodes.TryGetValue(path, out RedPointBaseNode node) ? node : null;
         }
 
-        public RedPointLeafNode AddLeafNode(string path, Func<bool> judgeDisplayFunc)
+        public static RedPointLeafNode AddLeafNode(string path, Func<bool> judgeDisplayFunc)
         {
             if (GetNode(path) != null)
                 throw new Exception("[RedPoint] 重复添加节点: " + path);
@@ -99,7 +99,7 @@ namespace UniWork.RedPoint.Runtime
             return leafNode;
         }
 
-        public void RemoveLeafNode(string path)
+        public static void RemoveLeafNode(string path)
         {
             if (GetNode(path) == null)
                 throw new Exception("[RedPoint] 不存在该节点: " + path);

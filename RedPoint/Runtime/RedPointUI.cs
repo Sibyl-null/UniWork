@@ -16,7 +16,7 @@ namespace UniWork.RedPoint.Runtime
         private void Awake()
         {
             _image = GetComponent<Image>();
-            _node = RedPointManager.Instance.GetNode(path);
+            _node = RedPointTree.GetNode(path);
             
             RegisterRefresh(SetIconActive);
             Refresh();
