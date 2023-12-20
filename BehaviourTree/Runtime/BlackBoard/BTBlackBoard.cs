@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace UniWork.BehaviourTree.Runtime.BlackBoard
 {
-    public class BTBlackBoard
+    public class BtBlackBoard
     {
-        private readonly Dictionary<string, BTBlackBoardBaseParam> _paramDic = new Dictionary<string, BTBlackBoardBaseParam>();
+        private readonly Dictionary<string, BtBlackBoardBaseParam> _paramDic = new Dictionary<string, BtBlackBoardBaseParam>();
 
-        public void SetParam(string key, BTBlackBoardBaseParam baseParam)
+        public void SetParam(string key, BtBlackBoardBaseParam baseParam)
         {
             if (_paramDic.ContainsKey(key))
                 _paramDic[key] = baseParam;
@@ -15,7 +15,7 @@ namespace UniWork.BehaviourTree.Runtime.BlackBoard
                 _paramDic.Add(key, baseParam);
         }
 
-        public T GetParam<T>(string key) where T : BTBlackBoardBaseParam
+        public T GetParam<T>(string key) where T : BtBlackBoardBaseParam
         {
             if (_paramDic.ContainsKey(key) == false)
                 return null;
@@ -29,7 +29,7 @@ namespace UniWork.BehaviourTree.Runtime.BlackBoard
                 _paramDic.Remove(key);
         }
 
-        public List<BTBlackBoardBaseParam> GetAllParamList()
+        public List<BtBlackBoardBaseParam> GetAllParamList()
         {
             return _paramDic.Values.ToList();
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UniWork.Utility.Runtime;
 
 namespace UniWork.UIFramework.Runtime.Scheduler
@@ -18,6 +19,18 @@ namespace UniWork.UIFramework.Runtime.Scheduler
             
             if (_uiQueue.Count == 0)
                 UIManager.Instance.ShowUIInternal(uiType, param);
+            _uiQueue.Enqueue(uiType);
+        }
+
+        internal override async UniTask ShowUIAsync(UIBaseType uiType, UIBaseParameter param = null)
+        {
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiType);
+            if (ctrl != null && ctrl.IsShow)
+                return;
+
+            if (_uiQueue.Count == 0)
+                await UIManager.Instance.ShowUIAsyncInternal(uiType, param);
+            
             _uiQueue.Enqueue(uiType);
         }
 

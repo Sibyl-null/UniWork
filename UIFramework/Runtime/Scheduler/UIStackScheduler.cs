@@ -1,4 +1,6 @@
-﻿using UniWork.Utility.Runtime.DataStructure;
+﻿using Cysharp.Threading.Tasks;
+using UniWork.Utility.Runtime;
+using UniWork.Utility.Runtime.DataStructure;
 
 namespace UniWork.UIFramework.Runtime.Scheduler
 {
@@ -27,6 +29,22 @@ namespace UniWork.UIFramework.Runtime.Scheduler
             UIManager.Instance.ShowUIInternal(uiType, param);
         }
 
+        internal override async UniTask ShowUIAsync(UIBaseType uiType, UIBaseParameter param = null)
+        {
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiType);
+            if (ctrl != null && ctrl.IsShow)
+                return;
+
+            if (_uiStack.Count > 0)
+                UIManager.Instance.HideUIInternal(_uiStack.Peek());
+            
+            if (_uiStack.Contains(uiType))
+                _uiStack.Remove(uiType);
+                
+            _uiStack.Push(uiType);
+            await UIManager.Instance.ShowUIAsyncInternal(uiType, param);
+        }
+
         internal override void HideUI(UIBaseType uiType)
         {
             UIManager.Instance.HideUIInternal(uiType);
@@ -45,7 +63,14 @@ namespace UniWork.UIFramework.Runtime.Scheduler
 
         internal void EscapeUI()
         {
-            UIManager.Instance.GetUICtrl(_uiStack.Peek()).OnEscape();
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(_uiStack.Peek());
+            if (ctrl.EnableInput == false)
+            {
+                DLog.Info("[UIManager] Ctrl Input 禁用中，返回键无效. UIType: " + ctrl.Info.UIBaseType.value);
+                return;
+            }
+            
+            ctrl.OnEscape();
         }
         
         private void TryShowNextStackUI(UIBaseType uiType)

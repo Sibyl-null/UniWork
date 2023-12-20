@@ -1,6 +1,6 @@
 {
     "name": "UniWork.ReferencePool.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "UniWork",
     "references": [
         "GUID:8c50f10460f2dcf4282f1ed0e102653f"
     ],

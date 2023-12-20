@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace UniWork.Utility.Runtime
+namespace UniWork.Utility.Runtime.MethodUtility
 {
     public static class IoUtility
     {
@@ -14,10 +14,10 @@ namespace UniWork.Utility.Runtime
         {
             return Directory.Exists(path);
         }
-
-        /// <summary>
-        /// 获取所有子文件夹，不包含中间文件夹和自己
-        /// </summary>
+        
+        /**
+         * 获取所有子文件夹，不包含中间文件夹和自己
+         */
         public static List<string> GetLeafDirectories(string path)
         {
             List<string> leafDirPathList = new List<string>();
@@ -43,10 +43,10 @@ namespace UniWork.Utility.Runtime
 
             return leafDirPathList;
         }
-
-        /// <summary>
-        /// 创建一个新的文件夹，如果原本有内容则清空
-        /// </summary>
+        
+        /**
+         * 创建一个新的文件夹，如果原本有内容则清空
+         */
         public static void MakeNewDirectory(string path)
         {
             if (Directory.Exists(path))

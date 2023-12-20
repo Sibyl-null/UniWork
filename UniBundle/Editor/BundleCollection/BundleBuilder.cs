@@ -1,13 +1,12 @@
 using UnityEditor;
-using UniWork.UniBundle.Editor.BuildContexts;
-using UniWork.UniBundle.Editor.BuildTasks;
+using UniWork.UniBundle.Editor.BundleCollection.BuildContexts;
+using UniWork.UniBundle.Editor.BundleCollection.BuildTasks;
 using UniWork.UniBundle.Editor.SettingDefine;
 
-namespace UniWork.UniBundle.Editor
+namespace UniWork.UniBundle.Editor.BundleCollection
 {
     public static class BundleBuilder
     {
-        [MenuItem("UniWork/UniBundle/打包 AB")]
         public static void BuildAssetBundle()
         {
             BuildContext.Clear();

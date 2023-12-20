@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace UniWork.UniBundle.Editor.BuildContexts
+namespace UniWork.UniBundle.Editor.BundleCollection.BuildContexts
 {
     internal class AssetInfo
     {

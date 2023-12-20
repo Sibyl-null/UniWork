@@ -1,0 +1,33 @@
+// Auto generate at {{ now_date_time }}
+// please do not modify this file
+
+using System.Diagnostics;
+{{~ for $namespace in namespaces ~}}
+using {{ $namespace }};
+{{~ end ~}}
+
+namespace {{ your_namespace }}
+{
+    public class {{ class_name }} : UIBaseView
+    {
+        {{~ for $field in fields ~}}
+        public {{ $field.type_name }} {{ $field.field_name }};
+        {{~ end ~}}
+
+        [Conditional("UNITY_EDITOR")]
+        private void BindComponent()
+        {
+            {{~ for $item in go_name_path_map ~}}
+            var {{ $item.key }} = transform.Find("{{ $item.value }}");
+            {{~ end ~}}
+        
+            {{~ for $field in fields ~}}
+            {{~ if $field.type_name == "GameObject" ~}}
+            {{ $field.field_name }} = {{ $field.go_name }}.gameObject;
+            {{~ else ~}}
+            {{ $field.field_name }} = {{ $field.go_name }}.GetComponent<{{ $field.type_name }}>();
+            {{~ end ~}}
+            {{~ end ~}}
+        }
+    }
+}

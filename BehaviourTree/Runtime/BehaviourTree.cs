@@ -7,14 +7,27 @@ namespace UniWork.BehaviourTree.Runtime
 {
     public class BehaviourTree
     {
-        public int rootId;
-        public RootNode rootNode;
+        public RootNode rootNode = new RootNode();
         public List<BaseNode> allNodes = new List<BaseNode>();
-        public BTBlackBoard btBlackBoard = new BTBlackBoard();
+        public BtBlackBoard btBlackBoard = new BtBlackBoard();
 
         public static BehaviourTree Create()
         {
             return new BehaviourTree();
+        }
+        
+        private BehaviourTree(){}
+
+        // TODO: 改变加入列表的方式
+        public void Init()
+        {
+            AddNodeToList(rootNode);
+        }
+
+        private void AddNodeToList(BaseNode node)
+        {
+            allNodes.Add(node);
+            node.ForeachChildren(AddNodeToList);
         }
 
         public void Start()
@@ -75,12 +88,10 @@ namespace UniWork.BehaviourTree.Runtime
             // 设置所有节点 id，从 1 开始
             for (int i = 0; i < allNodes.Count; ++i)
                 allNodes[i].id = i + 1;
-
-            rootId = rootNode.id;
             
             // 设置所有节点的子节点 id
             foreach (BaseNode node in allNodes)
-                node.RebuildChildrenId();                
+                node.RebuildChildrenId();
         }
 
         /// <summary>
@@ -88,7 +99,7 @@ namespace UniWork.BehaviourTree.Runtime
         /// </summary>
         public void DeserializePostProcess()
         {
-            rootNode = GetNode(rootId) as RootNode;
+            rootNode = GetNode(rootNode.id) as RootNode;
             
             foreach (BaseNode node in allNodes)
             {

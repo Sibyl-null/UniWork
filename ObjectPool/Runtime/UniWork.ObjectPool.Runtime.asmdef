@@ -1,6 +1,6 @@
 {
     "name": "UniWork.ObjectPool.Runtime",
-    "rootNamespace": "",
+    "rootNamespace": "UniWork",
     "references": [
         "GUID:299c632e3bf0b3a4885864742f538d04"
     ],
