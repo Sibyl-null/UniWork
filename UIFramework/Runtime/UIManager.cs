@@ -15,7 +15,7 @@ namespace UniWork.UIFramework.Runtime
 
         private readonly Dictionary<UIBaseType, UIInfo> _infos = new();
         private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls = new();
-        private readonly Dictionary<int, RectTransform> _bucketTrans = new();
+        private readonly Dictionary<string, RectTransform> _bucketTrans = new();
 
         private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
         {
@@ -75,17 +75,20 @@ namespace UniWork.UIFramework.Runtime
 
         private void CreateBuckets()
         {
-            var layers = _agent.GetAllLayers();
-            foreach (UIBaseLayer baseLayer in layers)
+            foreach (UIRuntimeSetting.ShowLayer layer in _runtimeSetting.showLayers)
             {
-                GameObject bucketObj = new GameObject(baseLayer.value);
+                GameObject bucketObj = new GameObject(layer.name);
                 bucketObj.layer = LayerMask.NameToLayer("UI");
                 bucketObj.transform.SetParent(_rootGo.transform, false);
 
                 RectTransform rectTrans = bucketObj.GetOrAddComponent<RectTransform>();
                 rectTrans.Overspread();
 
-                _bucketTrans.Add(baseLayer.key, rectTrans);
+                Canvas canvas = bucketObj.AddComponent<Canvas>();
+                canvas.overrideSorting = true;
+                canvas.sortingOrder = layer.order;
+
+                _bucketTrans.Add(layer.name, rectTrans);
             }
         }
 
@@ -241,14 +244,14 @@ namespace UniWork.UIFramework.Runtime
 
         private GameObject CreateUIObject(UIInfo info)
         {
-            Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
+            Transform bucketTrans = _bucketTrans[info.LayerName];
             GameObject uiPrefab = _agent.Load<GameObject>(info.ResPath);
             return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
 
         private async UniTask<GameObject> CreateUIObjectAsync(UIInfo info)
         {
-            Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
+            Transform bucketTrans = _bucketTrans[info.LayerName];
             GameObject uiPrefab = await _agent.LoadAsync<GameObject>(info.ResPath);
             return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
@@ -261,6 +264,18 @@ namespace UniWork.UIFramework.Runtime
 
             _instantiatedCtrls.Add(info.UIBaseType, ctrl);
             return ctrl;
+        }
+
+        public int GetLayerOrderWithIncrement(string layerName)
+        {
+            if (_bucketTrans.TryGetValue(layerName, out var trans))
+            {
+                int baseOrder = trans.GetComponent<Canvas>().sortingOrder;
+                return baseOrder + OrderLayerIncrement;
+            }
+
+            DLog.Error("[UIFramework] 不存在该层级: " + layerName);
+            return 0;
         }
     }
 }

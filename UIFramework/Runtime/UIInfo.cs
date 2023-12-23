@@ -25,16 +25,16 @@ namespace UniWork.UIFramework.Runtime
     public class UIInfo
     {
         public UIBaseType UIBaseType;
-        public UIBaseLayer UIBaseLayer;
+        public string LayerName;
         public Type CtrlType;
         public UIScheduleMode ScheduleMode;
         public string ResPath;
 
-        public UIInfo(UIBaseType uiBaseType, UIBaseLayer uiBaseLayer, 
+        public UIInfo(UIBaseType uiBaseType, string layerName, 
             Type ctrlType, UIScheduleMode scheduleMode, string resPath)
         {
             UIBaseType = uiBaseType;
-            UIBaseLayer = uiBaseLayer;
+            LayerName = layerName;
             CtrlType = ctrlType;
             ScheduleMode = scheduleMode;
             ResPath = resPath;
