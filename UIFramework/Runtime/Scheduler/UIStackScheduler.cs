@@ -67,7 +67,7 @@ namespace UniWork.UIFramework.Runtime.Scheduler
             UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(_ctrlTypeStack.Peek());
             if (ctrl.EnableInput == false)
             {
-                DLog.Info("[UIManager] Ctrl Input 禁用中，返回键无效. UIType: " + ctrl.Info.UIBaseType.value);
+                DLog.Info("[UIManager] Ctrl Input 禁用中，返回键无效. CtrlType: " + ctrl.GetType().Name);
                 return;
             }
             

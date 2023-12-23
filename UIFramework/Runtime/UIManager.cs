@@ -68,7 +68,7 @@ namespace UniWork.UIFramework.Runtime
         internal void AddInfo(Type ctrlType, UIInfo info)
         {
             if (_infoDic.ContainsKey(ctrlType))
-                throw new Exception($"{info.UIBaseType}已注册");
+                throw new Exception($"[UIFramework] {ctrlType.Name} 已注册");
             
             _infoDic.Add(ctrlType, info);
         }
@@ -145,7 +145,7 @@ namespace UniWork.UIFramework.Runtime
             if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
                 scheduler.ShowUI(ctrlType, param);
             else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
         }
 
         public async UniTask ShowUIAsync(Type ctrlType, UIBaseParameter param = null)
