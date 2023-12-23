@@ -55,7 +55,7 @@ namespace UniWork.UIFramework.Runtime
             _agent = agent;
             _runtimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
 
-            _rootGo = Object.Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
+            _rootGo = Object.Instantiate(_runtimeSetting.rootPrefab);
             Object.DontDestroyOnLoad(_rootGo);
             
             UICamera = _rootGo.GetComponentInChildren<Camera>();

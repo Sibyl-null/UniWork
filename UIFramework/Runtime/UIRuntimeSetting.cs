@@ -13,6 +13,7 @@ namespace UniWork.UIFramework.Runtime
         }
 
         public int layerOrderOnceRaise = 10;
+        public GameObject rootPrefab;
         public List<ShowLayer> showLayers = new List<ShowLayer>();
     }
 }

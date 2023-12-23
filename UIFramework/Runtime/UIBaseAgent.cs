@@ -4,7 +4,6 @@ namespace UniWork.UIFramework.Runtime
 {
     public abstract class UIBaseAgent
     {
-        public abstract string UIRootLoadPath { get; }
         public abstract string RuntimeSettingLoadPath { get; }
         
         protected void AddInfo(UIInfo info)
