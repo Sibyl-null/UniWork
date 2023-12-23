@@ -10,13 +10,6 @@ namespace UniWork.UIFramework.Runtime
         }
     }
 
-    public abstract class UIBaseLayer : EnumBaseType<UIBaseLayer>
-    {
-        protected UIBaseLayer(int key, string value) : base(key, value)
-        {
-        }
-    }
-
     public enum UIScheduleMode
     {
         Normal, Queue, Stack

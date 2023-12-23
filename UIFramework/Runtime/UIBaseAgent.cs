@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 
 namespace UniWork.UIFramework.Runtime
 {
@@ -14,7 +13,6 @@ namespace UniWork.UIFramework.Runtime
             UIManager.Instance.AddInfo(info);
         }
         
-        public abstract ReadOnlyCollection<UIBaseLayer> GetAllLayers();
         public abstract void InitUIInfo();
         
         public abstract T Load<T>(string path) where T : UnityEngine.Object;
