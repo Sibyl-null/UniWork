@@ -7,9 +7,9 @@
 
     public class UIInfo
     {
-        public string LayerName;
-        public UIScheduleMode ScheduleMode;
-        public string ResPath;
+        public string LayerName { get; }
+        public UIScheduleMode ScheduleMode { get; }
+        public string ResPath { get; }
 
         public UIInfo(string layerName, UIScheduleMode scheduleMode, string resPath)
         {
