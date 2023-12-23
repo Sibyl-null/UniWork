@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 
 namespace UniWork.UIFramework.Runtime
 {
@@ -6,9 +7,9 @@ namespace UniWork.UIFramework.Runtime
     {
         public abstract string RuntimeSettingLoadPath { get; }
         
-        protected void AddInfo(UIInfo info)
+        protected void AddInfo(Type ctrlType, UIInfo info)
         {
-            UIManager.Instance.AddInfo(info);
+            UIManager.Instance.AddInfo(ctrlType, info);
         }
         
         public abstract void InitUIInfo();

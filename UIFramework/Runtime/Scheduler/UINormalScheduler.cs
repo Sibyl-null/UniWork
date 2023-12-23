@@ -1,27 +1,28 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 
 namespace UniWork.UIFramework.Runtime.Scheduler
 {
     internal sealed class UINormalScheduler : UIBaseScheduler
     {
-        internal override void ShowUI(UIBaseType uiType, UIBaseParameter param = null)
+        internal override void ShowUI(Type ctrlTyp, UIBaseParameter param = null)
         {
-            UIManager.Instance.ShowUIInternal(uiType, param);
+            UIManager.Instance.ShowUIInternal(ctrlTyp, param);
         }
 
-        internal override async UniTask ShowUIAsync(UIBaseType uiType, UIBaseParameter param = null)
+        internal override async UniTask ShowUIAsync(Type ctrlTyp, UIBaseParameter param = null)
         {
-            await UIManager.Instance.ShowUIAsyncInternal(uiType, param);
+            await UIManager.Instance.ShowUIAsyncInternal(ctrlTyp, param);
         }
 
-        internal override void HideUI(UIBaseType uiType)
+        internal override void HideUI(Type ctrlTyp)
         {
-            UIManager.Instance.HideUIInternal(uiType);
+            UIManager.Instance.HideUIInternal(ctrlTyp);
         }
 
-        internal override void DestroyUI(UIBaseType uiType)
+        internal override void DestroyUI(Type ctrlTyp)
         {
-            UIManager.Instance.DestroyUIInternal(uiType);
+            UIManager.Instance.DestroyUIInternal(ctrlTyp);
         }
     }
 }

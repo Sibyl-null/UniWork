@@ -13,8 +13,8 @@ namespace UniWork.UIFramework.Runtime
     {
         public static UIManager Instance { get; private set; }
 
-        private readonly Dictionary<UIBaseType, UIInfo> _infoDic = new();
-        private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrlDic = new();
+        private readonly Dictionary<Type, UIInfo> _infoDic = new();
+        private readonly Dictionary<Type, UIBaseCtrl> _instantiatedCtrlDic = new();
         private readonly Dictionary<string, Canvas> _bucketCanvasDic = new();
 
         private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
@@ -65,12 +65,12 @@ namespace UniWork.UIFramework.Runtime
             CreateBuckets();
         }
 
-        internal void AddInfo(UIInfo info)
+        internal void AddInfo(Type ctrlType, UIInfo info)
         {
-            if (_infoDic.ContainsKey(info.UIBaseType))
+            if (_infoDic.ContainsKey(ctrlType))
                 throw new Exception($"{info.UIBaseType}已注册");
             
-            _infoDic.Add(info.UIBaseType, info);
+            _infoDic.Add(ctrlType, info);
         }
 
         private void CreateBuckets()
@@ -114,57 +114,81 @@ namespace UniWork.UIFramework.Runtime
         // 对外API
         // ----------------------------------------------------------------------------
 
-        public void ShowUI(UIBaseType uiType, UIBaseParameter param = null)
+        public void ShowUI<T>(UIBaseParameter param = null) where T : UIBaseCtrl
         {
-            UIInfo info = GetUIInfo(uiType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.ShowUI(uiType, param);
-            else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+            Type ctrlType = typeof(T);
+            ShowUI(ctrlType, param);
         }
 
-        public async UniTask ShowUIAsync(UIBaseType uiType, UIBaseParameter param = null)
+        public async UniTask ShowUIAsync<T>(UIBaseParameter param = null) where T : UIBaseCtrl
         {
-            UIInfo info = GetUIInfo(uiType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                await scheduler.ShowUIAsync(uiType, param);
-            else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+            Type ctrlType = typeof(T);
+            await ShowUIAsync(ctrlType, param);
         }
         
-        public void HideUI(UIBaseType uiType)
+        public void HideUI<T>() where T : UIBaseCtrl
         {
-            UIInfo info = GetUIInfo(uiType);
+            Type ctrlType = typeof(T);
+            HideUI(ctrlType);
+        }
+        
+        public void DestroyUI<T>() where T : UIBaseCtrl
+        {
+            Type ctrlType = typeof(T);
+            DestroyUI(ctrlType);
+        }
+        
+        public void ShowUI(Type ctrlType, UIBaseParameter param = null)
+        {
+            UIInfo info = GetUIInfo(ctrlType);
 
             if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.HideUI(uiType);
+                scheduler.ShowUI(ctrlType, param);
             else
                 DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
         }
-        
-        public void DestroyUI(UIBaseType uiType)
+
+        public async UniTask ShowUIAsync(Type ctrlType, UIBaseParameter param = null)
         {
-            UIInfo info = GetUIInfo(uiType);
+            UIInfo info = GetUIInfo(ctrlType);
 
             if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.DestroyUI(uiType);
+                await scheduler.ShowUIAsync(ctrlType, param);
             else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
         }
         
-        internal void ShowUIInternal(UIBaseType uiType, UIBaseParameter param = null)
+        public void HideUI(Type ctrlType)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIInfo info = GetUIInfo(ctrlType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.HideUI(ctrlType);
+            else
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+        }
+        
+        public void DestroyUI(Type ctrlType)
+        {
+            UIInfo info = GetUIInfo(ctrlType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.DestroyUI(ctrlType);
+            else
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+        }
+        
+        internal void ShowUIInternal(Type ctrlType, UIBaseParameter param = null)
+        {
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
 
             _orderLayerIncrement += _runtimeSetting.layerOrderOnceRaise;
             
             if (ctrl == null)
             {
-                UIInfo info = _infoDic[uiType];
+                UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = CreateUIObject(info);
-                ctrl = CreateUICtrl(uiObj, info);
+                ctrl = CreateUICtrl(uiObj, ctrlType);
                 ctrl.OnShow(param);
                 return;
             }
@@ -173,17 +197,17 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnShow(param);
         }
 
-        internal async UniTask ShowUIAsyncInternal(UIBaseType uiType, UIBaseParameter param = null)
+        internal async UniTask ShowUIAsyncInternal(Type ctrlType, UIBaseParameter param = null)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
 
             _orderLayerIncrement += _runtimeSetting.layerOrderOnceRaise;
             
             if (ctrl == null)
             {
-                UIInfo info = _infoDic[uiType];
+                UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = await CreateUIObjectAsync(info);
-                ctrl = CreateUICtrl(uiObj, info);
+                ctrl = CreateUICtrl(uiObj, ctrlType);
                 ctrl.OnShow(param);
                 return;
             }
@@ -192,13 +216,13 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnShow(param);
         }
 
-        internal void HideUIInternal(UIBaseType uiType)
+        internal void HideUIInternal(Type ctrlType)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
             
             if (ctrl == null)
             {
-                DLog.Warning($"{uiType} 未实例化");
+                DLog.Warning($"[UIFramework] {ctrlType.Name} 未实例化");
                 return;
             }
             
@@ -206,13 +230,13 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnHide();
         }
 
-        internal void DestroyUIInternal(UIBaseType uiType)
+        internal void DestroyUIInternal(Type ctrlType)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
             
             if (ctrl == null)
             {
-                DLog.Warning($"{uiType} 未实例化");
+                DLog.Warning($"[UIFramework] {ctrlType.Name} 未实例化");
                 return;
             }
             
@@ -223,23 +247,23 @@ namespace UniWork.UIFramework.Runtime
             Object.Destroy(ctrl.UIView.gameObject);
             
             _agent.UnLoad(ctrl.Info.ResPath);
-            _instantiatedCtrlDic.Remove(uiType);
+            _instantiatedCtrlDic.Remove(ctrlType);
         }
 
-        public UIBaseCtrl GetUICtrl(UIBaseType uiType)
+        public UIBaseCtrl GetUICtrl(Type ctrlType)
         {
-            if (!_infoDic.ContainsKey(uiType))
-                throw new Exception(uiType + "对应的UIInfo不存在");
+            if (!_infoDic.ContainsKey(ctrlType))
+                throw new Exception($"[UIFramework] {ctrlType.Name} 对应的 UIInfo 不存在");
             
-            return _instantiatedCtrlDic.TryGetValue(uiType, out UIBaseCtrl ctrl) ? ctrl : null;
+            return _instantiatedCtrlDic.TryGetValue(ctrlType, out UIBaseCtrl ctrl) ? ctrl : null;
         }
 
-        public UIInfo GetUIInfo(UIBaseType uiType)
+        private UIInfo GetUIInfo(Type ctrlType)
         {
-            if (!_infoDic.ContainsKey(uiType))
-                throw new Exception(uiType + "对应的UIInfo不存在");
+            if (!_infoDic.ContainsKey(ctrlType))
+                throw new Exception($"[UIFramework] {ctrlType.Name} 对应的 UIInfo 不存在");
 
-            return _infoDic[uiType];
+            return _infoDic[ctrlType];
         }
 
         private GameObject CreateUIObject(UIInfo info)
@@ -256,13 +280,15 @@ namespace UniWork.UIFramework.Runtime
             return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
 
-        private UIBaseCtrl CreateUICtrl(GameObject uiObj, UIInfo info)
+        private UIBaseCtrl CreateUICtrl(GameObject uiObj, Type ctrlType)
         {
+            UIInfo info = _infoDic[ctrlType];
+            
             UIBaseView view = (UIBaseView)uiObj.GetComponent(typeof(UIBaseView));
             UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(info.CtrlType);
             ctrl.Initialize(view, info);
 
-            _instantiatedCtrlDic.Add(info.UIBaseType, ctrl);
+            _instantiatedCtrlDic.Add(ctrlType, ctrl);
             return ctrl;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UniWork.Utility.Runtime;
 
@@ -6,65 +7,65 @@ namespace UniWork.UIFramework.Runtime.Scheduler
 {
     internal sealed class UIQueueScheduler : UIBaseScheduler
     {
-        private readonly Queue<UIBaseType> _uiQueue = new Queue<UIBaseType>();
+        private readonly Queue<Type> _ctrlTypeQueue = new();
 
-        internal Queue<UIBaseType> UiQueue => _uiQueue;
-        internal bool IsEmpty => _uiQueue.Count == 0;
+        internal Queue<Type> CtrlTypeQueue => _ctrlTypeQueue;
+        internal bool IsEmpty => _ctrlTypeQueue.Count == 0;
         
-        internal override void ShowUI(UIBaseType uiType, UIBaseParameter param = null)
+        internal override void ShowUI(Type ctrlType, UIBaseParameter param = null)
         {
-            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiType);
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(ctrlType);
             if (ctrl != null && ctrl.IsShow)
                 return;
             
-            if (_uiQueue.Count == 0)
-                UIManager.Instance.ShowUIInternal(uiType, param);
-            _uiQueue.Enqueue(uiType);
+            if (_ctrlTypeQueue.Count == 0)
+                UIManager.Instance.ShowUIInternal(ctrlType, param);
+            _ctrlTypeQueue.Enqueue(ctrlType);
         }
 
-        internal override async UniTask ShowUIAsync(UIBaseType uiType, UIBaseParameter param = null)
+        internal override async UniTask ShowUIAsync(Type ctrlType, UIBaseParameter param = null)
         {
-            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(uiType);
+            UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(ctrlType);
             if (ctrl != null && ctrl.IsShow)
                 return;
 
-            if (_uiQueue.Count == 0)
-                await UIManager.Instance.ShowUIAsyncInternal(uiType, param);
+            if (_ctrlTypeQueue.Count == 0)
+                await UIManager.Instance.ShowUIAsyncInternal(ctrlType, param);
             
-            _uiQueue.Enqueue(uiType);
+            _ctrlTypeQueue.Enqueue(ctrlType);
         }
 
-        internal override void HideUI(UIBaseType uiType)
+        internal override void HideUI(Type ctrlType)
         {
-            if (_uiQueue.Count > 0 && _uiQueue.Peek() != uiType)
+            if (_ctrlTypeQueue.Count > 0 && _ctrlTypeQueue.Peek() != ctrlType)
             {
                 DLog.Error("UI 队列调用: 不允许隐藏非队头元素");
                 return;
             }
             
-            UIManager.Instance.HideUIInternal(uiType);
-            TryShowNextQueueUI(uiType);
+            UIManager.Instance.HideUIInternal(ctrlType);
+            TryShowNextQueueUI(ctrlType);
         }
 
-        internal override void DestroyUI(UIBaseType uiType)
+        internal override void DestroyUI(Type ctrlType)
         {
-            if (_uiQueue.Count > 0 && _uiQueue.Peek() != uiType)
+            if (_ctrlTypeQueue.Count > 0 && _ctrlTypeQueue.Peek() != ctrlType)
             {
                 DLog.Error("UI 队列调用: 不允许销毁非队头元素");
                 return;
             }
             
-            UIManager.Instance.DestroyUIInternal(uiType);
-            TryShowNextQueueUI(uiType);
+            UIManager.Instance.DestroyUIInternal(ctrlType);
+            TryShowNextQueueUI(ctrlType);
         }
         
-        private void TryShowNextQueueUI(UIBaseType uiType)
+        private void TryShowNextQueueUI(Type ctrlType)
         {
-            if (_uiQueue.Count > 0 && _uiQueue.Peek() == uiType)
+            if (_ctrlTypeQueue.Count > 0 && _ctrlTypeQueue.Peek() == ctrlType)
             {
-                _uiQueue.Dequeue();
-                if (_uiQueue.Count > 0)
-                    UIManager.Instance.ShowUIInternal(_uiQueue.Peek());
+                _ctrlTypeQueue.Dequeue();
+                if (_ctrlTypeQueue.Count > 0)
+                    UIManager.Instance.ShowUIInternal(_ctrlTypeQueue.Peek());
             }
         }
     }

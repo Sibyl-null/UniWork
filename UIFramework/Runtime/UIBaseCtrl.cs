@@ -65,7 +65,7 @@ namespace UniWork.UIFramework.Runtime
 
         public virtual void OnEscape()
         {
-            UIManager.Instance.HideUI(Info.UIBaseType);
+            UIManager.Instance.HideUI(this.GetType());
         }
     }
 }
