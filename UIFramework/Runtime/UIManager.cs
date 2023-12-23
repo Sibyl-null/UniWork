@@ -12,7 +12,6 @@ namespace UniWork.UIFramework.Runtime
     public class UIManager
     {
         public static UIManager Instance { get; private set; }
-        private static UIBaseAgent _agent;
 
         private readonly Dictionary<UIBaseType, UIInfo> _infos = new();
         private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls = new();
@@ -25,6 +24,7 @@ namespace UniWork.UIFramework.Runtime
             { UIScheduleMode.Stack, new UIStackScheduler() }
         };
 
+        private UIBaseAgent _agent;
         private GameObject _rootGo;
         private EventSystem _eventSystem;
         private UIRuntimeSetting _runtimeSetting;
@@ -46,19 +46,21 @@ namespace UniWork.UIFramework.Runtime
             if (Instance != null)
                 throw new Exception("UIManager repeat created");
             
-            _agent = agent;
-            GameObject obj = Object.Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
-            Object.DontDestroyOnLoad(obj);
-
             Instance = new UIManager();
-            Instance.Initialize();
+            Instance.Initialize(agent);
         }
 
-        private void Initialize()
+        private void Initialize(UIBaseAgent agent)
         {
+            _agent = agent;
+            _runtimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
+
+            _rootGo = Object.Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
+            Object.DontDestroyOnLoad(_rootGo);
+            
             UICamera = _rootGo.GetComponentInChildren<Camera>();
             _eventSystem = _rootGo.GetComponentInChildren<EventSystem>();
-            _runtimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
+            
             _agent.InitUIInfo();
             CreateBuckets();
         }
