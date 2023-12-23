@@ -27,6 +27,7 @@ namespace UniWork.UIFramework.Runtime
 
         private GameObject _rootGo;
         private EventSystem _eventSystem;
+        private UIRuntimeSetting _runtimeSetting;
         
         public event Action OnEscapeEvent;
         public Camera UICamera { get; private set; }
@@ -57,6 +58,7 @@ namespace UniWork.UIFramework.Runtime
         {
             UICamera = _rootGo.GetComponentInChildren<Camera>();
             _eventSystem = _rootGo.GetComponentInChildren<EventSystem>();
+            _runtimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
             _agent.InitUIInfo();
             CreateBuckets();
         }

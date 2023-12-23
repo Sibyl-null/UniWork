@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UniWork.UIFramework.Runtime;
+using UniWork.Utility.Editor;
 using UniWork.Utility.Runtime;
 using Object = UnityEngine.Object;
 
@@ -16,6 +18,7 @@ namespace UniWork.UIFramework.Editor
         // ---------------------------------------------------------------
 
         private const string UIRootDefaultSavePath = "Assets/Resources/UIRoot.prefab";
+        private const string UIRuntimeSettingDefaultSavePath = "Assets/Resources/UIRuntimeSetting.asset";
         private const string AutoBindTag = "AutoField";
 
         [MenuItem("UniWork/UIFramework/创建全部", false, 1)]
@@ -23,6 +26,7 @@ namespace UniWork.UIFramework.Editor
         {
             CreateUIRootPrefab();
             CreateUIEditorSetting();
+            CreateUIRuntimeSetting();
             AddAutoFieldTag();
         }
         
@@ -102,6 +106,12 @@ namespace UniWork.UIFramework.Editor
         public static void CreateUIEditorSetting()
         {
             UIEditorSetting.CreateAsset();
+        }
+
+        [MenuItem("UniWork/UIFramework/创建UIRuntimeSetting")]
+        public static void CreateUIRuntimeSetting()
+        {
+            EditorMethodUtility.CreateScriptableObjectAsset<UIRuntimeSetting>(UIRuntimeSettingDefaultSavePath);
         }
 
         [MenuItem("UniWork/UIFramework/添加AutoField Tag")]
