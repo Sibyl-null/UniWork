@@ -285,7 +285,7 @@ namespace UniWork.UIFramework.Runtime
             UIInfo info = _infoDic[ctrlType];
             
             UIBaseView view = (UIBaseView)uiObj.GetComponent(typeof(UIBaseView));
-            UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(info.CtrlType);
+            UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(ctrlType);
             ctrl.Initialize(view, info);
 
             _instantiatedCtrlDic.Add(ctrlType, ctrl);

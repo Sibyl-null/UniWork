@@ -19,7 +19,6 @@ namespace UniWork.UIFramework.Runtime
     {
         public UIBaseType UIBaseType;
         public string LayerName;
-        public Type CtrlType;
         public UIScheduleMode ScheduleMode;
         public string ResPath;
 
@@ -28,7 +27,6 @@ namespace UniWork.UIFramework.Runtime
         {
             UIBaseType = uiBaseType;
             LayerName = layerName;
-            CtrlType = ctrlType;
             ScheduleMode = scheduleMode;
             ResPath = resPath;
         }
