@@ -30,8 +30,6 @@ namespace UniWork.UIFramework.Runtime
 
         private void SetUIRenderLayer()
         {
-            UIView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
-            UIView.UICanvas.worldCamera = UIManager.Instance.UICamera;
             UIView.UICanvas.overrideSorting = true;
             UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
         }
