@@ -13,8 +13,8 @@ namespace UniWork.UIFramework.Runtime
     {
         public static UIManager Instance { get; private set; }
 
-        private readonly Dictionary<UIBaseType, UIInfo> _infos = new();
-        private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls = new();
+        private readonly Dictionary<UIBaseType, UIInfo> _infoDic = new();
+        private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrlDic = new();
         private readonly Dictionary<string, Canvas> _bucketCanvasDic = new();
 
         private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
@@ -67,10 +67,10 @@ namespace UniWork.UIFramework.Runtime
 
         internal void AddInfo(UIInfo info)
         {
-            if (_infos.ContainsKey(info.UIBaseType))
+            if (_infoDic.ContainsKey(info.UIBaseType))
                 throw new Exception($"{info.UIBaseType}已注册");
             
-            _infos.Add(info.UIBaseType, info);
+            _infoDic.Add(info.UIBaseType, info);
         }
 
         private void CreateBuckets()
@@ -162,7 +162,7 @@ namespace UniWork.UIFramework.Runtime
             
             if (ctrl == null)
             {
-                UIInfo info = _infos[uiType];
+                UIInfo info = _infoDic[uiType];
                 GameObject uiObj = CreateUIObject(info);
                 ctrl = CreateUICtrl(uiObj, info);
                 ctrl.OnShow(param);
@@ -181,7 +181,7 @@ namespace UniWork.UIFramework.Runtime
             
             if (ctrl == null)
             {
-                UIInfo info = _infos[uiType];
+                UIInfo info = _infoDic[uiType];
                 GameObject uiObj = await CreateUIObjectAsync(info);
                 ctrl = CreateUICtrl(uiObj, info);
                 ctrl.OnShow(param);
@@ -223,23 +223,23 @@ namespace UniWork.UIFramework.Runtime
             Object.Destroy(ctrl.UIView.gameObject);
             
             _agent.UnLoad(ctrl.Info.ResPath);
-            _instantiatedCtrls.Remove(uiType);
+            _instantiatedCtrlDic.Remove(uiType);
         }
 
         public UIBaseCtrl GetUICtrl(UIBaseType uiType)
         {
-            if (!_infos.ContainsKey(uiType))
+            if (!_infoDic.ContainsKey(uiType))
                 throw new Exception(uiType + "对应的UIInfo不存在");
             
-            return _instantiatedCtrls.TryGetValue(uiType, out UIBaseCtrl ctrl) ? ctrl : null;
+            return _instantiatedCtrlDic.TryGetValue(uiType, out UIBaseCtrl ctrl) ? ctrl : null;
         }
 
         public UIInfo GetUIInfo(UIBaseType uiType)
         {
-            if (!_infos.ContainsKey(uiType))
+            if (!_infoDic.ContainsKey(uiType))
                 throw new Exception(uiType + "对应的UIInfo不存在");
 
-            return _infos[uiType];
+            return _infoDic[uiType];
         }
 
         private GameObject CreateUIObject(UIInfo info)
@@ -262,7 +262,7 @@ namespace UniWork.UIFramework.Runtime
             UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(info.CtrlType);
             ctrl.Initialize(view, info);
 
-            _instantiatedCtrls.Add(info.UIBaseType, ctrl);
+            _instantiatedCtrlDic.Add(info.UIBaseType, ctrl);
             return ctrl;
         }
 
