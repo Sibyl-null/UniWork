@@ -1,10 +1,7 @@
-﻿namespace UniWork.UIFramework.Runtime
-{
-    public enum UIScheduleMode
-    {
-        Normal, Queue, Stack
-    }
+﻿using UniWork.UIFramework.Runtime.Scheduler;
 
+namespace UniWork.UIFramework.Runtime
+{
     public class UIInfo
     {
         public string LayerName { get; }

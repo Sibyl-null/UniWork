@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 
-namespace UniWork.UIFramework.Runtime.Scheduler
+namespace UniWork.UIFramework.Runtime.Scheduler.Implements
 {
     internal sealed class UINormalScheduler : UIBaseScheduler
     {

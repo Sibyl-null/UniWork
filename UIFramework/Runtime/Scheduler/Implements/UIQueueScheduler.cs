@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UniWork.Utility.Runtime;
 
-namespace UniWork.UIFramework.Runtime.Scheduler
+namespace UniWork.UIFramework.Runtime.Scheduler.Implements
 {
     internal sealed class UIQueueScheduler : UIBaseScheduler
     {

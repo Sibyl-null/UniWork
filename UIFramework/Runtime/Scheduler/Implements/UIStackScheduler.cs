@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using UniWork.Utility.Runtime;
 using UniWork.Utility.Runtime.DataStructure;
 
-namespace UniWork.UIFramework.Runtime.Scheduler
+namespace UniWork.UIFramework.Runtime.Scheduler.Implements
 {
     internal sealed class UIStackScheduler : UIBaseScheduler
     {
