@@ -28,10 +28,10 @@ namespace UniWork.UIFramework.Runtime
         private GameObject _rootGo;
         private EventSystem _eventSystem;
         private UIRuntimeSetting _runtimeSetting;
-        
+        private int _orderLayerIncrement;
+
         public event Action OnEscapeEvent;
         public Camera UICamera { get; private set; }
-        public int OrderLayerIncrement { get; private set; }
 
         public bool EnableInput
         {
@@ -158,7 +158,7 @@ namespace UniWork.UIFramework.Runtime
         {
             UIBaseCtrl ctrl = GetUICtrl(uiType);
 
-            OrderLayerIncrement += _agent.LayerOrderOnceRaise;
+            _orderLayerIncrement += _runtimeSetting.layerOrderOnceRaise;
             
             if (ctrl == null)
             {
@@ -177,7 +177,7 @@ namespace UniWork.UIFramework.Runtime
         {
             UIBaseCtrl ctrl = GetUICtrl(uiType);
 
-            OrderLayerIncrement += _agent.LayerOrderOnceRaise;
+            _orderLayerIncrement += _runtimeSetting.layerOrderOnceRaise;
             
             if (ctrl == null)
             {
@@ -271,7 +271,7 @@ namespace UniWork.UIFramework.Runtime
             if (_bucketTrans.TryGetValue(layerName, out var trans))
             {
                 int baseOrder = trans.GetComponent<Canvas>().sortingOrder;
-                return baseOrder + OrderLayerIncrement;
+                return baseOrder + _orderLayerIncrement;
             }
 
             DLog.Error("[UIFramework] 不存在该层级: " + layerName);

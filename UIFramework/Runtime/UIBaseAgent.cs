@@ -6,7 +6,6 @@ namespace UniWork.UIFramework.Runtime
     {
         public abstract string UIRootLoadPath { get; }
         public abstract string RuntimeSettingLoadPath { get; }
-        public virtual int LayerOrderOnceRaise => 10;
         
         protected void AddInfo(UIInfo info)
         {

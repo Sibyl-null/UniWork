@@ -12,6 +12,7 @@ namespace UniWork.UIFramework.Runtime
             public int order;
         }
 
+        public int layerOrderOnceRaise = 10;
         public List<ShowLayer> showLayers = new List<ShowLayer>();
     }
 }
