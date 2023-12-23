@@ -15,7 +15,7 @@ namespace UniWork.UIFramework.Runtime
 
         private readonly Dictionary<UIBaseType, UIInfo> _infos = new();
         private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls = new();
-        private readonly Dictionary<string, RectTransform> _bucketTrans = new();
+        private readonly Dictionary<string, Canvas> _bucketCanvasDic = new();
 
         private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
         {
@@ -88,7 +88,7 @@ namespace UniWork.UIFramework.Runtime
                 canvas.overrideSorting = true;
                 canvas.sortingOrder = layer.order;
 
-                _bucketTrans.Add(layer.name, rectTrans);
+                _bucketCanvasDic.Add(layer.name, canvas);
             }
         }
 
@@ -244,14 +244,14 @@ namespace UniWork.UIFramework.Runtime
 
         private GameObject CreateUIObject(UIInfo info)
         {
-            Transform bucketTrans = _bucketTrans[info.LayerName];
+            Transform bucketTrans = _bucketCanvasDic[info.LayerName].transform;
             GameObject uiPrefab = _agent.Load<GameObject>(info.ResPath);
             return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
 
         private async UniTask<GameObject> CreateUIObjectAsync(UIInfo info)
         {
-            Transform bucketTrans = _bucketTrans[info.LayerName];
+            Transform bucketTrans = _bucketCanvasDic[info.LayerName].transform;
             GameObject uiPrefab = await _agent.LoadAsync<GameObject>(info.ResPath);
             return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
@@ -268,10 +268,9 @@ namespace UniWork.UIFramework.Runtime
 
         public int GetLayerOrderWithIncrement(string layerName)
         {
-            if (_bucketTrans.TryGetValue(layerName, out var trans))
+            if (_bucketCanvasDic.TryGetValue(layerName, out Canvas canvas))
             {
-                int baseOrder = trans.GetComponent<Canvas>().sortingOrder;
-                return baseOrder + _orderLayerIncrement;
+                return canvas.sortingOrder + _orderLayerIncrement;
             }
 
             DLog.Error("[UIFramework] 不存在该层级: " + layerName);
