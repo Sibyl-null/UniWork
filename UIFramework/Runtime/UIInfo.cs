@@ -2,7 +2,7 @@
 
 namespace UniWork.UIFramework.Runtime
 {
-    public class UIInfo
+    public struct UIInfo
     {
         public string LayerName { get; }
         public UIScheduleMode ScheduleMode { get; }
