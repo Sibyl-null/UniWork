@@ -15,9 +15,9 @@ namespace UniWork.Utility.Runtime.MethodUtility
             return Directory.Exists(path);
         }
         
-        /**
-         * 获取所有子文件夹，不包含中间文件夹和自己
-         */
+        /// <summary>
+        /// 获取所有子文件夹，不包含中间文件夹和自己
+        /// </summary>
         public static List<string> GetLeafDirectories(string path)
         {
             List<string> leafDirPathList = new List<string>();
@@ -44,15 +44,34 @@ namespace UniWork.Utility.Runtime.MethodUtility
             return leafDirPathList;
         }
         
-        /**
-         * 创建一个新的文件夹，如果原本有内容则清空
-         */
+        /// <summary>
+        /// 创建一个新的文件夹，如果原本有内容则清空
+        /// </summary>
         public static void MakeNewDirectory(string path)
         {
             if (Directory.Exists(path))
                 Directory.Delete(path,true);
             
             Directory.CreateDirectory(path);
+        }
+
+        /// <summary>
+        /// 覆盖写入文本文件
+        /// </summary>
+        public static void OverlayWriteTextFile(string filePath, string text)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                DLog.Error("[IoUtility] filePath 为空");
+                return;
+            }
+            
+            string dirPath = Path.GetDirectoryName(filePath);
+            
+            if (!string.IsNullOrEmpty(dirPath) && !Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+            
+            File.WriteAllText(filePath, text);
         }
     }
 }

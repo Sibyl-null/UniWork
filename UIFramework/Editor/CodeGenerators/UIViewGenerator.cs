@@ -10,6 +10,7 @@ using UnityEngine;
 using UniWork.UIFramework.Runtime;
 using UniWork.Utility.Editor;
 using UniWork.Utility.Runtime;
+using UniWork.Utility.Runtime.MethodUtility;
 
 namespace UniWork.UIFramework.Editor.CodeGenerators
 {
@@ -33,7 +34,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         {
             public string NowDateTime;
             public string YourNamespace;
-            public string ClassName;
+            public string PrefabName;
             public string[] Namespaces;
             public Dictionary<string, string> GoNamePathMap;
             public List<FieldData> Fields;
@@ -48,14 +49,14 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             GenerateAndSaveCode(data);
 
             // 脚本挂载并绑定
-            EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.ClassName}");
+            EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.PrefabName}View");
         }
 
         private static void VerifySetting()
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             if (string.IsNullOrEmpty(editorSetting.codeFileRootPath))
-                throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
+                throw new Exception("[自动生成 UIView 代码]: 代码保存路径未设定");
         }
 
         private static CodeGenerateData CollectGenerateData(GameObject selectedObject)
@@ -80,7 +81,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
                     continue;
 
                 if (goNamePathMap.ContainsKey(childObj.name))
-                    throw new Exception("[自动生成UIView代码]: 存在对象重名 " + childObj.name);
+                    throw new Exception("[自动生成 UIView 代码]: 存在对象重名 " + childObj.name);
                 goNamePathMap.Add(childObj.name, GetChildFindPath(childObj.transform));
 
                 Component[] components = childObj.GetComponents<Component>();
@@ -107,8 +108,8 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             CodeGenerateData data = new CodeGenerateData
             {
                 NowDateTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                YourNamespace = editorSetting.rootNamespace,
-                ClassName = selectedObject.name + "View",
+                YourNamespace = $"{editorSetting.rootNamespace}.{selectedObject.name}",
+                PrefabName = selectedObject.name,
                 Namespaces = namespaceSet.ToArray(),
                 GoNamePathMap = goNamePathMap,
                 Fields = fieldList
@@ -118,17 +119,15 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
         private static void GenerateAndSaveCode(CodeGenerateData data)
         {
-            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string code = EditorMethodUtility.ScribanGenerateText("UIViewTemplate", data);
 
-            string savePath = Path.Combine(editorSetting.codeFileRootPath, $"{data.ClassName}.cs");
-            if (Directory.Exists(editorSetting.codeFileRootPath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileRootPath);
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
+            string filePath = $"{editorSetting.codeFileRootPath}/{data.PrefabName}/{data.PrefabName}View.cs";
             
-            File.WriteAllText(savePath, code);
+            IoUtility.OverlayWriteTextFile(filePath, code);
             
             AssetDatabase.Refresh();
-            DLog.Info("[自动生成UIView代码]: 成功! " + savePath);
+            DLog.Info("[自动生成 UIView 代码]: 成功! " + filePath);
         }
 
         [DidReloadScripts]
