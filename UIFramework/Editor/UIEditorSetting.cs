@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -23,6 +24,7 @@ namespace UniWork.UIFramework.Editor
             }
         }
 
+        [FolderPath]
         public string codeFileSavePath = "Assets/Scripts/UI";
         public string rootNamespace = "UI";
 

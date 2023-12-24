@@ -10,39 +10,40 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UniWork.UIFramework.Runtime;
+using UniWork.Utility.Editor;
 using UniWork.Utility.Runtime;
 
-namespace UniWork.UIFramework.Editor
+namespace UniWork.UIFramework.Editor.CodeGenerators
 {
-    internal struct FieldData
+    public static class UIViewGenerator
     {
-        public readonly string TypeName;
-        public readonly string FieldName;
-        public readonly string GoName;
-
-        public FieldData(string typeName, string fieldName, string goName)
+        private struct FieldData
         {
-            TypeName = typeName;
-            FieldName = fieldName;
-            GoName = goName;
+            public readonly string TypeName;
+            public readonly string FieldName;
+            public readonly string GoName;
+
+            public FieldData(string typeName, string fieldName, string goName)
+            {
+                TypeName = typeName;
+                FieldName = fieldName;
+                GoName = goName;
+            }
         }
-    }
-    
-    internal class CodeGenerateData
-    {
-        public string NowDateTime;
-        public string YourNamespace;
-        public string ClassName;
-        public string[] Namespaces;
-        public Dictionary<string, string> GoNamePathMap;
-        public List<FieldData> Fields;
-    }
-    
-    public static partial class UIEditor
-    {
+
+        private class CodeGenerateData
+        {
+            public string NowDateTime;
+            public string YourNamespace;
+            public string ClassName;
+            public string[] Namespaces;
+            public Dictionary<string, string> GoNamePathMap;
+            public List<FieldData> Fields;
+        }
+        
         private const string AutoGenScriptNameKey = "AutoGenScriptName";
         
-        [MenuItem("Assets/自动生成UIView代码", false, MenuItemPriority)]
+        [MenuItem("Assets/自动生成UIView代码", false, UIEditor.MenuItemPriority)]
         public static void GenerateUIViewCode()
         {
             GameObject selectedObject = VerifySetting();
@@ -55,7 +56,7 @@ namespace UniWork.UIFramework.Editor
 
         private static GameObject VerifySetting()
         {
-            string selectedPath = GetSelectedPath();
+            string selectedPath = EditorMethodUtility.GetSelectedPath();
             if (selectedPath == "" || File.Exists(selectedPath) == false)
                 throw new Exception("[自动生成UIView代码]: 请选择一个Prefab");
 
@@ -88,7 +89,7 @@ namespace UniWork.UIFramework.Editor
 
             foreach (GameObject childObj in childList)
             {
-                if (childObj.CompareTag(AutoBindTag) == false)
+                if (childObj.CompareTag(UIEditor.AutoBindTag) == false)
                     continue;
 
                 if (goNamePathMap.ContainsKey(childObj.name))

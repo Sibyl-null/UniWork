@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace UniWork.UIFramework.Editor
 {
-    public static partial class UIEditor
+    public static class UIEditor
     {
         // ---------------------------------------------------------------
         // 初始化资源
@@ -19,7 +19,7 @@ namespace UniWork.UIFramework.Editor
 
         private const string UIRootDefaultSavePath = "Assets/Resources/UIRoot.prefab";
         private const string UIRuntimeSettingDefaultSavePath = "Assets/Resources/UIRuntimeSetting.asset";
-        private const string AutoBindTag = "AutoField";
+        public const string AutoBindTag = "AutoField";
 
         [MenuItem("UniWork/UIFramework/创建全部", false, 1)]
         public static void CreateAll()
@@ -144,12 +144,12 @@ namespace UniWork.UIFramework.Editor
         // 工作流
         // ---------------------------------------------------------------
 
-        private const int MenuItemPriority = 100;
+        public const int MenuItemPriority = 100;
         
         [MenuItem("Assets/创建UITemplate模板", false, MenuItemPriority)]
         public static void CreateUITemplate()
         {
-            string savePath = GetSelectedPath();
+            string savePath = EditorMethodUtility.GetSelectedPath();
             if (savePath == "" || Directory.Exists(savePath) == false)
                 throw new Exception("[CreateUITemplate]: 请选择一个文件夹");
 
@@ -178,16 +178,6 @@ namespace UniWork.UIFramework.Editor
             AssetDatabase.Refresh();
             Selection.activeObject = prefabAsset;
             EditorGUIUtility.PingObject(prefabAsset);
-        }
-
-        private static string GetSelectedPath()
-        {
-            string selectedPath = "";
-            
-            if (Selection.assetGUIDs.Length > 0)
-                selectedPath = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]);
-            
-            return selectedPath;
         }
     }
 }
