@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
-using UnityEditor.Callbacks;
 using UnityEngine;
 using UniWork.UIFramework.Runtime;
 using UniWork.Utility.Editor;
@@ -40,16 +37,12 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             public List<FieldData> Fields;
         }
         
-        private const string AutoGenScriptNameKey = "AutoGenScriptName";
         
         public static void GenerateCode(GameObject gameObject)
         {
             VerifySetting();
             CodeGenerateData data = CollectGenerateData(gameObject);
             GenerateAndSaveCode(data);
-
-            // 脚本挂载并绑定
-            EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.PrefabName}View");
         }
 
         private static void VerifySetting()
@@ -128,35 +121,6 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             
             AssetDatabase.Refresh();
             DLog.Info("[自动生成 UIView 代码]: 成功! " + filePath);
-        }
-
-        [DidReloadScripts]
-        private static void AutoAddComponent()
-        {
-            GameObject prefab = Selection.activeObject as GameObject;
-            string scriptName = EditorPrefs.GetString(AutoGenScriptNameKey, "");
-
-            if (string.IsNullOrEmpty(scriptName) || prefab == null ||
-                prefab.name != scriptName.Substring(0, scriptName.Length - 4))
-                return;
-
-            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            string scriptPath = Path.Combine(editorSetting.codeFileRootPath, scriptName + ".cs");
-
-            Type scriptType = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptPath).GetClass();
-            if (prefab.GetComponent(scriptType) == null)
-                prefab.AddComponent(scriptType);
-
-            Component component = prefab.GetComponent(scriptType);
-            MethodInfo methodInfo =
-                scriptType.GetMethod("BindComponent", BindingFlags.Instance | BindingFlags.NonPublic);
-            methodInfo.Invoke(component, new object[] { });
-
-            PrefabUtility.SavePrefabAsset(prefab);
-            AssetDatabase.Refresh();
-
-            EditorPrefs.SetString(AutoGenScriptNameKey, "");
-            DLog.Info($"脚本添加成功: {scriptName}.cs");
         }
 
         private static void GetAllChildGameObjects(Transform parent, ref List<GameObject> result)

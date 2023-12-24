@@ -13,10 +13,18 @@ namespace UniWork.Utility.Runtime
         
         public static T GetOrAddComponent<T>(this GameObject obj) where T : Component
         {
-            T t = obj.GetComponent<T>();
+            return (T)obj.GetOrAddComponent(typeof(T));
+        }
+        
+        public static Component GetOrAddComponent(this GameObject obj, Type type)
+        {
+            if (typeof(Component).IsAssignableFrom(type) == false)
+                throw new Exception($"[Utility] {type.Name} 不是 Component 的子类");
+            
+            Component t = obj.GetComponent(type);
             
             if (t == null)
-                t = obj.AddComponent<T>();
+                t = obj.AddComponent(type);
             
             return t;
         }
