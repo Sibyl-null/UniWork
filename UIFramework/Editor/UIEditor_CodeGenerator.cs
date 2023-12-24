@@ -119,7 +119,7 @@ namespace UniWork.UIFramework.Editor
             CodeGenerateData data = new CodeGenerateData
             {
                 NowDateTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                YourNamespace = editorSetting.codeNamespace,
+                YourNamespace = editorSetting.rootNamespace,
                 ClassName = selectedObject.name + "View",
                 Namespaces = namespaceSet.ToArray(),
                 GoNamePathMap = goNamePathMap,

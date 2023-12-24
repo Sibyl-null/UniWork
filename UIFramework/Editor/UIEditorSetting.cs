@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using UniWork.UIFramework.Runtime.Scheduler;
 using UniWork.Utility.Editor;
 
 namespace UniWork.UIFramework.Editor
 {
-    public class UIEditorSetting : SerializedScriptableObject
+    public class UIEditorSetting : ScriptableObject
     {
         [Serializable]
         public struct AutoBindData
@@ -24,19 +22,10 @@ namespace UniWork.UIFramework.Editor
                 this.componentName = componentName;
             }
         }
-        
-        [Serializable]
-        public struct InfoConfig
-        {
-            public string layerName;
-            public UIScheduleMode scheduleMode;
-            public string resPath;
-        }
 
-        public string codeFileSavePath = "Assets/Scripts/AutoGen/UI";
-        public string codeNamespace = "AutoGen.UI";
+        public string codeFileSavePath = "Assets/Scripts/UI";
+        public string rootNamespace = "UI";
 
-        [Title("用于自动生成 UIView 代码")]
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()
         {
             new AutoBindData("txt", nameof(Text)),
@@ -51,10 +40,6 @@ namespace UniWork.UIFramework.Editor
             new AutoBindData("cg", nameof(CanvasGroup)),
             new AutoBindData("dp", nameof(Dropdown))
         };
-
-        [Title("用于自动生成 AddInfo 代码")]
-        [DictionaryDrawerSettings(KeyLabel = "CtrlType", ValueLabel = "UIInfo")]
-        public Dictionary<Type, InfoConfig> infoMap = new Dictionary<Type, InfoConfig>();
         
         // ----------------------------------------------------------------------------------
 

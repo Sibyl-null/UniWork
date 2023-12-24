@@ -1,20 +1,11 @@
-﻿using System;
-using System.Linq;
-using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UniWork.UIFramework.Runtime.Scheduler;
 
 namespace UniWork.UIFramework.Runtime
 {
     [RequireComponent(typeof(Canvas), typeof(GraphicRaycaster))]
     public abstract class UIBaseView : MonoBehaviour
     {
-        // TODO: use by code generate
-        [ValueDropdown("GetLayerNames")]
-        [SerializeField] private string _layerName;
-        [SerializeField] private UIScheduleMode _scheduleMode = UIScheduleMode.Stack;
-        
         private Canvas _canvas;
         private GraphicRaycaster _raycaster;
         private RectTransform _content;
@@ -29,21 +20,5 @@ namespace UniWork.UIFramework.Runtime
             _raycaster = GetComponent<GraphicRaycaster>();
             _content = transform.Find("Content").GetComponent<RectTransform>();
         }
-
-#if UNITY_EDITOR
-        /// <summary>
-        /// use by odin ValueDropdown attribute
-        /// </summary>
-        private static string[] GetLayerNames()
-        {
-            string guid = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(UIRuntimeSetting)}").FirstOrDefault();
-            if (string.IsNullOrEmpty(guid))
-                return Array.Empty<string>();
-
-            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-            UIRuntimeSetting setting = UnityEditor.AssetDatabase.LoadAssetAtPath<UIRuntimeSetting>(path);
-            return setting.showLayers.Select(x => x.name).ToArray();
-        }
-#endif
     }
 }
