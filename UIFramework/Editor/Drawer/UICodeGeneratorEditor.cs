@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using UniWork.UIFramework.Editor.CodeGenerators;
@@ -10,7 +11,7 @@ using UniWork.Utility.Runtime;
 namespace UniWork.UIFramework.Editor.Drawer
 {
     [CustomEditor(typeof(UICodeGenerator))]
-    public class UICodeGeneratorEditor : UnityEditor.Editor
+    public class UICodeGeneratorEditor : OdinEditor
     {
         private UICodeGenerator Target => (UICodeGenerator)target;
         
