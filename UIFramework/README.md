@@ -1,20 +1,17 @@
 # UIFramework 使用
 ## 基本介绍
-一个UI面板用一个Canvas进行管理，UIBaseView的子类View挂载到Prefab上，用于关联需要的组件。 
-UIBaseCtrl的子类持有对应的View对象，用于实现交互逻辑。
+一个UI面板用一个 Canvas 进行管理，UIBaseView 的子类 View 挂载到 Prefab 上，用于关联需要的组件。 
+UIBaseCtrl 的子类持有对应的 View 对象，用于实现交互逻辑。
 
 &nbsp;
 
-每个UI面板都有一个UIInfo信息来描述自己。
-```
-public class UIInfo
+每个UI面板都有一个 UIInfo 信息来描述自己。这部分信息通过代码生成自动记录到 UIConfig 类中。
+```csharp
+public struct UIInfo
 {
-    public UIEnumBaseType UIEnumBaseType;    // 标识
-    public UIEnumBaseLayer UIEnumBaseLayer;  // 层级
-    public Type ViewType;                    // View类的Type
-    public Type CtrlType;                    // Ctrl类的Type
-    public UIScheduleMode ScheduleMode;      // 调度模式
-    public string ResPath;                   // 加载路径
+    public string LayerName { get; }                // 层级名
+    public UIScheduleMode ScheduleMode { get; }     // 调度方式
+    public string ResPath { get; }                  // 加载路径
 }
 ```
 &nbsp;
@@ -29,69 +26,58 @@ UI有三种调度方式：
 按下 ESC 键，默认关闭栈顶 UI，也可以自定义行为。
 可以通过 UIManager.EscapeEvent，实现栈空时按下 ESC 键的行为。
 
-## 使用示例
-1. 继承UIEnumBaseType，实现自己的UI标识枚举类
-```
-public class UIEnumType : UIEnumBaseType
+## 快速开始
+1. 点击 MenuItem：UniWork -> UIFramework -> 创建全部。<br>
+这一步用于创建必要的资源配置，其中 UIRoot Prefab 和 UIRuntimeSetting 路径可变，但 UIEditorSetting 路径不可变。
+2. 对 EditorSetting 和 RuntimeSetting 进行配置。
+3. 创建 UIAgent.cs 脚本。
+```csharp
+using Cysharp.Threading.Tasks;
+using UI;
+using UnityEngine;
+using UniWork.UIFramework.Runtime;
+using UniWork.Utility.Runtime;
+
+public class UIAgent : UIBaseAgent
 {
-    private UIEnumType(int key, string value) : base(key, value)
+    public override string RuntimeSettingLoadPath => "UIRuntimeSetting";
+
+    public override void InitUIInfo()
     {
-    }
-    
-    // UI标识，当作枚举使用
-    public static readonly UIEnumType UITestOne = new UIEnumType(0, "UITestOne");
-    public static readonly UIEnumType UITestTwo = new UIEnumType(1, "UITestTwo");
-}
-```
-2. 继承UIEnumBaseLayer，实现自己的UI层级枚举类
-```
-public class UIEnumLayer : UIEnumBaseLayer
-{
-    private UIEnumLayer(int key, string value) : base(key, value)
-    {
+        foreach (var pair in UIConfig.InfoMap)
+        {
+            AddInfo(pair.Key, pair.Value);
+        }
     }
 
-    // 定义的int数值不要相同，也不要差距太小。 表示 Canvas 的 Order In Layer 值
-    public static readonly UIEnumLayer Bottom = new UIEnumLayer(0, "Normal");
-    public static readonly UIEnumLayer Middle = new UIEnumLayer(1000, "Middle");
-    public static readonly UIEnumLayer Top = new UIEnumLayer(2000, "Top");
-}
-```
-3. 继承UIManagerBaseAgent，实现自己的UIManager代理类
-```
-public class UIMgrAgent : UIManagerBaseAgent
-{
-    public override string UIRootLoadPath => "UIRoot";
-    // 每次显示界面时，LayerOrder的增量
-    public override int LayerOrderOnceRaise => 20;
-
-    public override ReadOnlyCollection<UIEnumBaseLayer> GetAllLayers()
-    {
-        return UIEnumLayer.GetAllEnumTypes();
-    }
-    
     public override T Load<T>(string path)
     {
         return Resources.Load<T>(path);
     }
 
-    public override void InitUIInfo()
+    public override async UniTask<T> LoadAsync<T>(string path)
     {
-        AddInfo(UIEnumType.UITestOne, new UIInfo()
-        {
-            UIEnumBaseLayer = UIEnumLayer.Middle,
-            UIEnumBaseType = UIEnumType.UITestOne,
-            ViewType = typeof(UITestOneView),
-            CtrlType = typeof(UITestOneCtrl),
-            ScheduleMode = UIScheduleMode.Stack,
-            ResPath = "UITestOne"
-        });
+        return await Resources.LoadAsync<T>(path) as T;
+    }
+
+    public override void UnLoad(string path)
+    {
+        DLog.Info("UnLoad " + path);
     }
 }
 ```
-4. 通过MenuItem功能，创建UIRoot的预制体。自行调整存放位置匹配加载路径。
+4. 将 `UIManager.Create(new UIAgent())` 添加到启动流程中。
 
-## Editor功能
-View 代码自动生成。
-设置需要引用的控件的 Tag 为 AutoField。
-选择 UI Prefab, 右键选择 "自动生成UIView代码", 即可自动生成 View 代码并挂载到 Prefab 上.
+## 代码生成功能
+在 Prefab 上挂载 UICodeGenerator 脚本，点击对应按钮即可进行代码生成。<br>
+注意：自动生成的 UIView 和 UICtrl 脚本的文件位置不能自行更改。<br>
+控件的 Tag 如果是 AutoField，会根据 EditorSetting 中的配置自动绑定到 UIView 中。
+
+## TODO
+1. 文档完善
+2. 打开关闭动画支持
+3. 控件绑定方式更改 例如 txt_go|Name
+4. 添加 UI SortingLayer
+5. UIManager 改为非单例，非静态
+6. UIManager 添加 Release 方法
+7. UI Preview Scene 设定
