@@ -1,0 +1,25 @@
+﻿using UniWork.UIFramework.Runtime;
+
+namespace {{ your_namespace }}
+{
+    public class {{ ctrl_class_name }} : UIBaseCtrl
+    {
+        private {{ view_class_name }} _view;
+    
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            _view = ({{ view_class_name }})UIView;
+        }
+
+        public override void OnShow(UIBaseParameter param = null)
+        {
+            base.OnShow(param);
+        }
+
+        public override void OnHide()
+        {
+            base.OnHide();
+        }
+    }
+}

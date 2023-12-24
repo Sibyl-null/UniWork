@@ -4,8 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Scriban;
-using Scriban.Runtime;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -15,7 +13,7 @@ using UniWork.Utility.Runtime;
 
 namespace UniWork.UIFramework.Editor.CodeGenerators
 {
-    public static class UIViewGenerator
+    internal static class UIViewGenerator
     {
         private struct FieldData
         {
