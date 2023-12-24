@@ -139,14 +139,7 @@ namespace UniWork.UIFramework.Editor
             DLog.Info("成功添加Tag: " + AutoBindTag);
         }
         
-        
-        // ---------------------------------------------------------------
-        // 工作流
-        // ---------------------------------------------------------------
-
-        public const int MenuItemPriority = 100;
-        
-        [MenuItem("Assets/创建UITemplate模板", false, MenuItemPriority)]
+        [MenuItem("Assets/创建 UITemplate 模板", false, 100)]
         public static void CreateUITemplate()
         {
             string savePath = EditorMethodUtility.GetSelectedPath();
@@ -161,6 +154,7 @@ namespace UniWork.UIFramework.Editor
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             
             uiTemplate.AddComponent<GraphicRaycaster>();
+            uiTemplate.AddComponent<UICodeGenerator>();
 
             GameObject contentObj = new GameObject("Content");
             RectTransform contentTrans = contentObj.AddComponent<RectTransform>();
