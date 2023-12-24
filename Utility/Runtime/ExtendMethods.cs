@@ -52,5 +52,19 @@ namespace UniWork.Utility.Runtime
             localPos.z = active ? 0f : -1000f;
             trans.localPosition = localPos;
         }
+        
+        /// <summary>
+        /// 移除字符串的特定前缀
+        /// </summary>
+        public static string RemovePrefix(this string str, string prefix)
+        {
+            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(prefix))
+                return str;
+
+            if (str.StartsWith(prefix) == false)
+                return str;
+
+            return str.Substring(prefix.Length);
+        }
     }
 }
