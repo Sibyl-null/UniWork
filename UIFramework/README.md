@@ -81,3 +81,4 @@ public class UIAgent : UIBaseAgent
 5. UIManager 改为非单例，非静态
 6. UIManager 添加 Release 方法
 7. UI Preview Scene 设定
+8. 从现有的 RootPrefab 复制，而不是使用代码创建
