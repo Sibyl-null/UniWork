@@ -23,9 +23,9 @@ namespace UniWork.UIFramework.Editor
                 this.componentName = componentName;
             }
         }
-
-        [FolderPath]
-        public string codeFileSavePath = "Assets/Scripts/UI";
+        
+        [FolderPath] public string codeFileRootPath = "Assets/Scripts/UI";
+        [FolderPath] public string prefabSearchPath = "Assets/Resources/Prefab/UI";
         public string rootNamespace = "UI";
 
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()

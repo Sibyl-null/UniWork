@@ -41,32 +41,21 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         
         private const string AutoGenScriptNameKey = "AutoGenScriptName";
         
-        [MenuItem("Assets/自动生成UIView代码", false, UIEditor.MenuItemPriority)]
-        public static void GenerateUIViewCode()
+        public static void GenerateUIViewCode(GameObject gameObject)
         {
-            GameObject selectedObject = VerifySetting();
-            CodeGenerateData data = CollectGenerateData(selectedObject);
+            VerifySetting();
+            CodeGenerateData data = CollectGenerateData(gameObject);
             GenerateAndSaveCode(data);
 
             // 脚本挂载并绑定
             EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.ClassName}");
         }
 
-        private static GameObject VerifySetting()
+        private static void VerifySetting()
         {
-            string selectedPath = EditorMethodUtility.GetSelectedPath();
-            if (selectedPath == "" || File.Exists(selectedPath) == false)
-                throw new Exception("[自动生成UIView代码]: 请选择一个Prefab");
-
-            GameObject selectedObject = AssetDatabase.LoadAssetAtPath<GameObject>(selectedPath);
-            if (selectedObject == null)
-                throw new Exception("[自动生成UIView代码]: 请选择一个Prefab");
-
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            if (string.IsNullOrEmpty(editorSetting.codeFileSavePath))
+            if (string.IsNullOrEmpty(editorSetting.codeFileRootPath))
                 throw new Exception("[自动生成UIView代码]: 代码保存路径未设定");
-
-            return selectedObject;
         }
 
         private static CodeGenerateData CollectGenerateData(GameObject selectedObject)
@@ -132,9 +121,9 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string code = EditorMethodUtility.ScribanGenerateText("UIViewTemplate", data);
 
-            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{data.ClassName}.cs");
-            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileSavePath);
+            string savePath = Path.Combine(editorSetting.codeFileRootPath, $"{data.ClassName}.cs");
+            if (Directory.Exists(editorSetting.codeFileRootPath) == false)
+                Directory.CreateDirectory(editorSetting.codeFileRootPath);
             
             File.WriteAllText(savePath, code);
             
@@ -153,7 +142,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
                 return;
 
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            string scriptPath = Path.Combine(editorSetting.codeFileSavePath, scriptName + ".cs");
+            string scriptPath = Path.Combine(editorSetting.codeFileRootPath, scriptName + ".cs");
 
             Type scriptType = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptPath).GetClass();
             if (prefab.GetComponent(scriptType) == null)

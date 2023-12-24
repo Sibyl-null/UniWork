@@ -35,7 +35,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
                 throw new Exception("[自动生成UICtrl代码]: 请选择一个Prefab");
 
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            if (string.IsNullOrEmpty(editorSetting.codeFileSavePath))
+            if (string.IsNullOrEmpty(editorSetting.codeFileRootPath))
                 throw new Exception("[自动生成UICtrl代码]: 代码保存路径未设定");
 
             return selectedObject;
@@ -59,9 +59,9 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string code = EditorMethodUtility.ScribanGenerateText("UICtrlTemplate", data);
 
-            string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{data.CtrlClassName}.cs");
-            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileSavePath);
+            string savePath = Path.Combine(editorSetting.codeFileRootPath, $"{data.CtrlClassName}.cs");
+            if (Directory.Exists(editorSetting.codeFileRootPath) == false)
+                Directory.CreateDirectory(editorSetting.codeFileRootPath);
             
             File.WriteAllText(savePath, code);
             

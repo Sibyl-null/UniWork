@@ -80,9 +80,9 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string code = EditorMethodUtility.ScribanGenerateText("UIConfigTemplate", data);
 
-            string savePath = Path.Combine(editorSetting.codeFileSavePath, "UIConfig.cs");
-            if (Directory.Exists(editorSetting.codeFileSavePath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileSavePath);
+            string savePath = Path.Combine(editorSetting.codeFileRootPath, "UIConfig.cs");
+            if (Directory.Exists(editorSetting.codeFileRootPath) == false)
+                Directory.CreateDirectory(editorSetting.codeFileRootPath);
             
             File.WriteAllText(savePath, code);
             
