@@ -1,0 +1,25 @@
+﻿using UniWork.UIFramework.Runtime;
+
+namespace {{ your_namespace }}
+{
+    public class {{ prefab_name }}Ctrl : UIBaseCtrl
+    {
+        private {{ prefab_name }}View _view;
+    
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            _view = ({{ prefab_name }}View)UIView;
+        }
+
+        public override void OnShow(UIBaseParameter param = null)
+        {
+            base.OnShow(param);
+        }
+
+        public override void OnHide()
+        {
+            base.OnHide();
+        }
+    }
+}

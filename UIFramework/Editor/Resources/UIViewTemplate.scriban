@@ -8,7 +8,7 @@ using {{ $namespace }};
 
 namespace {{ your_namespace }}
 {
-    public class {{ class_name }} : UIBaseView
+    public class {{ prefab_name }}View : UIBaseView
     {
         {{~ for $field in fields ~}}
         public {{ $field.type_name }} {{ $field.field_name }};

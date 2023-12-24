@@ -2,7 +2,7 @@ using System.IO;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
-namespace UniWork.UIFramework.Editor
+namespace UniWork.Utility.Editor.Importers
 {
     [ScriptedImporter(1, "scriban")]
     public class ScribanImporter : ScriptedImporter

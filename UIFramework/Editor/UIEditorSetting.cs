@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UniWork.UIFramework.Editor.CodeGenerators;
 using UniWork.Utility.Editor;
 
 namespace UniWork.UIFramework.Editor
@@ -22,10 +24,23 @@ namespace UniWork.UIFramework.Editor
                 this.componentName = componentName;
             }
         }
-
-        public string codeFileSavePath = "Assets/Scripts/AutoGen/UI";
-        public string codeNamespace = "AutoGen.UI";
-
+        
+        [TitleGroup("代码生成通用配置"), FolderPath]
+        public string codeFileRootPath = "Assets/Scripts/UI";
+        
+        [TitleGroup("代码生成通用配置")]
+        public string rootNamespace = "UI";
+        
+        [TitleGroup("UIConfig 生成配置")]
+        public bool resPathWithExtension = true;
+        
+        [TitleGroup("UIConfig 生成配置")]
+        public string resPathRemovePrefix;
+        
+        [TitleGroup("UIConfig 生成配置")]
+        public List<DefaultAsset> prefabSearchFolders = new();
+        
+        [TitleGroup("View 组件自动绑定配置")]
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()
         {
             new AutoBindData("txt", nameof(Text)),
@@ -57,6 +72,12 @@ namespace UniWork.UIFramework.Editor
         public static void CreateAsset()
         {
             EditorMethodUtility.CreateScriptableObjectAsset<UIEditorSetting>(SavePath);
+        }
+
+        [TitleGroup("UIConfig 生成配置"), Button("生成 UIConfig 代码")]
+        private void GenerateUIConfig()
+        {
+            UIConfigGenerator.GenerateCode();
         }
     }
 }

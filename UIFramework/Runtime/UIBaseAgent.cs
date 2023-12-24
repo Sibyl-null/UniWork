@@ -1,19 +1,17 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
 using Cysharp.Threading.Tasks;
 
 namespace UniWork.UIFramework.Runtime
 {
     public abstract class UIBaseAgent
     {
-        public abstract string UIRootLoadPath { get; }
-        public virtual int LayerOrderOnceRaise => 10;
+        public abstract string RuntimeSettingLoadPath { get; }
         
-        protected void AddInfo(UIInfo info)
+        protected void AddInfo(Type ctrlType, UIInfo info)
         {
-            UIManager.Instance.AddInfo(info);
+            UIManager.Instance.AddInfo(ctrlType, info);
         }
         
-        public abstract ReadOnlyCollection<UIBaseLayer> GetAllLayers();
         public abstract void InitUIInfo();
         
         public abstract T Load<T>(string path) where T : UnityEngine.Object;

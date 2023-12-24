@@ -1,0 +1,23 @@
+﻿// Auto generate at {{ now_date_time }}
+// please do not modify this file
+
+using System;
+using System.Collections.Generic;
+using UniWork.UIFramework.Runtime;
+using UniWork.UIFramework.Runtime.Scheduler;
+{{~ for $namespace in namespaces ~}}
+using {{ $namespace }};
+{{~ end ~}}
+
+namespace {{ your_namespace }}
+{
+    public static class UIConfig
+    {
+        public static readonly Dictionary<Type, UIInfo> InfoMap = new Dictionary<Type, UIInfo>()
+        {
+        {{~ for $info in infos ~}}
+            {typeof({{ $info.ctrl_type_name }}), new UIInfo("{{ $info.layer_name }}", UIScheduleMode.{{ $info.schedule_mode }}, "{{ $info.res_path }}")},
+        {{~ end ~}}
+        };
+    }
+}

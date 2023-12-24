@@ -1,2 +1,3 @@
 # UniWork
-框架内已包含 UniTask，MemoryPack 库。 使用前最好导入 Odin 插件，已获得全部功能支持。
+强依赖 Odin 插件，使用前请先导入。
+框架内已包含 UniTask，MemoryPack，IngameDebugConsole，Scriban 库。

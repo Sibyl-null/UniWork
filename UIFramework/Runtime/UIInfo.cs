@@ -1,41 +1,16 @@
-﻿using System;
-using UniWork.Utility.Runtime;
+﻿using UniWork.UIFramework.Runtime.Scheduler;
 
 namespace UniWork.UIFramework.Runtime
 {
-    public abstract class UIBaseType : EnumBaseType<UIBaseType>
+    public struct UIInfo
     {
-        protected UIBaseType(int key, string value) : base(key, value)
+        public string LayerName { get; }
+        public UIScheduleMode ScheduleMode { get; }
+        public string ResPath { get; }
+
+        public UIInfo(string layerName, UIScheduleMode scheduleMode, string resPath)
         {
-        }
-    }
-
-    public abstract class UIBaseLayer : EnumBaseType<UIBaseLayer>
-    {
-        protected UIBaseLayer(int key, string value) : base(key, value)
-        {
-        }
-    }
-
-    public enum UIScheduleMode
-    {
-        Normal, Queue, Stack
-    }
-
-    public class UIInfo
-    {
-        public UIBaseType UIBaseType;
-        public UIBaseLayer UIBaseLayer;
-        public Type CtrlType;
-        public UIScheduleMode ScheduleMode;
-        public string ResPath;
-
-        public UIInfo(UIBaseType uiBaseType, UIBaseLayer uiBaseLayer, 
-            Type ctrlType, UIScheduleMode scheduleMode, string resPath)
-        {
-            UIBaseType = uiBaseType;
-            UIBaseLayer = uiBaseLayer;
-            CtrlType = ctrlType;
+            LayerName = layerName;
             ScheduleMode = scheduleMode;
             ResPath = resPath;
         }

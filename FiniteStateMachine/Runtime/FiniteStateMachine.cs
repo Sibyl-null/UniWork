@@ -6,8 +6,8 @@ namespace UniWork.FiniteStateMachine.Runtime
 {
     public class FiniteStateMachine
     {
-        private readonly Dictionary<Type, BaseState> _states = new Dictionary<Type, BaseState>();
-        private BaseState _nowState;
+        private readonly Dictionary<Type, IState> _states = new Dictionary<Type, IState>();
+        private IState _nowState;
 
         public void Start(Type type, IStateEnterParams enterParams = null)
         {
@@ -25,14 +25,14 @@ namespace UniWork.FiniteStateMachine.Runtime
             _nowState?.OnTick();
         }
         
-        public void ChangeState<T>(IStateEnterParams enterParams = null) where T : BaseState
+        public void ChangeState<T>(IStateEnterParams enterParams = null) where T : IState
         {
             ChangeState(typeof(T), enterParams);
         }
 
         public void ChangeState(Type type, IStateEnterParams enterParams = null)
         {
-            if (_states.TryGetValue(type, out BaseState state) == false)
+            if (_states.TryGetValue(type, out IState state) == false)
             {
                 DLog.Error("[StateMachine] 不存在该状态: " + type.Name);
                 return;
@@ -43,7 +43,7 @@ namespace UniWork.FiniteStateMachine.Runtime
             _nowState?.OnEnter(enterParams);
         }
 
-        public void AddState(BaseState state)
+        public void AddState(IState state)
         {
             Type type = state.GetType();
             if (_states.ContainsKey(type))

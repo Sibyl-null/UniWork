@@ -1,9 +1,10 @@
 ﻿using UniWork.Utility.Runtime;
 using UnityEngine;
-using UniWork.UIFramework.Runtime.Scheduler;
 
 namespace UniWork.UIFramework.Runtime
 {
+    public abstract class UIBaseParameter{}
+    
     public abstract class UIBaseCtrl
     {
         public UIBaseView UIView { get; private set; }
@@ -30,10 +31,8 @@ namespace UniWork.UIFramework.Runtime
 
         private void SetUIRenderLayer()
         {
-            UIView.UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
-            UIView.UICanvas.worldCamera = UIManager.Instance.UICamera;
             UIView.UICanvas.overrideSorting = true;
-            UIView.UICanvas.sortingOrder = Info.UIBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
         }
 
         /**
@@ -46,7 +45,7 @@ namespace UniWork.UIFramework.Runtime
         public virtual void OnShow(UIBaseParameter param = null)
         {
             UIView.gameObject.SetActiveByClip(true);
-            UIView.UICanvas.sortingOrder = Info.UIBaseLayer.key + UIManager.Instance.OrderLayerIncrement;
+            UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
             IsShow = true;
         }
 
@@ -65,7 +64,7 @@ namespace UniWork.UIFramework.Runtime
 
         public virtual void OnEscape()
         {
-            UIManager.Instance.HideUI(Info.UIBaseType);
+            UIManager.Instance.HideUI(this.GetType());
         }
     }
 }

@@ -13,10 +13,18 @@ namespace UniWork.Utility.Runtime
         
         public static T GetOrAddComponent<T>(this GameObject obj) where T : Component
         {
-            T t = obj.GetComponent<T>();
+            return (T)obj.GetOrAddComponent(typeof(T));
+        }
+        
+        public static Component GetOrAddComponent(this GameObject obj, Type type)
+        {
+            if (typeof(Component).IsAssignableFrom(type) == false)
+                throw new Exception($"[Utility] {type.Name} 不是 Component 的子类");
+            
+            Component t = obj.GetComponent(type);
             
             if (t == null)
-                t = obj.AddComponent<T>();
+                t = obj.AddComponent(type);
             
             return t;
         }
@@ -43,6 +51,20 @@ namespace UniWork.Utility.Runtime
             Vector3 localPos = trans.localPosition;
             localPos.z = active ? 0f : -1000f;
             trans.localPosition = localPos;
+        }
+        
+        /// <summary>
+        /// 移除字符串的特定前缀
+        /// </summary>
+        public static string RemovePrefix(this string str, string prefix)
+        {
+            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(prefix))
+                return str;
+
+            if (str.StartsWith(prefix) == false)
+                return str;
+
+            return str.Substring(prefix.Length);
         }
     }
 }

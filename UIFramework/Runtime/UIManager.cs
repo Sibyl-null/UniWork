@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UniWork.UIFramework.Runtime.Scheduler;
+using UniWork.UIFramework.Runtime.Scheduler.Implements;
 using UniWork.Utility.Runtime;
 using Object = UnityEngine.Object;
 
@@ -12,11 +13,10 @@ namespace UniWork.UIFramework.Runtime
     public class UIManager
     {
         public static UIManager Instance { get; private set; }
-        private static UIBaseAgent _agent;
 
-        private readonly Dictionary<UIBaseType, UIInfo> _infos = new();
-        private readonly Dictionary<UIBaseType, UIBaseCtrl> _instantiatedCtrls = new();
-        private readonly Dictionary<int, RectTransform> _bucketTrans = new();
+        private readonly Dictionary<Type, UIInfo> _infoDic = new();
+        private readonly Dictionary<Type, UIBaseCtrl> _instantiatedCtrlDic = new();
+        private readonly Dictionary<string, Canvas> _bucketCanvasDic = new();
 
         private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
         {
@@ -25,12 +25,14 @@ namespace UniWork.UIFramework.Runtime
             { UIScheduleMode.Stack, new UIStackScheduler() }
         };
 
+        private UIBaseAgent _agent;
         private GameObject _rootGo;
         private EventSystem _eventSystem;
-        
+        private UIRuntimeSetting _runtimeSetting;
+        private int _orderLayerIncrement;
+
         public event Action OnEscapeEvent;
         public Camera UICamera { get; private set; }
-        public int OrderLayerIncrement { get; private set; }
 
         public bool EnableInput
         {
@@ -45,43 +47,49 @@ namespace UniWork.UIFramework.Runtime
             if (Instance != null)
                 throw new Exception("UIManager repeat created");
             
-            _agent = agent;
-            GameObject obj = Object.Instantiate(_agent.Load<GameObject>(_agent.UIRootLoadPath));
-            Object.DontDestroyOnLoad(obj);
-
             Instance = new UIManager();
-            Instance.Initialize();
+            Instance.Initialize(agent);
         }
 
-        private void Initialize()
+        private void Initialize(UIBaseAgent agent)
         {
+            _agent = agent;
+            _runtimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
+
+            _rootGo = Object.Instantiate(_runtimeSetting.rootPrefab);
+            Object.DontDestroyOnLoad(_rootGo);
+            
             UICamera = _rootGo.GetComponentInChildren<Camera>();
             _eventSystem = _rootGo.GetComponentInChildren<EventSystem>();
+            
             _agent.InitUIInfo();
             CreateBuckets();
         }
 
-        internal void AddInfo(UIInfo info)
+        internal void AddInfo(Type ctrlType, UIInfo info)
         {
-            if (_infos.ContainsKey(info.UIBaseType))
-                throw new Exception($"{info.UIBaseType}已注册");
+            if (_infoDic.ContainsKey(ctrlType))
+                throw new Exception($"[UIFramework] {ctrlType.Name} 已注册");
             
-            _infos.Add(info.UIBaseType, info);
+            _infoDic.Add(ctrlType, info);
         }
 
         private void CreateBuckets()
         {
-            var layers = _agent.GetAllLayers();
-            foreach (UIBaseLayer baseLayer in layers)
+            foreach (UIRuntimeSetting.ShowLayer layer in _runtimeSetting.showLayers)
             {
-                GameObject bucketObj = new GameObject(baseLayer.value);
+                GameObject bucketObj = new GameObject(layer.name);
                 bucketObj.layer = LayerMask.NameToLayer("UI");
                 bucketObj.transform.SetParent(_rootGo.transform, false);
 
                 RectTransform rectTrans = bucketObj.GetOrAddComponent<RectTransform>();
                 rectTrans.Overspread();
 
-                _bucketTrans.Add(baseLayer.key, rectTrans);
+                Canvas canvas = bucketObj.AddComponent<Canvas>();
+                canvas.overrideSorting = true;
+                canvas.sortingOrder = layer.order;
+
+                _bucketCanvasDic.Add(layer.name, canvas);
             }
         }
 
@@ -107,57 +115,81 @@ namespace UniWork.UIFramework.Runtime
         // 对外API
         // ----------------------------------------------------------------------------
 
-        public void ShowUI(UIBaseType uiType, UIBaseParameter param = null)
+        public void ShowUI<T>(UIBaseParameter param = null) where T : UIBaseCtrl
         {
-            UIInfo info = GetUIInfo(uiType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.ShowUI(uiType, param);
-            else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+            Type ctrlType = typeof(T);
+            ShowUI(ctrlType, param);
         }
 
-        public async UniTask ShowUIAsync(UIBaseType uiType, UIBaseParameter param = null)
+        public async UniTask ShowUIAsync<T>(UIBaseParameter param = null) where T : UIBaseCtrl
         {
-            UIInfo info = GetUIInfo(uiType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                await scheduler.ShowUIAsync(uiType, param);
-            else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+            Type ctrlType = typeof(T);
+            await ShowUIAsync(ctrlType, param);
         }
         
-        public void HideUI(UIBaseType uiType)
+        public void HideUI<T>() where T : UIBaseCtrl
         {
-            UIInfo info = GetUIInfo(uiType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.HideUI(uiType);
-            else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+            Type ctrlType = typeof(T);
+            HideUI(ctrlType);
         }
         
-        public void DestroyUI(UIBaseType uiType)
+        public void DestroyUI<T>() where T : UIBaseCtrl
         {
-            UIInfo info = GetUIInfo(uiType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.DestroyUI(uiType);
-            else
-                DLog.Error($"不存在{info.ScheduleMode}类型的UI调度器");
+            Type ctrlType = typeof(T);
+            DestroyUI(ctrlType);
         }
         
-        internal void ShowUIInternal(UIBaseType uiType, UIBaseParameter param = null)
+        public void ShowUI(Type ctrlType, UIBaseParameter param = null)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIInfo info = GetUIInfo(ctrlType);
 
-            OrderLayerIncrement += _agent.LayerOrderOnceRaise;
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.ShowUI(ctrlType, param);
+            else
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+        }
+
+        public async UniTask ShowUIAsync(Type ctrlType, UIBaseParameter param = null)
+        {
+            UIInfo info = GetUIInfo(ctrlType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                await scheduler.ShowUIAsync(ctrlType, param);
+            else
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+        }
+        
+        public void HideUI(Type ctrlType)
+        {
+            UIInfo info = GetUIInfo(ctrlType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.HideUI(ctrlType);
+            else
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+        }
+        
+        public void DestroyUI(Type ctrlType)
+        {
+            UIInfo info = GetUIInfo(ctrlType);
+
+            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
+                scheduler.DestroyUI(ctrlType);
+            else
+                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+        }
+        
+        internal void ShowUIInternal(Type ctrlType, UIBaseParameter param = null)
+        {
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
+
+            _orderLayerIncrement += _runtimeSetting.layerOrderOnceRaise;
             
             if (ctrl == null)
             {
-                UIInfo info = _infos[uiType];
+                UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = CreateUIObject(info);
-                ctrl = CreateUICtrl(uiObj, info);
+                ctrl = CreateUICtrl(uiObj, ctrlType);
                 ctrl.OnShow(param);
                 return;
             }
@@ -166,17 +198,17 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnShow(param);
         }
 
-        internal async UniTask ShowUIAsyncInternal(UIBaseType uiType, UIBaseParameter param = null)
+        internal async UniTask ShowUIAsyncInternal(Type ctrlType, UIBaseParameter param = null)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
 
-            OrderLayerIncrement += _agent.LayerOrderOnceRaise;
+            _orderLayerIncrement += _runtimeSetting.layerOrderOnceRaise;
             
             if (ctrl == null)
             {
-                UIInfo info = _infos[uiType];
+                UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = await CreateUIObjectAsync(info);
-                ctrl = CreateUICtrl(uiObj, info);
+                ctrl = CreateUICtrl(uiObj, ctrlType);
                 ctrl.OnShow(param);
                 return;
             }
@@ -185,13 +217,13 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnShow(param);
         }
 
-        internal void HideUIInternal(UIBaseType uiType)
+        internal void HideUIInternal(Type ctrlType)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
             
             if (ctrl == null)
             {
-                DLog.Warning($"{uiType} 未实例化");
+                DLog.Warning($"[UIFramework] {ctrlType.Name} 未实例化");
                 return;
             }
             
@@ -199,13 +231,13 @@ namespace UniWork.UIFramework.Runtime
                 ctrl.OnHide();
         }
 
-        internal void DestroyUIInternal(UIBaseType uiType)
+        internal void DestroyUIInternal(Type ctrlType)
         {
-            UIBaseCtrl ctrl = GetUICtrl(uiType);
+            UIBaseCtrl ctrl = GetUICtrl(ctrlType);
             
             if (ctrl == null)
             {
-                DLog.Warning($"{uiType} 未实例化");
+                DLog.Warning($"[UIFramework] {ctrlType.Name} 未实例化");
                 return;
             }
             
@@ -216,47 +248,60 @@ namespace UniWork.UIFramework.Runtime
             Object.Destroy(ctrl.UIView.gameObject);
             
             _agent.UnLoad(ctrl.Info.ResPath);
-            _instantiatedCtrls.Remove(uiType);
+            _instantiatedCtrlDic.Remove(ctrlType);
         }
 
-        public UIBaseCtrl GetUICtrl(UIBaseType uiType)
+        public UIBaseCtrl GetUICtrl(Type ctrlType)
         {
-            if (!_infos.ContainsKey(uiType))
-                throw new Exception(uiType + "对应的UIInfo不存在");
+            if (!_infoDic.ContainsKey(ctrlType))
+                throw new Exception($"[UIFramework] {ctrlType.Name} 对应的 UIInfo 不存在");
             
-            return _instantiatedCtrls.TryGetValue(uiType, out UIBaseCtrl ctrl) ? ctrl : null;
+            return _instantiatedCtrlDic.TryGetValue(ctrlType, out UIBaseCtrl ctrl) ? ctrl : null;
         }
 
-        public UIInfo GetUIInfo(UIBaseType uiType)
+        private UIInfo GetUIInfo(Type ctrlType)
         {
-            if (!_infos.ContainsKey(uiType))
-                throw new Exception(uiType + "对应的UIInfo不存在");
+            if (!_infoDic.ContainsKey(ctrlType))
+                throw new Exception($"[UIFramework] {ctrlType.Name} 对应的 UIInfo 不存在");
 
-            return _infos[uiType];
+            return _infoDic[ctrlType];
         }
 
         private GameObject CreateUIObject(UIInfo info)
         {
-            Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
+            Transform bucketTrans = _bucketCanvasDic[info.LayerName].transform;
             GameObject uiPrefab = _agent.Load<GameObject>(info.ResPath);
             return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
 
         private async UniTask<GameObject> CreateUIObjectAsync(UIInfo info)
         {
-            Transform bucketTrans = _bucketTrans[info.UIBaseLayer.key];
+            Transform bucketTrans = _bucketCanvasDic[info.LayerName].transform;
             GameObject uiPrefab = await _agent.LoadAsync<GameObject>(info.ResPath);
             return Object.Instantiate(uiPrefab, bucketTrans, false);
         }
 
-        private UIBaseCtrl CreateUICtrl(GameObject uiObj, UIInfo info)
+        private UIBaseCtrl CreateUICtrl(GameObject uiObj, Type ctrlType)
         {
+            UIInfo info = _infoDic[ctrlType];
+            
             UIBaseView view = (UIBaseView)uiObj.GetComponent(typeof(UIBaseView));
-            UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(info.CtrlType);
+            UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(ctrlType);
             ctrl.Initialize(view, info);
 
-            _instantiatedCtrls.Add(info.UIBaseType, ctrl);
+            _instantiatedCtrlDic.Add(ctrlType, ctrl);
             return ctrl;
+        }
+
+        public int GetLayerOrderWithIncrement(string layerName)
+        {
+            if (_bucketCanvasDic.TryGetValue(layerName, out Canvas canvas))
+            {
+                return canvas.sortingOrder + _orderLayerIncrement;
+            }
+
+            DLog.Error("[UIFramework] 不存在该层级: " + layerName);
+            return 0;
         }
     }
 }
