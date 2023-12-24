@@ -2,14 +2,14 @@
 
 namespace {{ your_namespace }}
 {
-    public class {{ ctrl_class_name }} : UIBaseCtrl
+    public class {{ prefab_name }}Ctrl : UIBaseCtrl
     {
-        private {{ view_class_name }} _view;
+        private {{ prefab_name }}View _view;
     
         protected override void OnCreate()
         {
             base.OnCreate();
-            _view = ({{ view_class_name }})UIView;
+            _view = ({{ prefab_name }}View)UIView;
         }
 
         public override void OnShow(UIBaseParameter param = null)

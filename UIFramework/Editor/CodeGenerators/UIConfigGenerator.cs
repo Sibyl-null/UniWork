@@ -38,7 +38,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         }
         
         [MenuItem("UniWork/UIFramework/自动生成 UIConfig 代码")]
-        private static void GenerateConfigCode()
+        private static void GenerateCode()
         {
             ConfigGenerateData data = CollectGenerateData();
             GenerateAndSaveCode(data);

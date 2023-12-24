@@ -15,7 +15,12 @@ namespace UniWork.UIFramework.Editor.Drawer
             base.OnInspectorGUI();
             if (GUILayout.Button("重新生成 UIView 代码"))
             {
-                UIViewGenerator.GenerateUIViewCode(Target.gameObject);
+                UIViewGenerator.GenerateCode(Target.gameObject);
+            }
+            
+            if (GUILayout.Button("重新生成 UICtrl 代码"))
+            {
+                UICtrlGenerator.GenerateCode(Target.gameObject);
             }
 
             if (GUILayout.Button("初始化创建: View + Ctrl + Config"))

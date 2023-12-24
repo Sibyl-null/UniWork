@@ -42,7 +42,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         
         private const string AutoGenScriptNameKey = "AutoGenScriptName";
         
-        public static void GenerateUIViewCode(GameObject gameObject)
+        public static void GenerateCode(GameObject gameObject)
         {
             VerifySetting();
             CodeGenerateData data = CollectGenerateData(gameObject);

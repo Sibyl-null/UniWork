@@ -1,9 +1,9 @@
 ﻿using System;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UniWork.Utility.Editor;
 using UniWork.Utility.Runtime;
+using UniWork.Utility.Runtime.MethodUtility;
 
 namespace UniWork.UIFramework.Editor.CodeGenerators
 {
@@ -12,33 +12,21 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         private struct CtrlGenerateData
         {
             public string YourNamespace;
-            public string CtrlClassName;
-            public string ViewClassName;
+            public string PrefabName;
         }
         
-        [MenuItem("Assets/自动生成UICtrl代码", false, UIEditor.MenuItemPriority)]
-        public static void GenerateCtrlCode()
+        public static void GenerateCode(GameObject gameObject)
         {
-            GameObject selectedObject = VerifySetting();
-            CtrlGenerateData data = CollectGenerateData(selectedObject);
+            VerifySetting();
+            CtrlGenerateData data = CollectGenerateData(gameObject);
             GenerateAndSaveCode(data);
         }
 
-        private static GameObject VerifySetting()
+        private static void VerifySetting()
         {
-            string selectedPath = EditorMethodUtility.GetSelectedPath();
-            if (selectedPath == "" || File.Exists(selectedPath) == false)
-                throw new Exception("[自动生成UICtrl代码]: 请选择一个Prefab");
-
-            GameObject selectedObject = AssetDatabase.LoadAssetAtPath<GameObject>(selectedPath);
-            if (selectedObject == null)
-                throw new Exception("[自动生成UICtrl代码]: 请选择一个Prefab");
-
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             if (string.IsNullOrEmpty(editorSetting.codeFileRootPath))
-                throw new Exception("[自动生成UICtrl代码]: 代码保存路径未设定");
-
-            return selectedObject;
+                throw new Exception("[自动生成 UICtrl 代码]: 代码保存路径未设定");
         }
         
         private static CtrlGenerateData CollectGenerateData(GameObject selectedObject)
@@ -47,26 +35,23 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
             CtrlGenerateData data = new CtrlGenerateData
             {
-                YourNamespace = editorSetting.rootNamespace,
-                CtrlClassName = $"{selectedObject.name}Ctrl",
-                ViewClassName = $"{selectedObject.name}View"
+                YourNamespace = $"{editorSetting.rootNamespace}.{selectedObject.name}",
+                PrefabName = selectedObject.name
             };
             return data;
         }
         
         private static void GenerateAndSaveCode(CtrlGenerateData data)
         {
-            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string code = EditorMethodUtility.ScribanGenerateText("UICtrlTemplate", data);
 
-            string savePath = Path.Combine(editorSetting.codeFileRootPath, $"{data.CtrlClassName}.cs");
-            if (Directory.Exists(editorSetting.codeFileRootPath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileRootPath);
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
+            string filePath = $"{editorSetting.codeFileRootPath}/{data.PrefabName}/{data.PrefabName}Ctrl.cs";
             
-            File.WriteAllText(savePath, code);
+            IoUtility.OverlayWriteTextFile(filePath, code);
             
             AssetDatabase.Refresh();
-            DLog.Info("[自动生成UICtrl代码]: 成功! " + savePath);
+            DLog.Info("[自动生成 UICtrl 代码]: 成功! " + filePath);
         }
     }
 }
