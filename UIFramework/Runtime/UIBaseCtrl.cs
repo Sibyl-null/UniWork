@@ -1,9 +1,10 @@
 ﻿using UniWork.Utility.Runtime;
 using UnityEngine;
-using UniWork.UIFramework.Runtime.Scheduler;
 
 namespace UniWork.UIFramework.Runtime
 {
+    public abstract class UIBaseParameter{}
+    
     public abstract class UIBaseCtrl
     {
         public UIBaseView UIView { get; private set; }

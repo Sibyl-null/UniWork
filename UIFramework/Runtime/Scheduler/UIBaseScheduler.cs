@@ -3,8 +3,6 @@ using Cysharp.Threading.Tasks;
 
 namespace UniWork.UIFramework.Runtime.Scheduler
 {
-    public abstract class UIBaseParameter{}
-    
     internal abstract class UIBaseScheduler
     {
         internal abstract void ShowUI(Type ctrlType, UIBaseParameter param = null);
