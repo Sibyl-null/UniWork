@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UniWork.UIFramework.Runtime;
 using UniWork.Utility.Editor;
 using UniWork.Utility.Runtime;
+using UniWork.Utility.Runtime.MethodUtility;
 
 namespace UniWork.UIFramework.Editor.CodeGenerators
 {
@@ -37,8 +37,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             public InfoData[] Infos;
         }
         
-        [MenuItem("UniWork/UIFramework/自动生成 UIConfig 代码")]
-        private static void GenerateCode()
+        public static void GenerateCode()
         {
             ConfigGenerateData data = CollectGenerateData();
             GenerateAndSaveCode(data);
@@ -50,19 +49,12 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
             List<InfoData> infoList = new List<InfoData>();
             HashSet<string> namespaceSet = new HashSet<string>();
-            
-            string[] guids = AssetDatabase.FindAssets("t:Prefab");
-            foreach (string guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                if (prefab.TryGetComponent<UICodeGenerator>(out var generator))
-                {
-                    namespaceSet.Add($"{editorSetting.rootNamespace}.{generator.name}");
-                    infoList.Add(new InfoData($"{generator.name}Ctrl", generator.layerName,
-                        generator.scheduleMode.ToString(), path));
-                }
+            foreach ((UICodeGenerator generator, string path) in GetAllGenerators())
+            {
+                namespaceSet.Add($"{editorSetting.rootNamespace}.{generator.name}");
+                infoList.Add(new InfoData($"{generator.name}Ctrl", generator.layerName,
+                    generator.scheduleMode.ToString(), path));
             }
 
             ConfigGenerateData data = new ConfigGenerateData
@@ -77,17 +69,37 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         
         private static void GenerateAndSaveCode(ConfigGenerateData data)
         {
-            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string code = EditorMethodUtility.ScribanGenerateText("UIConfigTemplate", data);
 
-            string savePath = Path.Combine(editorSetting.codeFileRootPath, "UIConfig.cs");
-            if (Directory.Exists(editorSetting.codeFileRootPath) == false)
-                Directory.CreateDirectory(editorSetting.codeFileRootPath);
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
+            string filePath = $"{editorSetting.codeFileRootPath}/UIConfig.cs";
             
-            File.WriteAllText(savePath, code);
+            IoUtility.OverlayWriteTextFile(filePath, code);
             
             AssetDatabase.Refresh();
-            DLog.Info("[自动生成 UIConfig 代码]: 成功! " + savePath);
+            DLog.Info("[自动生成 UIConfig 代码]: 成功! " + filePath);
+        }
+
+        private static List<(UICodeGenerator, string)> GetAllGenerators()
+        {
+            UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
+            List<(UICodeGenerator, string)> results = new List<(UICodeGenerator, string)>();
+            
+            string[] guids = AssetDatabase.FindAssets("t:Prefab",
+                editorSetting.prefabSearchFolders.Select(AssetDatabase.GetAssetPath).ToArray());
+            
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+                if (prefab.TryGetComponent<UICodeGenerator>(out var generator))
+                {
+                    results.Add((generator, path));
+                }
+            }
+
+            return results;
         }
     }
 }

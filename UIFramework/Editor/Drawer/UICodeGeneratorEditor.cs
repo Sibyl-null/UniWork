@@ -26,20 +26,13 @@ namespace UniWork.UIFramework.Editor.Drawer
             {
                 AddViewScriptAndBindComponent();
             }
-            
-            if (GUILayout.Button("重新生成 UICtrl 代码"))
-            {
-                UICtrlGenerator.GenerateCode(Target.gameObject);
-            }
 
             if (GUILayout.Button("初始化创建: View + Ctrl + Config"))
             {
-                InitUICreate();
+                UIViewGenerator.GenerateCode(Target.gameObject);
+                UICtrlGenerator.GenerateCode(Target.gameObject);
+                UIConfigGenerator.GenerateCode();
             }
-        }
-
-        private void InitUICreate()
-        {
         }
         
         private void AddViewScriptAndBindComponent()
