@@ -14,6 +14,15 @@ namespace UniWork.Utility.Runtime.MethodUtility
         {
             return Directory.Exists(path);
         }
+
+        /// <summary>
+        /// 移除文件路径的后缀名
+        /// </summary>
+        public static string FilePathRemoveExtension(string filePath)
+        {
+            string extension = Path.GetExtension(filePath);
+            return filePath.Substring(0, filePath.Length - extension.Length);
+        }
         
         /// <summary>
         /// 获取所有子文件夹，不包含中间文件夹和自己

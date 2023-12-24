@@ -26,6 +26,7 @@ namespace UniWork.UIFramework.Editor
         
         [FolderPath] public string codeFileRootPath = "Assets/Scripts/UI";
         public string rootNamespace = "UI";
+        public bool resPathWithExtension = true;
         public List<DefaultAsset> prefabSearchFolders = new List<DefaultAsset>();
         
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -52,9 +53,11 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
             foreach ((UICodeGenerator generator, string path) in GetAllGenerators())
             {
+                string resPath = editorSetting.resPathWithExtension ? path : IoUtility.FilePathRemoveExtension(path);
+                
                 namespaceSet.Add($"{editorSetting.rootNamespace}.{generator.name}");
                 infoList.Add(new InfoData($"{generator.name}Ctrl", generator.layerName,
-                    generator.scheduleMode.ToString(), path));
+                    generator.scheduleMode.ToString(), resPath));
             }
 
             ConfigGenerateData data = new ConfigGenerateData
