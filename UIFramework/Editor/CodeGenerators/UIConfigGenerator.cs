@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Scriban;
-using Scriban.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UniWork.UIFramework.Runtime;
+using UniWork.Utility.Editor;
 using UniWork.Utility.Runtime;
 
 namespace UniWork.UIFramework.Editor.CodeGenerators
@@ -42,7 +41,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         private static void GenerateConfigCode()
         {
             ConfigGenerateData data = CollectGenerateData();
-            ScribanGenerateCode(data);
+            GenerateAndSaveCode(data);
         }
 
         private static ConfigGenerateData CollectGenerateData()
@@ -76,27 +75,10 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             return data;
         }
         
-        private static void ScribanGenerateCode(ConfigGenerateData data)
+        private static void GenerateAndSaveCode(ConfigGenerateData data)
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            TextAsset textAsset = Resources.Load<TextAsset>("UIConfigTemplate");
-
-            ScriptObject scriptObject = new ScriptObject();
-            scriptObject.Import(data);
-
-            TemplateContext context = new TemplateContext();
-            context.PushGlobal(scriptObject);
-
-            Template template = Template.Parse(textAsset.text);
-            if (template.HasErrors)
-            {
-                foreach (var error in template.Messages)
-                    DLog.Error(error.ToString());
-
-                throw new Exception("UIView 生成失败，Scriban 模版解析出错");
-            }
-            
-            string code = template.Render(context);
+            string code = EditorMethodUtility.ScribanGenerateText("UIConfigTemplate", data);
 
             string savePath = Path.Combine(editorSetting.codeFileSavePath, "UIConfig.cs");
             if (Directory.Exists(editorSetting.codeFileSavePath) == false)

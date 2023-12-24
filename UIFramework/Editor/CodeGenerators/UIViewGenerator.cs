@@ -48,7 +48,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         {
             GameObject selectedObject = VerifySetting();
             CodeGenerateData data = CollectGenerateData(selectedObject);
-            ScribanGenerateCode(data);
+            GenerateAndSaveCode(data);
 
             // 脚本挂载并绑定
             EditorPrefs.SetString(AutoGenScriptNameKey, $"{data.ClassName}");
@@ -129,27 +129,10 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             return data;
         }
 
-        private static void ScribanGenerateCode(CodeGenerateData data)
+        private static void GenerateAndSaveCode(CodeGenerateData data)
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            TextAsset textAsset = Resources.Load<TextAsset>("UIViewTemplate");
-
-            ScriptObject scriptObject = new ScriptObject();
-            scriptObject.Import(data);
-
-            TemplateContext context = new TemplateContext();
-            context.PushGlobal(scriptObject);
-
-            Template template = Template.Parse(textAsset.text);
-            if (template.HasErrors)
-            {
-                foreach (var error in template.Messages)
-                    DLog.Error(error.ToString());
-
-                throw new Exception("UIView 生成失败，Scriban 模版解析出错");
-            }
-            
-            string code = template.Render(context);
+            string code = EditorMethodUtility.ScribanGenerateText("UIViewTemplate", data);
 
             string savePath = Path.Combine(editorSetting.codeFileSavePath, $"{data.ClassName}.cs");
             if (Directory.Exists(editorSetting.codeFileSavePath) == false)
