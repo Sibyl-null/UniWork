@@ -12,7 +12,7 @@ namespace UniWork.UIFramework.Runtime
         public bool IsShow { get; private set; }
         public bool EnableInput => UIManager.Instance.EnableInput && UIView.UIRaycaster.isActiveAndEnabled;
 
-        public void Initialize(UIBaseView view, UIInfo info)
+        public void Create(UIBaseView view, UIInfo info)
         {
             UIView = view;
             Info = info;
@@ -21,6 +21,23 @@ namespace UniWork.UIFramework.Runtime
             SetUIRenderLayer();
             
             OnCreate();
+        }
+
+        public void Show(UIBaseParameter param = null)
+        {
+            UIView.gameObject.SetActiveByClip(true);
+            UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
+            IsShow = true;
+
+            OnShow(param);
+        }
+
+        public void Hide()
+        {
+            UIView.gameObject.SetActiveByClip(false);
+            IsShow = false;
+
+            OnHide();
         }
 
         private void SetUIScale()
@@ -35,34 +52,31 @@ namespace UniWork.UIFramework.Runtime
             UIView.UICanvas.sortingLayerID = UIManager.Instance.SortingLayerId;
             UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
         }
-
-        /**
-         * 一般用于初始化控件
-         */
+        
+        
+        // ----------------------------------------------------------------------------
+        // virtual methods
+        // ----------------------------------------------------------------------------
+        
         protected virtual void OnCreate()
         {
         }
 
-        public virtual void OnShow(UIBaseParameter param = null)
+        protected virtual void OnShow(UIBaseParameter param = null)
         {
-            UIView.gameObject.SetActiveByClip(true);
-            UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
-            IsShow = true;
         }
 
-        public virtual void OnHide()
+        protected virtual void OnHide()
         {
-            UIView.gameObject.SetActiveByClip(false);
-            IsShow = false;
         }
-
-        /**
-         * 销毁对象，释放资源
-         */
+        
         public virtual void OnDestroy()
         {
         }
 
+        /// <summary>
+        /// 按下返回键的行为，只有调度模式为 Stack 的才会生效
+        /// </summary>
         public virtual void OnEscape()
         {
             UIManager.Instance.HideUI(this.GetType());

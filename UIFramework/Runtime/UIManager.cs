@@ -216,12 +216,12 @@ namespace UniWork.UIFramework.Runtime
                 UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = CreateUIObject(info);
                 ctrl = CreateUICtrl(uiObj, ctrlType);
-                ctrl.OnShow(param);
+                ctrl.Show(param);
                 return;
             }
 
             if (!ctrl.IsShow)
-                ctrl.OnShow(param);
+                ctrl.Show(param);
         }
 
         internal async UniTask ShowUIAsyncInternal(Type ctrlType, UIBaseParameter param = null)
@@ -235,12 +235,12 @@ namespace UniWork.UIFramework.Runtime
                 UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = await CreateUIObjectAsync(info);
                 ctrl = CreateUICtrl(uiObj, ctrlType);
-                ctrl.OnShow(param);
+                ctrl.Show(param);
                 return;
             }
 
             if (!ctrl.IsShow)
-                ctrl.OnShow(param);
+                ctrl.Show(param);
         }
 
         internal void HideUIInternal(Type ctrlType)
@@ -254,7 +254,7 @@ namespace UniWork.UIFramework.Runtime
             }
             
             if (ctrl.IsShow)
-                ctrl.OnHide();
+                ctrl.Hide();
         }
 
         internal void DestroyUIInternal(Type ctrlType)
@@ -268,7 +268,7 @@ namespace UniWork.UIFramework.Runtime
             }
             
             if (ctrl.IsShow)
-                ctrl.OnHide();
+                ctrl.Hide();
             
             ctrl.OnDestroy();
             Object.Destroy(ctrl.UIView.gameObject);
@@ -313,7 +313,7 @@ namespace UniWork.UIFramework.Runtime
             
             UIBaseView view = (UIBaseView)uiObj.GetComponent(typeof(UIBaseView));
             UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(ctrlType);
-            ctrl.Initialize(view, info);
+            ctrl.Create(view, info);
 
             _instantiatedCtrlDic.Add(ctrlType, ctrl);
             return ctrl;

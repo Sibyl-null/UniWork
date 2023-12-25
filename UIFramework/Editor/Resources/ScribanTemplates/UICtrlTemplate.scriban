@@ -12,12 +12,12 @@ namespace {{ your_namespace }}
             _view = ({{ prefab_name }}View)UIView;
         }
 
-        public override void OnShow(UIBaseParameter param = null)
+        protected override void OnShow(UIBaseParameter param = null)
         {
             base.OnShow(param);
         }
 
-        public override void OnHide()
+        protected override void OnHide()
         {
             base.OnHide();
         }
