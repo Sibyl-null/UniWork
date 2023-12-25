@@ -11,7 +11,12 @@ namespace UniWork.UIFramework.Runtime
         public UIBaseView UIView { get; private set; }
         public UIInfo Info { get; private set; }
         public bool IsShow { get; private set; }
-        public bool EnableInput => UIManager.Instance.EnableInput && UIView.UIRaycaster.isActiveAndEnabled;
+
+        public bool EnableInput
+        {
+            get => UIManager.Instance.EnableInput && UIView.UIRaycaster.isActiveAndEnabled;
+            private set => UIView.UIRaycaster.enabled = value;
+        }
 
         public void Create(UIBaseView view, UIInfo info)
         {
@@ -24,7 +29,7 @@ namespace UniWork.UIFramework.Runtime
             OnCreate();
         }
 
-        public void Show(UIBaseParameter param = null)
+        public async UniTaskVoid Show(UIBaseParameter param = null)
         {
             if (IsShow)
                 return;
@@ -32,9 +37,11 @@ namespace UniWork.UIFramework.Runtime
             UIView.gameObject.SetActiveByClip(true);
             UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
             IsShow = true;
-
             OnShow(param);
-            ShowAnimPlay().Forget();
+
+            EnableInput = false;
+            await ShowAnimPlay();
+            EnableInput = true;
         }
 
         public async UniTask Hide()
@@ -42,7 +49,9 @@ namespace UniWork.UIFramework.Runtime
             if (IsShow == false)
                 return;
 
+            EnableInput = false;
             await HideAnimPlay();
+            EnableInput = true;
 
             UIView.gameObject.SetActiveByClip(false);
             IsShow = false;

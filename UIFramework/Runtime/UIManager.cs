@@ -216,11 +216,11 @@ namespace UniWork.UIFramework.Runtime
                 UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = CreateUIObject(info);
                 ctrl = CreateUICtrl(uiObj, ctrlType);
-                ctrl.Show(param);
+                ctrl.Show(param).Forget();
                 return;
             }
 
-            ctrl.Show(param);
+            ctrl.Show(param).Forget();
         }
 
         internal async UniTask ShowUIAsyncInternal(Type ctrlType, UIBaseParameter param = null)
@@ -234,11 +234,11 @@ namespace UniWork.UIFramework.Runtime
                 UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = await CreateUIObjectAsync(info);
                 ctrl = CreateUICtrl(uiObj, ctrlType);
-                ctrl.Show(param);
+                ctrl.Show(param).Forget();
                 return;
             }
 
-            ctrl.Show(param);
+            ctrl.Show(param).Forget();
         }
 
         internal void HideUIInternal(Type ctrlType)
