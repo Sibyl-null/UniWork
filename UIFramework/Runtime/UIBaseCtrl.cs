@@ -32,6 +32,7 @@ namespace UniWork.UIFramework.Runtime
         private void SetUIRenderLayer()
         {
             UIView.UICanvas.overrideSorting = true;
+            UIView.UICanvas.sortingLayerID = UIManager.Instance.SortingLayerId;
             UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
         }
 

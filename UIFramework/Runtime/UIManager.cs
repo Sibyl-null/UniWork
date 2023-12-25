@@ -33,6 +33,7 @@ namespace UniWork.UIFramework.Runtime
 
         public event Action OnEscapeEvent;
         public Camera UICamera { get; private set; }
+        public int SortingLayerId => SortingLayer.NameToID(_runtimeSetting.sortingLayerName);
 
         public bool EnableInput
         {
@@ -66,11 +67,12 @@ namespace UniWork.UIFramework.Runtime
             _runtimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
 
             _rootGo = Object.Instantiate(_runtimeSetting.rootPrefab);
+            _rootGo.GetComponent<Canvas>().sortingLayerID = SortingLayerId;
             Object.DontDestroyOnLoad(_rootGo);
             
             UICamera = _rootGo.GetComponentInChildren<Camera>();
             _eventSystem = _rootGo.GetComponentInChildren<EventSystem>();
-            
+
             _agent.InitUIInfo();
             CreateBuckets();
         }
@@ -96,6 +98,7 @@ namespace UniWork.UIFramework.Runtime
 
                 Canvas canvas = bucketObj.AddComponent<Canvas>();
                 canvas.overrideSorting = true;
+                canvas.sortingLayerID = SortingLayerId;
                 canvas.sortingOrder = layer.order;
 
                 _bucketCanvasDic.Add(layer.name, canvas);
