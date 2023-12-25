@@ -2,7 +2,6 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UniWork.UIFramework.Runtime;
 using UniWork.Utility.Editor;
@@ -35,71 +34,22 @@ namespace UniWork.UIFramework.Editor
         {
             if (File.Exists(UIRootDefaultSavePath))
             {
-                DLog.Warning("UIRoot预设体已存在：" + UIRootDefaultSavePath);
+                DLog.Warning("UIRoot 预设体已存在：" + UIRootDefaultSavePath);
                 return;
             }
 
-            string foldPath = UIRootDefaultSavePath.Substring(0, UIRootDefaultSavePath.LastIndexOf('/'));
-            if (!Directory.Exists(foldPath))
+            string foldPath = Path.GetDirectoryName(UIRootDefaultSavePath);
+            if (!string.IsNullOrEmpty(foldPath) && !Directory.Exists(foldPath))
                 Directory.CreateDirectory(foldPath);
 
-            GameObject uiRootObj = CreateUIRootObj();
-            GameObject prefabAsset = PrefabUtility.SaveAsPrefabAsset(uiRootObj, UIRootDefaultSavePath);
+            GameObject uiRootObj = Object.Instantiate(Resources.Load<GameObject>("Prefabs/UIRootTemplate"));
+            GameObject asset = PrefabUtility.SaveAsPrefabAsset(uiRootObj, UIRootDefaultSavePath);
             Object.DestroyImmediate(uiRootObj);
-            
+
             AssetDatabase.Refresh();
-            Selection.activeObject = prefabAsset;
-            EditorGUIUtility.PingObject(prefabAsset);
-        }
-        
-        private static GameObject CreateUIRootObj()
-        {
-            GameObject uiRootObj = new GameObject("UIRoot");
-
-            Transform eventSystemTrans = CreateEventSystemObj();
-            eventSystemTrans.SetParent(uiRootObj.transform);
-
-            Transform uiCameraTrans = CreateUICameraObj();
-            uiCameraTrans.SetParent(uiRootObj.transform);
-
-            ModifyUIRootObj(uiRootObj, uiCameraTrans.GetComponent<Camera>());
-            
-            return uiRootObj;
-        }
-
-        private static void ModifyUIRootObj(GameObject root, Camera uiCamera)
-        {
-            Canvas canvas = root.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
-            canvas.worldCamera = uiCamera;
-
-            CanvasScaler canvasScaler = root.AddComponent<CanvasScaler>();
-            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            canvasScaler.matchWidthOrHeight = 1;
-            canvasScaler.referenceResolution = new Vector2(1920f, 1080f);
-            
-            root.layer = LayerMask.NameToLayer("UI");
-        }
-
-        private static Transform CreateUICameraObj()
-        {
-            GameObject uiCameraObj = new GameObject("UICamera");
-            uiCameraObj.layer = LayerMask.NameToLayer("UI");
-            uiCameraObj.transform.localPosition = new Vector3(0, 0, -100);
-            
-            Camera uiCamera = uiCameraObj.AddComponent<Camera>();
-            uiCamera.orthographic = true;
-            uiCamera.clearFlags = CameraClearFlags.Depth;
-            uiCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
-            return uiCameraObj.transform;
-        }
-
-        private static Transform CreateEventSystemObj()
-        {
-            GameObject eventSystemObj = new GameObject("EventSystem");
-            eventSystemObj.AddComponent<EventSystem>();
-            eventSystemObj.AddComponent<StandaloneInputModule>();
-            return eventSystemObj.transform;
+            Selection.activeObject = asset;
+            EditorGUIUtility.PingObject(asset);
+            DLog.Info("[UIFramework] UIRoot 预设体创建成功");
         }
 
         [MenuItem("UniWork/UIFramework/创建UIEditorSetting")]
