@@ -75,7 +75,6 @@ public class UIAgent : UIBaseAgent
 
 ## TODO
 1. 文档完善
-2. 打开关闭动画支持
-3. 控件绑定方式更改 例如 txt_go|Name
-4. UIManager 改为非单例，非静态
-5. UI Preview Scene 设定
+2. 控件绑定方式更改 例如 txt_go|Name
+3. UIManager 改为非单例，非静态
+4. UI Preview Scene 设定
