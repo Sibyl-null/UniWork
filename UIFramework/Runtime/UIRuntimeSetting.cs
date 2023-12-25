@@ -15,12 +15,17 @@ namespace UniWork.UIFramework.Runtime
         }
 
         public GameObject rootPrefab;
+        
+        [TitleGroup("UI 层级配置")]
         public int layerOrderOnceRaise = 5;
 
+        [TitleGroup("UI 层级配置")]
         [ValueDropdown(nameof(GetAllSortingLayers))]
         public string sortingLayerName = "Default";
         
-        [Title("UI 层级配置 (间距尽量大，范围 -32768 ~ 32767)"), TableList(ShowIndexLabels = true)]
+        [TitleGroup("UI 层级配置")]
+        [InfoBox("间距尽量大，范围 -32768 ~ 32767")]
+        [TableList(ShowIndexLabels = true)]
         public List<ShowLayer> showLayers = new List<ShowLayer>();
         
         private string[] GetAllSortingLayers()

@@ -8,14 +8,13 @@ namespace UniWork.UIFramework.Runtime
 {
     public class UICodeGenerator : MonoBehaviour
     {
-        [ValueDropdown("GetLayerNames")]
+#if UNITY_EDITOR
+        [ValueDropdown(nameof(GetLayerNames))]
+#endif
         public string layerName;
         public UIScheduleMode scheduleMode = UIScheduleMode.Stack;
         
 #if UNITY_EDITOR
-        /// <summary>
-        /// use by odin ValueDropdown attribute
-        /// </summary>
         private static string[] GetLayerNames()
         {
             string guid = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(UIRuntimeSetting)}").FirstOrDefault();
