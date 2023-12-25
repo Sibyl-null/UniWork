@@ -51,6 +51,15 @@ namespace UniWork.UIFramework.Runtime
             Instance.Initialize(agent);
         }
 
+        public static void Destroy()
+        {
+            if (Instance == null)
+                return;
+
+            Instance.Release();
+            Instance = null;
+        }
+
         private void Initialize(UIBaseAgent agent)
         {
             _agent = agent;
@@ -93,9 +102,23 @@ namespace UniWork.UIFramework.Runtime
             }
         }
 
-        /**
-         * 需要外部在按下返回键时调用 (例如键盘 ESC 键，手机返回键等)
-         */
+        private void Release()
+        {
+            foreach (Type ctrlType in _instantiatedCtrlDic.Keys)
+                DestroyUIInternal(ctrlType);
+            
+            _infoDic.Clear();
+            _instantiatedCtrlDic.Clear();
+            _bucketCanvasDic.Clear();
+            OnEscapeEvent = null;
+
+            Object.Destroy(_rootGo);
+            _rootGo = null;
+        }
+
+        /// <summary>
+        /// 需要外部在按下返回键时调用 (例如键盘 ESC 键，手机返回键等)
+        /// </summary>
         public void RunEscapeClick()
         {
             if (EnableInput)
