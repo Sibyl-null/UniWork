@@ -66,7 +66,52 @@ public class UIAgent : UIBaseAgent
     }
 }
 ```
-4. 将 `UIManager.Create(new UIAgent())` 添加到启动流程中。
+4. UIManager 使用示例
+```csharp
+using Cysharp.Threading.Tasks;
+using UI.TestOne;
+using UnityEngine;
+using UniWork.UIFramework.Runtime;
+
+public class UISampleLauncher : MonoBehaviour
+{
+    private void Start()
+    {
+        UIManager.Create(new UIAgent());
+    }
+
+    private void Update()
+    {
+        if (UIManager.Instance != null && Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.Instance.RunEscapeClick();
+        }
+    }
+
+    private void OnGUI()
+    {
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 30
+        };
+        
+        if (GUILayout.Button("Open TestOne Async", buttonStyle))
+        {
+            UIManager.Instance.ShowUIAsync<TestOneCtrl>().Forget();
+        }
+
+        if (GUILayout.Button("Hide TestOne", buttonStyle))
+        {
+            UIManager.Instance.HideUI<TestOneCtrl>();
+        }
+
+        if (GUILayout.Button("Destroy TestOne", buttonStyle))
+        {
+            UIManager.Instance.DestroyUI<TestOneCtrl>();
+        }
+    }
+}
+```
 
 ## 代码生成功能
 在 Prefab 上挂载 UICodeGenerator 脚本，点击对应按钮即可进行代码生成。<br>
