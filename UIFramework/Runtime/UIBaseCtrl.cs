@@ -1,4 +1,5 @@
-﻿using UniWork.Utility.Runtime;
+﻿using Cysharp.Threading.Tasks;
+using UniWork.Utility.Runtime;
 using UnityEngine;
 
 namespace UniWork.UIFramework.Runtime
@@ -25,23 +26,32 @@ namespace UniWork.UIFramework.Runtime
 
         public void Show(UIBaseParameter param = null)
         {
+            if (IsShow)
+                return;
+            
             UIView.gameObject.SetActiveByClip(true);
             UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
             IsShow = true;
 
             OnShow(param);
+            ShowAnimPlay().Forget();
         }
 
-        public void Hide()
+        public async UniTask Hide()
         {
+            if (IsShow == false)
+                return;
+
+            await HideAnimPlay();
+
             UIView.gameObject.SetActiveByClip(false);
             IsShow = false;
-
             OnHide();
         }
 
-        public void Destroy()
+        public async UniTaskVoid Destroy()
         {
+            await Hide();
             OnDestroy();
             Object.Destroy(UIView.gameObject);
         }
@@ -78,6 +88,16 @@ namespace UniWork.UIFramework.Runtime
         
         protected virtual void OnDestroy()
         {
+        }
+
+        protected virtual UniTask ShowAnimPlay()
+        {
+            return UniTask.CompletedTask;
+        }
+
+        protected virtual UniTask HideAnimPlay()
+        {
+            return UniTask.CompletedTask;
         }
 
         /// <summary>

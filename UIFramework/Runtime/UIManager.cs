@@ -220,8 +220,7 @@ namespace UniWork.UIFramework.Runtime
                 return;
             }
 
-            if (!ctrl.IsShow)
-                ctrl.Show(param);
+            ctrl.Show(param);
         }
 
         internal async UniTask ShowUIAsyncInternal(Type ctrlType, UIBaseParameter param = null)
@@ -239,8 +238,7 @@ namespace UniWork.UIFramework.Runtime
                 return;
             }
 
-            if (!ctrl.IsShow)
-                ctrl.Show(param);
+            ctrl.Show(param);
         }
 
         internal void HideUIInternal(Type ctrlType)
@@ -253,8 +251,7 @@ namespace UniWork.UIFramework.Runtime
                 return;
             }
             
-            if (ctrl.IsShow)
-                ctrl.Hide();
+            ctrl.Hide().Forget();
         }
 
         internal void DestroyUIInternal(Type ctrlType)
@@ -266,11 +263,8 @@ namespace UniWork.UIFramework.Runtime
                 DLog.Warning($"[UIFramework] {ctrlType.Name} 未实例化");
                 return;
             }
-            
-            if (ctrl.IsShow)
-                ctrl.Hide();
-            
-            ctrl.Destroy();
+
+            ctrl.Destroy().Forget();
             
             _agent.UnLoad(ctrl.Info.ResPath);
             _instantiatedCtrlDic.Remove(ctrlType);
