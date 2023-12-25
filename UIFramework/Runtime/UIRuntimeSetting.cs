@@ -13,10 +13,10 @@ namespace UniWork.UIFramework.Runtime
             public int order;
         }
 
-        public int layerOrderOnceRaise = 10;
+        public int layerOrderOnceRaise = 5;
         public GameObject rootPrefab;
         
-        [Title("UI 层级配置 (间距尽量大，填满 0 ~ 23e)"), TableList(ShowIndexLabels = true)]
+        [Title("UI 层级配置 (间距尽量大，范围 -32768 ~ 32767)"), TableList(ShowIndexLabels = true)]
         public List<ShowLayer> showLayers = new List<ShowLayer>();
     }
 }
