@@ -40,6 +40,12 @@ namespace UniWork.UIFramework.Runtime
             OnHide();
         }
 
+        public void Destroy()
+        {
+            OnDestroy();
+            Object.Destroy(UIView.gameObject);
+        }
+
         private void SetUIScale()
         {
             RectTransform rectTrans = UIView.GetComponent<RectTransform>();
@@ -70,7 +76,7 @@ namespace UniWork.UIFramework.Runtime
         {
         }
         
-        public virtual void OnDestroy()
+        protected virtual void OnDestroy()
         {
         }
 

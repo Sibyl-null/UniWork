@@ -270,8 +270,7 @@ namespace UniWork.UIFramework.Runtime
             if (ctrl.IsShow)
                 ctrl.Hide();
             
-            ctrl.OnDestroy();
-            Object.Destroy(ctrl.UIView.gameObject);
+            ctrl.Destroy();
             
             _agent.UnLoad(ctrl.Info.ResPath);
             _instantiatedCtrlDic.Remove(ctrlType);
