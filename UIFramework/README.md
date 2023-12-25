@@ -79,4 +79,3 @@ public class UIAgent : UIBaseAgent
 3. 控件绑定方式更改 例如 txt_go|Name
 4. UIManager 改为非单例，非静态
 5. UI Preview Scene 设定
-6. 从现有的 RootPrefab 复制，而不是使用代码创建
