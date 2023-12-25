@@ -77,8 +77,6 @@ public class UIAgent : UIBaseAgent
 1. 文档完善
 2. 打开关闭动画支持
 3. 控件绑定方式更改 例如 txt_go|Name
-4. 添加 UI SortingLayer
-5. UIManager 改为非单例，非静态
-6. UIManager 添加 Release 方法
-7. UI Preview Scene 设定
-8. 从现有的 RootPrefab 复制，而不是使用代码创建
+4. UIManager 改为非单例，非静态
+5. UI Preview Scene 设定
+6. 从现有的 RootPrefab 复制，而不是使用代码创建
