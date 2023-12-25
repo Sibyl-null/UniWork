@@ -37,6 +37,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             public List<FieldData> Fields;
         }
         
+        private const string TemplatePath = "ScribanTemplates/UIViewTemplate";
         
         public static void GenerateCode(GameObject gameObject)
         {
@@ -112,7 +113,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
         private static void GenerateAndSaveCode(CodeGenerateData data)
         {
-            string code = EditorMethodUtility.ScribanGenerateText("UIViewTemplate", data);
+            string code = EditorMethodUtility.ScribanGenerateText(TemplatePath, data);
 
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string filePath = $"{editorSetting.codeFileRootPath}/{data.PrefabName}/{data.PrefabName}View.cs";

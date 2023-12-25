@@ -21,6 +21,8 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             CtrlGenerateData data = CollectGenerateData(gameObject);
             GenerateAndSaveCode(data);
         }
+        
+        private const string TemplatePath = "ScribanTemplates/UICtrlTemplate";
 
         private static void VerifySetting()
         {
@@ -43,7 +45,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         
         private static void GenerateAndSaveCode(CtrlGenerateData data)
         {
-            string code = EditorMethodUtility.ScribanGenerateText("UICtrlTemplate", data);
+            string code = EditorMethodUtility.ScribanGenerateText(TemplatePath, data);
 
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string filePath = $"{editorSetting.codeFileRootPath}/{data.PrefabName}/{data.PrefabName}Ctrl.cs";
