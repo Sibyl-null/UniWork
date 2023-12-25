@@ -33,6 +33,7 @@ namespace UniWork.UIFramework.Runtime
 
         public event Action OnEscapeEvent;
         public Camera UICamera { get; private set; }
+        public int SortingLayerId => SortingLayer.NameToID(_runtimeSetting.sortingLayerName);
 
         public bool EnableInput
         {
@@ -51,17 +52,27 @@ namespace UniWork.UIFramework.Runtime
             Instance.Initialize(agent);
         }
 
+        public static void Destroy()
+        {
+            if (Instance == null)
+                return;
+
+            Instance.Release();
+            Instance = null;
+        }
+
         private void Initialize(UIBaseAgent agent)
         {
             _agent = agent;
             _runtimeSetting = _agent.Load<UIRuntimeSetting>(_agent.RuntimeSettingLoadPath);
 
             _rootGo = Object.Instantiate(_runtimeSetting.rootPrefab);
+            _rootGo.GetComponent<Canvas>().sortingLayerID = SortingLayerId;
             Object.DontDestroyOnLoad(_rootGo);
             
             UICamera = _rootGo.GetComponentInChildren<Camera>();
             _eventSystem = _rootGo.GetComponentInChildren<EventSystem>();
-            
+
             _agent.InitUIInfo();
             CreateBuckets();
         }
@@ -87,15 +98,30 @@ namespace UniWork.UIFramework.Runtime
 
                 Canvas canvas = bucketObj.AddComponent<Canvas>();
                 canvas.overrideSorting = true;
+                canvas.sortingLayerID = SortingLayerId;
                 canvas.sortingOrder = layer.order;
 
                 _bucketCanvasDic.Add(layer.name, canvas);
             }
         }
 
-        /**
-         * 需要外部在按下返回键时调用 (例如键盘 ESC 键，手机返回键等)
-         */
+        private void Release()
+        {
+            foreach (Type ctrlType in _instantiatedCtrlDic.Keys)
+                DestroyUIInternal(ctrlType);
+            
+            _infoDic.Clear();
+            _instantiatedCtrlDic.Clear();
+            _bucketCanvasDic.Clear();
+            OnEscapeEvent = null;
+
+            Object.Destroy(_rootGo);
+            _rootGo = null;
+        }
+
+        /// <summary>
+        /// 需要外部在按下返回键时调用 (例如键盘 ESC 键，手机返回键等)
+        /// </summary>
         public void RunEscapeClick()
         {
             if (EnableInput)
@@ -190,12 +216,11 @@ namespace UniWork.UIFramework.Runtime
                 UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = CreateUIObject(info);
                 ctrl = CreateUICtrl(uiObj, ctrlType);
-                ctrl.OnShow(param);
+                ctrl.Show(param).Forget();
                 return;
             }
 
-            if (!ctrl.IsShow)
-                ctrl.OnShow(param);
+            ctrl.Show(param).Forget();
         }
 
         internal async UniTask ShowUIAsyncInternal(Type ctrlType, UIBaseParameter param = null)
@@ -209,12 +234,11 @@ namespace UniWork.UIFramework.Runtime
                 UIInfo info = _infoDic[ctrlType];
                 GameObject uiObj = await CreateUIObjectAsync(info);
                 ctrl = CreateUICtrl(uiObj, ctrlType);
-                ctrl.OnShow(param);
+                ctrl.Show(param).Forget();
                 return;
             }
 
-            if (!ctrl.IsShow)
-                ctrl.OnShow(param);
+            ctrl.Show(param).Forget();
         }
 
         internal void HideUIInternal(Type ctrlType)
@@ -227,8 +251,7 @@ namespace UniWork.UIFramework.Runtime
                 return;
             }
             
-            if (ctrl.IsShow)
-                ctrl.OnHide();
+            ctrl.Hide().Forget();
         }
 
         internal void DestroyUIInternal(Type ctrlType)
@@ -240,12 +263,8 @@ namespace UniWork.UIFramework.Runtime
                 DLog.Warning($"[UIFramework] {ctrlType.Name} 未实例化");
                 return;
             }
-            
-            if (ctrl.IsShow)
-                ctrl.OnHide();
-            
-            ctrl.OnDestroy();
-            Object.Destroy(ctrl.UIView.gameObject);
+
+            ctrl.Destroy().Forget();
             
             _agent.UnLoad(ctrl.Info.ResPath);
             _instantiatedCtrlDic.Remove(ctrlType);
@@ -287,7 +306,7 @@ namespace UniWork.UIFramework.Runtime
             
             UIBaseView view = (UIBaseView)uiObj.GetComponent(typeof(UIBaseView));
             UIBaseCtrl ctrl = (UIBaseCtrl)Activator.CreateInstance(ctrlType);
-            ctrl.Initialize(view, info);
+            ctrl.Create(view, info);
 
             _instantiatedCtrlDic.Add(ctrlType, ctrl);
             return ctrl;

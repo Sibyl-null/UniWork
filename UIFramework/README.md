@@ -66,7 +66,52 @@ public class UIAgent : UIBaseAgent
     }
 }
 ```
-4. 将 `UIManager.Create(new UIAgent())` 添加到启动流程中。
+4. UIManager 使用示例
+```csharp
+using Cysharp.Threading.Tasks;
+using UI.TestOne;
+using UnityEngine;
+using UniWork.UIFramework.Runtime;
+
+public class UISampleLauncher : MonoBehaviour
+{
+    private void Start()
+    {
+        UIManager.Create(new UIAgent());
+    }
+
+    private void Update()
+    {
+        if (UIManager.Instance != null && Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.Instance.RunEscapeClick();
+        }
+    }
+
+    private void OnGUI()
+    {
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 30
+        };
+        
+        if (GUILayout.Button("Open TestOne Async", buttonStyle))
+        {
+            UIManager.Instance.ShowUIAsync<TestOneCtrl>().Forget();
+        }
+
+        if (GUILayout.Button("Hide TestOne", buttonStyle))
+        {
+            UIManager.Instance.HideUI<TestOneCtrl>();
+        }
+
+        if (GUILayout.Button("Destroy TestOne", buttonStyle))
+        {
+            UIManager.Instance.DestroyUI<TestOneCtrl>();
+        }
+    }
+}
+```
 
 ## 代码生成功能
 在 Prefab 上挂载 UICodeGenerator 脚本，点击对应按钮即可进行代码生成。<br>
@@ -75,10 +120,6 @@ public class UIAgent : UIBaseAgent
 
 ## TODO
 1. 文档完善
-2. 打开关闭动画支持
-3. 控件绑定方式更改 例如 txt_go|Name
-4. 添加 UI SortingLayer
-5. UIManager 改为非单例，非静态
-6. UIManager 添加 Release 方法
-7. UI Preview Scene 设定
-8. 从现有的 RootPrefab 复制，而不是使用代码创建
+2. 控件绑定方式更改 例如 txt_go|Name
+3. UIManager 改为非单例，非静态
+4. UI Preview Scene 设定

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -37,6 +36,8 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             public string YourNamespace;
             public InfoData[] Infos;
         }
+
+        private const string TemplatePath = "ScribanTemplates/UIConfigTemplate";
         
         public static void GenerateCode()
         {
@@ -73,7 +74,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         
         private static void GenerateAndSaveCode(ConfigGenerateData data)
         {
-            string code = EditorMethodUtility.ScribanGenerateText("UIConfigTemplate", data);
+            string code = EditorMethodUtility.ScribanGenerateText(TemplatePath, data);
 
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             string filePath = $"{editorSetting.codeFileRootPath}/UIConfig.cs";
