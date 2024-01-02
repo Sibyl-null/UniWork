@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -31,7 +29,6 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
         private struct ConfigGenerateData
         {
-            public string NowDateTime;
             public string[] Namespaces;
             public string YourNamespace;
             public InfoData[] Infos;
@@ -64,7 +61,6 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
             ConfigGenerateData data = new ConfigGenerateData
             {
-                NowDateTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
                 Namespaces = namespaceSet.ToArray(),
                 YourNamespace = editorSetting.rootNamespace,
                 Infos = infoList.ToArray()

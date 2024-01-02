@@ -1,5 +1,4 @@
-﻿// Auto generate at {{ now_date_time }}
-// please do not modify this file
+﻿// Auto generate，please do not modify this file
 
 using System;
 using System.Collections.Generic;

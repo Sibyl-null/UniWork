@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -29,7 +28,6 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
         private class CodeGenerateData
         {
-            public string NowDateTime;
             public string YourNamespace;
             public string PrefabName;
             public string[] Namespaces;
@@ -101,7 +99,6 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
 
             CodeGenerateData data = new CodeGenerateData
             {
-                NowDateTime = DateTime.Now.ToString(CultureInfo.InvariantCulture),
                 YourNamespace = $"{editorSetting.rootNamespace}.{selectedObject.name}",
                 PrefabName = selectedObject.name,
                 Namespaces = namespaceSet.ToArray(),
