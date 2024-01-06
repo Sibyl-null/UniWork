@@ -1,0 +1,20 @@
+{
+    "name": "UniWork.DialogueSystem.Editor",
+    "rootNamespace": "UniWork",
+    "references": [
+        "GUID:394ed03bfa65416478a063400510a896",
+        "GUID:002c1bbed08fa44d282ef34fd5edb138",
+        "GUID:b8e24fd1eb19b4226afebb2810e3c19b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
