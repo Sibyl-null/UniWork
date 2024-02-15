@@ -49,14 +49,14 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             List<InfoData> infoList = new List<InfoData>();
             HashSet<string> namespaceSet = new HashSet<string>();
 
-            foreach ((UICodeGenerator generator, string path) in GetAllGenerators())
+            foreach ((UIBaseView view, string path) in GetAllViews())
             {
                 string resPath = editorSetting.resPathWithExtension ? path : IoUtility.FilePathRemoveExtension(path);
                 resPath = resPath.RemovePrefix(editorSetting.resPathRemovePrefix);
                 
-                namespaceSet.Add($"{editorSetting.rootNamespace}.{generator.name}");
-                infoList.Add(new InfoData($"{generator.name}Ctrl", generator.layerName,
-                    generator.scheduleMode.ToString(), resPath));
+                namespaceSet.Add($"{editorSetting.rootNamespace}.{view.name}");
+                infoList.Add(new InfoData($"{view.name}Ctrl", view.layerName,
+                    view.scheduleMode.ToString(), resPath));
             }
 
             ConfigGenerateData data = new ConfigGenerateData
@@ -81,10 +81,10 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             DLog.Info("[自动生成 UIConfig 代码]: 成功! " + filePath);
         }
 
-        private static List<(UICodeGenerator, string)> GetAllGenerators()
+        private static List<(UIBaseView, string)> GetAllViews()
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            List<(UICodeGenerator, string)> results = new List<(UICodeGenerator, string)>();
+            List<(UIBaseView, string)> results = new List<(UIBaseView, string)>();
             
             string[] guids = AssetDatabase.FindAssets("t:Prefab",
                 editorSetting.prefabSearchFolders.Select(AssetDatabase.GetAssetPath).ToArray());
@@ -94,9 +94,9 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                if (prefab.TryGetComponent<UICodeGenerator>(out var generator))
+                if (prefab.TryGetComponent<UIBaseView>(out var view))
                 {
-                    results.Add((generator, path));
+                    results.Add((view, path));
                 }
             }
 

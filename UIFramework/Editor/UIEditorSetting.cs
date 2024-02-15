@@ -40,7 +40,7 @@ namespace UniWork.UIFramework.Editor
         [TitleGroup("UIConfig 生成配置")]
         public List<DefaultAsset> prefabSearchFolders = new();
         
-        [TitleGroup("View 组件自动绑定配置")]
+        [TitleGroup("View 组件自动绑定配置"), TableList]
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()
         {
             new AutoBindData("txt", nameof(Text)),

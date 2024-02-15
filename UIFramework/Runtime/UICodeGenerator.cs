@@ -1,29 +1,59 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UniWork.UIFramework.Runtime.Scheduler;
 
 namespace UniWork.UIFramework.Runtime
 {
     public class UICodeGenerator : MonoBehaviour
     {
-#if UNITY_EDITOR
-        [ValueDropdown(nameof(GetLayerNames))]
-#endif
-        public string layerName;
-        public UIScheduleMode scheduleMode = UIScheduleMode.Stack;
+        [Serializable]
+        private class ComponentInfo
+        {
+            public UnityEngine.Object Component;
+            public string FieldName;
+        }
+
+        [TableList(AlwaysExpanded = true), SerializeField]
+        private List<ComponentInfo> components = new List<ComponentInfo>();
         
 #if UNITY_EDITOR
-        private static string[] GetLayerNames()
+        public void ModifyComponentInfo(UnityEngine.Object component, string fieldName, bool isSelect)
         {
-            string guid = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(UIRuntimeSetting)}").FirstOrDefault();
-            if (string.IsNullOrEmpty(guid))
-                return Array.Empty<string>();
+            if (isSelect == false)
+            {
+                RemoveComponentInfo(component);
+            }
+            else
+            {
+                if (ContainComponent(component))
+                {
+                    ComponentInfo info = components.Find(x => x.Component == component);
+                    info.FieldName = fieldName;
+                    return;
+                }
+            
+                components.Add(new ComponentInfo
+                {
+                    Component = component,
+                    FieldName = fieldName
+                });
+            }
+        }
 
-            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-            UIRuntimeSetting setting = UnityEditor.AssetDatabase.LoadAssetAtPath<UIRuntimeSetting>(path);
-            return setting.showLayers.Select(x => x.name).ToArray();
+        private void RemoveComponentInfo(UnityEngine.Object component)
+        {
+            if (ContainComponent(component) == false)
+                return;
+            
+            ComponentInfo info = components.Find(x => x.Component == component);
+            components.Remove(info);
+        }
+
+        public bool ContainComponent(UnityEngine.Object component)
+        {
+            return components.Count(x => x.Component == component) > 0;
         }
 #endif
     }
