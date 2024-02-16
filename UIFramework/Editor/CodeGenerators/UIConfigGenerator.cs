@@ -49,14 +49,14 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             List<InfoData> infoList = new List<InfoData>();
             HashSet<string> namespaceSet = new HashSet<string>();
 
-            foreach ((UIBaseView view, string path) in GetAllViews())
+            foreach ((UIComponentCollector view, string path) in GetAllViews())
             {
                 string resPath = editorSetting.resPathWithExtension ? path : IoUtility.FilePathRemoveExtension(path);
                 resPath = resPath.RemovePrefix(editorSetting.resPathRemovePrefix);
                 
                 namespaceSet.Add($"{editorSetting.rootNamespace}.{view.name}");
-                infoList.Add(new InfoData($"{view.name}Ctrl", view.layerName,
-                    view.scheduleMode.ToString(), resPath));
+                infoList.Add(new InfoData($"{view.name}Ctrl", view.LayerName,
+                    view.ScheduleMode.ToString(), resPath));
             }
 
             ConfigGenerateData data = new ConfigGenerateData
@@ -81,10 +81,10 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
             DLog.Info("[自动生成 UIConfig 代码]: 成功! " + filePath);
         }
 
-        private static List<(UIBaseView, string)> GetAllViews()
+        private static List<(UIComponentCollector, string)> GetAllViews()
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
-            List<(UIBaseView, string)> results = new List<(UIBaseView, string)>();
+            List<(UIComponentCollector, string)> results = new List<(UIComponentCollector, string)>();
             
             string[] guids = AssetDatabase.FindAssets("t:Prefab",
                 editorSetting.prefabSearchFolders.Select(AssetDatabase.GetAssetPath).ToArray());
@@ -94,7 +94,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                if (prefab.TryGetComponent<UIBaseView>(out var view))
+                if (prefab.TryGetComponent<UIComponentCollector>(out var view))
                 {
                     results.Add((view, path));
                 }

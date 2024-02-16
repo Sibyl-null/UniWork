@@ -43,17 +43,17 @@ namespace UniWork.UIFramework.Editor
         [TitleGroup("View 组件自动绑定配置"), TableList]
         public List<AutoBindData> autoBindComponents = new List<AutoBindData>()
         {
-            new AutoBindData("txt", nameof(Text)),
-            new AutoBindData("txt", nameof(TextMeshProUGUI)),
-            new AutoBindData("btn", nameof(Button)),
-            new AutoBindData("img", nameof(Image)),
-            new AutoBindData("rawImg", nameof(RawImage)),
-            new AutoBindData("trans", nameof(RectTransform)),
-            new AutoBindData("go", nameof(GameObject)),
-            new AutoBindData("sv", nameof(ScrollRect)),
-            new AutoBindData("input", nameof(InputField)),
-            new AutoBindData("cg", nameof(CanvasGroup)),
-            new AutoBindData("dp", nameof(Dropdown))
+            new AutoBindData("Txt", nameof(Text)),
+            new AutoBindData("Tmp", nameof(TextMeshProUGUI)),
+            new AutoBindData("Btn", nameof(Button)),
+            new AutoBindData("Img", nameof(Image)),
+            new AutoBindData("RawImg", nameof(RawImage)),
+            new AutoBindData("Trans", nameof(RectTransform)),
+            new AutoBindData("Go", nameof(GameObject)),
+            new AutoBindData("Sv", nameof(ScrollRect)),
+            new AutoBindData("Input", nameof(InputField)),
+            new AutoBindData("Cg", nameof(CanvasGroup)),
+            new AutoBindData("Dp", nameof(Dropdown))
         };
         
         // ----------------------------------------------------------------------------------

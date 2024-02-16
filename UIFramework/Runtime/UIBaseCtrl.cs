@@ -8,21 +8,22 @@ namespace UniWork.UIFramework.Runtime
     
     public abstract class UIBaseCtrl
     {
-        public UIBaseView UIView { get; private set; }
+        public UIBaseView View { get; private set; }
         public UIInfo Info { get; private set; }
         public bool IsShow { get; private set; }
 
         public bool EnableInput
         {
-            get => UIManager.Instance.EnableInput && UIView.UIRaycaster.isActiveAndEnabled;
-            private set => UIView.UIRaycaster.enabled = value;
+            get => UIManager.Instance.EnableInput && View.UIRaycaster.isActiveAndEnabled;
+            private set => View.UIRaycaster.enabled = value;
         }
 
         public void Create(UIBaseView view, UIInfo info)
         {
-            UIView = view;
+            View = view;
             Info = info;
 
+            View.InitComponentRefs();
             SetUIScale();
             SetUIRenderLayer();
             
@@ -34,8 +35,8 @@ namespace UniWork.UIFramework.Runtime
             if (IsShow)
                 return;
             
-            UIView.gameObject.SetActiveByClip(true);
-            UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
+            View.gameObject.SetActiveByClip(true);
+            View.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
             IsShow = true;
             OnShow(param);
 
@@ -53,7 +54,7 @@ namespace UniWork.UIFramework.Runtime
             await HideAnimPlay();
             EnableInput = true;
 
-            UIView.gameObject.SetActiveByClip(false);
+            View.gameObject.SetActiveByClip(false);
             IsShow = false;
             OnHide();
         }
@@ -62,20 +63,20 @@ namespace UniWork.UIFramework.Runtime
         {
             await Hide();
             OnDestroy();
-            Object.Destroy(UIView.gameObject);
+            Object.Destroy(View.gameObject);
         }
 
         private void SetUIScale()
         {
-            RectTransform rectTrans = UIView.GetComponent<RectTransform>();
+            RectTransform rectTrans = View.GetComponent<RectTransform>();
             rectTrans.Overspread();
         }
 
         private void SetUIRenderLayer()
         {
-            UIView.UICanvas.overrideSorting = true;
-            UIView.UICanvas.sortingLayerID = UIManager.Instance.SortingLayerId;
-            UIView.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
+            View.UICanvas.overrideSorting = true;
+            View.UICanvas.sortingLayerID = UIManager.Instance.SortingLayerId;
+            View.UICanvas.sortingOrder = UIManager.Instance.GetLayerOrderWithIncrement(Info.LayerName);
         }
         
         

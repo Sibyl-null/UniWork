@@ -55,7 +55,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         {
             UIEditorSetting editorSetting = UIEditorSetting.MustLoad();
             
-            HashSet<string> namespaceSet = new HashSet<string> { typeof(UIBaseView).Namespace };
+            HashSet<string> namespaceSet = new HashSet<string> { typeof(UIComponentCollector).Namespace };
             Dictionary<string, string> goNamePathMap = new Dictionary<string, string>();
             List<FieldData> fieldList = new List<FieldData>();
 
