@@ -18,6 +18,13 @@ namespace UniWork.UIFramework.Editor.Inspectors
             {
                 UIViewGenerator.GenerateCode(Target);
             }
+            
+            if (GUILayout.Button("初始化创建: View + Ctrl + Config"))
+            {
+                UIViewGenerator.GenerateCode(Target);
+                UICtrlGenerator.GenerateCode(Target.gameObject);
+                UIConfigGenerator.GenerateCode();
+            }
         }
     }
 }

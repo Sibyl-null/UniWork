@@ -9,7 +9,7 @@ namespace {{ your_namespace }}
         protected override void OnCreate()
         {
             base.OnCreate();
-            _view = ({{ prefab_name }}View)UIView;
+            _view = ({{ prefab_name }}View)View;
         }
 
         protected override void OnShow(UIBaseParameter param = null)
