@@ -1,6 +1,6 @@
 // Auto generate，please do not modify this file
 
-using System.Diagnostics;
+using System.Collections.Generic;
 {{~ for $namespace in namespaces ~}}
 using {{ $namespace }};
 {{~ end ~}}
@@ -9,23 +9,14 @@ namespace {{ your_namespace }}
 {
     public class {{ prefab_name }}View : UIBaseView
     {
-        {{~ for $field in fields ~}}
-        public {{ $field.type_name }} {{ $field.field_name }};
+        {{~ for $property in properties ~}}
+        public {{ $property.type_name }} {{ $property.property_name }} { get; private set; }
         {{~ end ~}}
-
-        [Conditional("UNITY_EDITOR")]
-        private void BindComponent()
-        {
-            {{~ for $item in go_name_path_map ~}}
-            var {{ $item.key }} = transform.Find("{{ $item.value }}");
-            {{~ end ~}}
         
-            {{~ for $field in fields ~}}
-            {{~ if $field.type_name == "GameObject" ~}}
-            {{ $field.field_name }} = {{ $field.go_name }}.gameObject;
-            {{~ else ~}}
-            {{ $field.field_name }} = {{ $field.go_name }}.GetComponent<{{ $field.type_name }}>();
-            {{~ end ~}}
+        protected override void InitCustomComponentRefs(List<UIComponentCollector.ComponentInfo> components)
+        {
+            {{~ for $property in properties ~}}
+            {{ $property.property_name }} = ({{ $property.type_name }})components[{{ for.index }}].component;
             {{~ end ~}}
         }
     }

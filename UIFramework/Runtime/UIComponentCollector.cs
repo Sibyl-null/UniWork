@@ -12,7 +12,7 @@ namespace UniWork.UIFramework.Runtime
     public sealed class UIComponentCollector : MonoBehaviour
     {
         [Serializable]
-        private class ComponentInfo
+        public class ComponentInfo
         {
             public UnityEngine.Object component;
             public string propertyName;
@@ -25,11 +25,11 @@ namespace UniWork.UIFramework.Runtime
         private UIScheduleMode _scheduleMode = UIScheduleMode.Stack;
         
         [TableList(AlwaysExpanded = true), SerializeField]
-        private List<ComponentInfo> _components = new List<ComponentInfo>();
+        private List<ComponentInfo> componentInfos = new List<ComponentInfo>();
 
         public string LayerName => _layerName;
         public UIScheduleMode ScheduleMode => _scheduleMode;
-        public List<UnityEngine.Object> Components => _components.Select(x => x.component).ToList();
+        public List<ComponentInfo> ComponentInfos => componentInfos;
         
         
 #if UNITY_EDITOR
@@ -54,12 +54,12 @@ namespace UniWork.UIFramework.Runtime
             {
                 if (ContainComponent(component))
                 {
-                    ComponentInfo info = _components.Find(x => x.component == component);
+                    ComponentInfo info = componentInfos.Find(x => x.component == component);
                     info.propertyName = fieldName;
                     return;
                 }
             
-                _components.Add(new ComponentInfo
+                componentInfos.Add(new ComponentInfo
                 {
                     component = component,
                     propertyName = fieldName
@@ -72,13 +72,13 @@ namespace UniWork.UIFramework.Runtime
             if (ContainComponent(component) == false)
                 return;
             
-            ComponentInfo info = _components.Find(x => x.component == component);
-            _components.Remove(info);
+            ComponentInfo info = componentInfos.Find(x => x.component == component);
+            componentInfos.Remove(info);
         }
 
         public bool ContainComponent(UnityEngine.Object component)
         {
-            return _components.Count(x => x.component == component) > 0;
+            return componentInfos.Count(x => x.component == component) > 0;
         }
 #endif
     }

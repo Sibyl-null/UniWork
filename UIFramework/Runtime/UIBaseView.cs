@@ -22,9 +22,9 @@ namespace UniWork.UIFramework.Runtime
             _content = transform.Find("Content").GetComponent<RectTransform>();
 
             var collector = GetComponent<UIComponentCollector>();
-            InitCustomComponentRefs(collector.Components);
+            InitCustomComponentRefs(collector.ComponentInfos);
         }
 
-        protected abstract void InitCustomComponentRefs(List<Object> components);
+        protected abstract void InitCustomComponentRefs(List<UIComponentCollector.ComponentInfo> components);
     }
 }
