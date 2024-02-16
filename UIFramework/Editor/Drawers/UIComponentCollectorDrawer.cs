@@ -4,10 +4,10 @@ using UnityEngine;
 using UniWork.UIFramework.Editor.CodeGenerators;
 using UniWork.UIFramework.Runtime;
 
-namespace UniWork.UIFramework.Editor.Inspectors
+namespace UniWork.UIFramework.Editor.Drawers
 {
     [CustomEditor(typeof(UIComponentCollector))]
-    public class UIComponentCollectorInspector : OdinEditor
+    public class UIComponentCollectorDrawer : OdinEditor
     {
         private UIComponentCollector Target => (UIComponentCollector)target;
         
