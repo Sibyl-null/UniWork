@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using UniWork.UIFramework.Runtime;
-using UniWork.UIFramework.Runtime.Scheduler;
 {{~ for $namespace in namespaces ~}}
 using {{ $namespace }};
 {{~ end ~}}
@@ -15,7 +14,7 @@ namespace {{ your_namespace }}
         public static readonly Dictionary<Type, UIInfo> InfoMap = new Dictionary<Type, UIInfo>()
         {
         {{~ for $info in infos ~}}
-            {typeof({{ $info.ctrl_type_name }}), new UIInfo("{{ $info.layer_name }}", UIScheduleMode.{{ $info.schedule_mode }}, "{{ $info.res_path }}")},
+            {typeof({{ $info.ctrl_type_name }}), new UIInfo("{{ $info.layer_name }}", "{{ $info.res_path }}")},
         {{~ end ~}}
         };
     }

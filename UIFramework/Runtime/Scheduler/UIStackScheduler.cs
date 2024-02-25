@@ -3,14 +3,13 @@ using Cysharp.Threading.Tasks;
 using UniWork.Utility.Runtime;
 using UniWork.Utility.Runtime.DataStructure;
 
-namespace UniWork.UIFramework.Runtime.Scheduler.Implements
+namespace UniWork.UIFramework.Runtime.Scheduler
 {
     internal sealed class UIStackScheduler : UIBaseScheduler
     {
         private readonly StackList<Type> _ctrlTypeStack = new();
         
-        internal StackList<Type> CtrlTypeStack => _ctrlTypeStack;
-        internal bool IsEmpty => _ctrlTypeStack.Count == 0;
+        internal override bool Empty => _ctrlTypeStack.Count == 0;
 
         internal override void ShowUI(Type ctrlType, UIBaseParameter param = null)
         {
@@ -62,7 +61,7 @@ namespace UniWork.UIFramework.Runtime.Scheduler.Implements
                 TryShowNextStackUI(ctrlType);
         }
 
-        internal void EscapeUI()
+        internal override void EscapeUI()
         {
             UIBaseCtrl ctrl = UIManager.Instance.GetUICtrl(_ctrlTypeStack.Peek());
             if (ctrl.EnableInput == false)

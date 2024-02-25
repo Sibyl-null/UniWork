@@ -4,7 +4,6 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UniWork.UIFramework.Runtime.Scheduler;
-using UniWork.UIFramework.Runtime.Scheduler.Implements;
 using UniWork.Utility.Runtime;
 using Object = UnityEngine.Object;
 
@@ -18,12 +17,7 @@ namespace UniWork.UIFramework.Runtime
         private readonly Dictionary<Type, UIBaseCtrl> _instantiatedCtrlDic = new();
         private readonly Dictionary<string, Canvas> _bucketCanvasDic = new();
 
-        private readonly Dictionary<UIScheduleMode, UIBaseScheduler> _schedulers = new()
-        {
-            { UIScheduleMode.Normal, new UINormalScheduler() },
-            { UIScheduleMode.Queue, new UIQueueScheduler() },
-            { UIScheduleMode.Stack, new UIStackScheduler() }
-        };
+        private readonly UIBaseScheduler _scheduler = new UIStackScheduler();
 
         private UIBaseAgent _agent;
         private GameObject _rootGo;
@@ -126,10 +120,9 @@ namespace UniWork.UIFramework.Runtime
         {
             if (EnableInput)
             {
-                UIStackScheduler stackScheduler = (UIStackScheduler)_schedulers[UIScheduleMode.Stack];
-                if (!stackScheduler.IsEmpty)
+                if (!_scheduler.Empty)
                 {
-                    stackScheduler.EscapeUI();
+                    _scheduler.EscapeUI();
                 }
                 else
                     OnEscapeEvent?.Invoke();
@@ -138,7 +131,7 @@ namespace UniWork.UIFramework.Runtime
 
         
         // ----------------------------------------------------------------------------
-        // 对外API
+        // 对外 API
         // ----------------------------------------------------------------------------
 
         public void ShowUI<T>(UIBaseParameter param = null) where T : UIBaseCtrl
@@ -167,43 +160,26 @@ namespace UniWork.UIFramework.Runtime
         
         public void ShowUI(Type ctrlType, UIBaseParameter param = null)
         {
-            UIInfo info = GetUIInfo(ctrlType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.ShowUI(ctrlType, param);
-            else
-                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+            _scheduler.ShowUI(ctrlType, param);
         }
 
         public async UniTask ShowUIAsync(Type ctrlType, UIBaseParameter param = null)
         {
-            UIInfo info = GetUIInfo(ctrlType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                await scheduler.ShowUIAsync(ctrlType, param);
-            else
-                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+            await _scheduler.ShowUIAsync(ctrlType, param);
         }
         
         public void HideUI(Type ctrlType)
         {
-            UIInfo info = GetUIInfo(ctrlType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.HideUI(ctrlType);
-            else
-                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+            _scheduler.HideUI(ctrlType);
         }
         
         public void DestroyUI(Type ctrlType)
         {
-            UIInfo info = GetUIInfo(ctrlType);
-
-            if (_schedulers.TryGetValue(info.ScheduleMode, out UIBaseScheduler scheduler))
-                scheduler.DestroyUI(ctrlType);
-            else
-                DLog.Error($"[UIFramework] 不存在 {info.ScheduleMode} 类型的调度器");
+            _scheduler.DestroyUI(ctrlType);
         }
+        
+        
+        // ----------------------------------------------------------------------------
         
         internal void ShowUIInternal(Type ctrlType, UIBaseParameter param = null)
         {

@@ -15,14 +15,12 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
         {
             public string CtrlTypeName;
             public string LayerName;
-            public string ScheduleMode;
             public string ResPath;
 
-            public InfoData(string ctrlTypeName, string layerName, string scheduleMode, string resPath)
+            public InfoData(string ctrlTypeName, string layerName, string resPath)
             {
                 CtrlTypeName = ctrlTypeName;
                 LayerName = layerName;
-                ScheduleMode = scheduleMode;
                 ResPath = resPath;
             }
         }
@@ -55,8 +53,7 @@ namespace UniWork.UIFramework.Editor.CodeGenerators
                 resPath = resPath.RemovePrefix(editorSetting.resPathRemovePrefix);
                 
                 namespaceSet.Add($"{editorSetting.rootNamespace}.{view.name}");
-                infoList.Add(new InfoData($"{view.name}Ctrl", view.LayerName,
-                    view.ScheduleMode.ToString(), resPath));
+                infoList.Add(new InfoData($"{view.name}Ctrl", view.LayerName, resPath));
             }
 
             ConfigGenerateData data = new ConfigGenerateData

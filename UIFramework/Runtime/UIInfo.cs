@@ -1,17 +1,13 @@
-﻿using UniWork.UIFramework.Runtime.Scheduler;
-
-namespace UniWork.UIFramework.Runtime
+﻿namespace UniWork.UIFramework.Runtime
 {
     public struct UIInfo
     {
         public string LayerName { get; }
-        public UIScheduleMode ScheduleMode { get; }
         public string ResPath { get; }
 
-        public UIInfo(string layerName, UIScheduleMode scheduleMode, string resPath)
+        public UIInfo(string layerName, string resPath)
         {
             LayerName = layerName;
-            ScheduleMode = scheduleMode;
             ResPath = resPath;
         }
     }

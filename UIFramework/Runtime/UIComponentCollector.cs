@@ -4,7 +4,6 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
-using UniWork.UIFramework.Runtime.Scheduler;
 
 namespace UniWork.UIFramework.Runtime
 {
@@ -21,14 +20,10 @@ namespace UniWork.UIFramework.Runtime
         [ValueDropdown("GetLayerNames"), SerializeField]
         private string _layerName;
         
-        [SerializeField] 
-        private UIScheduleMode _scheduleMode = UIScheduleMode.Stack;
-        
         [TableList(AlwaysExpanded = true), SerializeField]
         private List<ComponentInfo> componentInfos = new List<ComponentInfo>();
 
         public string LayerName => _layerName;
-        public UIScheduleMode ScheduleMode => _scheduleMode;
         public List<ComponentInfo> ComponentInfos => componentInfos;
         
         
